@@ -31,11 +31,12 @@ class Player1:
     UP_RUN, RIGHT_RUN, LEFT_RUN,  DOWN_RUN, STAY = 0,1,2,3, 4
 
     def __init__(self):
+        global _Bg
         self.x, self.y = 100, 100
         self.canvas_width = get_canvas_width()
         self.canvas_height = get_canvas_height()
         self.frame = 1
-
+        _Bg = BackGround()
         self.life_time = 0.0
         self.total_frames = 0.0
         self.xdir = 0
@@ -56,7 +57,14 @@ class Player1:
         self.frame = (self.frame+1) %3
         self.x += (self.xdir * distance)
         self.y += (self.ydir * distance)
-
+        if(self.x < 0):
+            self.x = 0
+        elif(self.x > _Bg.canvas_width):
+            self.x = _Bg.canvas_width
+        elif(self.y<0):
+            self.y = 0
+        elif (self.y > _Bg.canvas_height):
+            self.y = _Bg.canvas_height
 
 
     def draw_bb(self):
