@@ -9,8 +9,8 @@ class BackGround:
         self.canvas_height = get_canvas_height()
         self.w = self.image.w
         self.h = self.image.h
-        self.window_width = 3500
-        self.window_height = 1500
+        self.window_width = 1800
+        self.window_height = 900
 
     def set_center_object(self, witch):
         self.center_object = witch

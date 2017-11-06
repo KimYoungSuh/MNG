@@ -74,7 +74,7 @@ class Player1:
         sx = self.x - self.bg.window_left
         sy = self.y - self.bg.window_bottom
 
-        self.image.clip_draw(self.frame * 30, self.state * 32, 30, 32, sx, sy)
+        self.image.clip_draw(self.frame * 30, self.state * 32, 30, 32, self.x, self.y)
 
         #debug_print('x=%d, y= %d, sx = %d, sy = %d' %(self.x, self.y,self.sx, self.sy))
         #font.draw(self.x-30,self.y+20, 'HP : %3f' %self.life)
@@ -88,6 +88,9 @@ class Player1:
                 self.state = self.LEFT_RUN
                 self.xdir = -1
                 self.ydir = 0
+
+
+
         elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_RIGHT):
             if self.state in (self.LEFT_RUN, self.DOWN_RUN, self.STAY, self.UP_RUN):
                 self.state = self.RIGHT_RUN
@@ -109,16 +112,3 @@ class Player1:
                 self.state = self.STAY
                 self.ydir = 0
                 self.xdir = 0
-
-
-
-
-
-
-
-
-
-
-
-
-

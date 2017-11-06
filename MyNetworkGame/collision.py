@@ -124,8 +124,8 @@ def update(frame_time):
         if collide(enemy, witch):
             _Enemy3.remove(enemy)
 
-    witch.update(frame_time)
     _Bg.update(frame_time)
+    witch.update(frame_time)
     timer.update(frame_time)
 
 
