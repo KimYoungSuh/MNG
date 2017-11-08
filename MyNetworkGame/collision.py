@@ -56,7 +56,6 @@ def create_world():
     _Enemy3 = []
     _Bg = BackGround()
 
-    _Bg.set_center_object(witch)
     witch.set_background(_Bg)
 
 def destroy_world():
@@ -124,7 +123,6 @@ def update(frame_time):
         if collide(enemy, witch):
             _Enemy3.remove(enemy)
 
-    _Bg.update(frame_time)
     witch.update(frame_time)
     timer.update(frame_time)
 
@@ -133,7 +131,6 @@ def update(frame_time):
 
 def draw(frame_time):
     clear_canvas()
-    _Bg.draw()
     witch.draw()
     for ball in _Enemy3:
         ball.draw()
