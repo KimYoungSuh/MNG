@@ -136,7 +136,7 @@ def draw(frame_time):
         ball.draw()
 
  #   grass.draw_bb()
-        witch.draw_bb()
+    witch.draw_bb()
     for ball in _Enemy3 :
         ball.draw_bb()
 

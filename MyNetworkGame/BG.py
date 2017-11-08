@@ -4,7 +4,7 @@ from pico2d import *
 
 class BackGround:
     def __init__(self):
-        self.image = load_image('BG.png')
+        self.image = load_image('KPU_GROUND.png')
         self.canvas_width = get_canvas_width()
         self.canvas_height = get_canvas_height()
         self.w = self.image.w
@@ -20,7 +20,7 @@ class BackGround:
 
     def draw(self):
         self.image.clip_draw_to_origin(self.window_left, self.window_bottom,
-                                       self.w,self.h,
+                                       self.canvas_width,self.canvas_height,
                                        0,0)
 
     def update(self,frame_time, pointXY):
@@ -30,3 +30,7 @@ class BackGround:
         self.window_bottom = clamp(0,
                                    int(pointXY[1]) - self.canvas_height // 2,
                                  self.h - self.canvas_height)
+        print("witch x = %d witch y = %d" % (pointXY[0] , pointXY[1]))
+        print("window_left= %d window_bottom = %d" % (self.window_left , self.window_bottom))
+
+

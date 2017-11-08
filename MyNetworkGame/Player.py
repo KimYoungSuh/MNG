@@ -57,31 +57,33 @@ class Player1:
         self.frame = (self.frame+1) %3
         self.x += (self.xdir * distance)
         self.y += (self.ydir * distance)
+        self.sx = self.x - _Bg.window_left
+        self.sy = self.y - _Bg.window_bottom
+
         _Bg.update(frame_time, (self.x, self.y))
         if(self.x < 0):
             self.x = 0
-        elif(self.x > _Bg.image.w):
-            self.x = _Bg.image.w
+        elif(self.x > _Bg.w):
+            self.x = _Bg.w
         elif(self.y<0):
             self.y = 0
-        elif (self.y > _Bg.image.h):
-            self.y = _Bg.image.h
+        elif (self.y > _Bg.h):
+            self.y = _Bg.h
 
 
     def draw_bb(self):
         draw_rectangle(*self.get_bb())
 
     def draw(self):                 ##Size Change
-        #sx = self.x - self.bg.window_left
-        #sy = self.y - self.bg.window_bottom
+
         _Bg.draw()
-        self.image.clip_draw(self.frame * 30, self.state * 32, 30, 32, self.x, self.y)
+        self.image.clip_draw(self.frame * 30, self.state * 32, 30, 32, self.sx, self.sy)
 
         #debug_print('x=%d, y= %d, sx = %d, sy = %d' %(self.x, self.y,self.sx, self.sy))
         #font.draw(self.x-30,self.y+20, 'HP : %3f' %self.life)
 
     def get_bb(self):
-        return self.x-5, self.y-5, self.x+5, self.y+5
+        return self.sx-5, self.sy-5, self.sx+5, self.sy+5
 
     def handle_event(self, event):
         if (event.type, event.key) == (SDL_KEYDOWN, SDLK_LEFT):
