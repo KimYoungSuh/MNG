@@ -1,16 +1,14 @@
-import C_game_framework
 from pico2d import *
 
-
-import C_collision
-
+import C_game_framework
+from State import C_collision
 
 name = "TitleState"
 image = None
 
 def enter():
     global image
-    image = load_image('GameTitle.png')
+    image = load_image('State\GameTitle.png')
 
 def exit():
     global image

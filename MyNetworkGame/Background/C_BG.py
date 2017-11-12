@@ -4,7 +4,7 @@ from pico2d import *
 
 class BackGround:
     def __init__(self):
-        self.image = load_image('KPU_GROUND.png')
+        self.image = load_image('Background\Image_BG.png')
         self.canvas_width = get_canvas_width()
         self.canvas_height = get_canvas_height()
         self.w = self.image.w
@@ -31,10 +31,6 @@ class BackGround:
             self.window_bottom = 0
         elif self.window_bottom > self.image.h - self.canvas_height:
             self.window_bottom = self.image.h - self.canvas_height
-
-        print("window_left = %d window_bottom = %d" % (self.window_left ,self.window_bottom))
-
-
     def draw(self):
         self.image.clip_draw_to_origin(self.window_left,self.window_bottom,
                                        self.canvas_width,self.canvas_height,

@@ -17,8 +17,8 @@ class Enemy1:
     FRAMES_PER_ACTION = 3
     image = None
 
-    def __init__(self, Pl_x, Pl_y):
 
+    def __init__(self, Pl_x, Pl_y):
         rand = random.randint(0, 4)
         self.x, self.y = random.randint(0, 3500), random.randint(0, 50)
         self.speed = 0
@@ -27,7 +27,7 @@ class Enemy1:
         self.xdir =  (Pl_x - self.x) /(Pl_y - self.y)
         self.ydir = (Pl_y - self.y)/ (Pl_x - self.x)
         if Enemy1.image == None:
-            Enemy1.image = load_image('squirrel.png')
+            Enemy1.image = load_image('Enemy\Image_Enemy.png')
 
     def returnDir(self, x,y):
         pass
@@ -55,7 +55,6 @@ class Enemy1:
         for object in objects :
             if object.alive == 0:
                 object.remove(object)
-
 
 
     def draw(self):

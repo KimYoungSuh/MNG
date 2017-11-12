@@ -1,11 +1,11 @@
-from pico2d import *
 import random
 
-import C_game_framework
-from C_BG import BackGround
-from C_Enemy import Enemy1
-from C_Player import Player1
+from pico2d import *
 
+import C_game_framework
+from Background.C_BG import BackGround
+from Enemy.C_Enemy import Enemy1
+from Player.C_Player import Player1
 
 name = "collision"
 wand = None

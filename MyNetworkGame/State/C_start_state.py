@@ -1,8 +1,7 @@
-import C_game_framework
 from pico2d import *
 
-
-import C_title_state
+import C_game_framework
+from State import C_title_state
 
 name = "StartState"
 image = None
@@ -10,7 +9,7 @@ logo_time = 0.0
 
 def enter():
     global image
-    image = load_image('kpu_credit.png')
+    image = load_image('State\kpu_credit.png')
 
 
 def exit():
