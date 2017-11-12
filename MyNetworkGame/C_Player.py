@@ -3,15 +3,16 @@ import json
 import os
 
 from pico2d import *
-import game_framework
-import title_state
-from BG import BackGround
+from Bullet.C_PlayerBullet import Bullet
+import C_game_framework
+import C_title_state
+from C_BG import BackGround
 #font = load_font('ENCR10B.TTF')
 #font.draw(self.x - 30, self.y + 20, 'HP : %3.2f' % self.life)
 
 world = None
 _bg = None
-
+_Bullet = []
 
 def clamp(minimum, x, maximum):
     return max(minimum, min(x, maximum))
@@ -23,43 +24,31 @@ class Player1:
     RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
     RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 
-    TIME_PER_ACTION = 0.5
-    ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
-    FRAMES_PER_ACTION = 8
+
 
     image = None
     UP_RUN, RIGHT_RUN, LEFT_RUN,  DOWN_RUN, STAY = 0,1,2,3, 4
 
     def __init__(self):
         global _Bg
-        self.x, self.y = 100, 100
-        self.canvas_width = get_canvas_width()
-        self.canvas_height = get_canvas_height()
-        self.frame = 1
+        global _Enemy
+        self.x, self.y = 0, 0
         _Bg = BackGround()
-        self.life_time = 0.0
-        self.total_frames = 0.0
         self.xdir = 0
         self.ydir =0
         self.state = self.STAY
         self.bg = 0
-
         if Player1.image == None:
-            Player1.image = load_image('FL_ANIME.png')
+            Player1.image = load_image('Image_PlayerUP.png')
 
-    def set_background(self, bg):
-        self.bg = bg
+
 
     def update(self, frame_time):
-        self.life_time += frame_time
-        self.total_frames += Player1.FRAMES_PER_ACTION * Player1.ACTION_PER_TIME * frame_time
+
         distance = Player1.RUN_SPEED_PPS * frame_time
-        self.frame = (self.frame+1) %3
+
         self.x += (self.xdir * distance)
         self.y += (self.ydir * distance)
-        self.sx = self.x - _Bg.window_left
-        self.sy = self.y - _Bg.window_bottom
-
         _Bg.update(frame_time, (self.x, self.y))
         if(self.x < 0):
             self.x = 0
@@ -69,16 +58,33 @@ class Player1:
             self.y = 0
         elif (self.y > _Bg.h):
             self.y = _Bg.h
-
+        for bullets in _Bullet:
+            bullets.update(frame_time)
 
     def draw_bb(self):
         draw_rectangle(*self.get_bb())
 
     def draw(self):                 ##Size Change
+        self.sx = self.x - _Bg.window_left
+        self.sy = self.y - _Bg.window_bottom
+        print("witch x = %d witch y = %d" % (self.x, self.y))
+        print("witch sx = %d witch sy = %d" % (self.sx, self.sy))
 
         _Bg.draw()
-        self.image.clip_draw(self.frame * 30, self.state * 32, 30, 32, self.sx, self.sy)
-
+        for bullets in _Bullet:
+            bullets.draw()
+        if(self.state ==self.LEFT_RUN):
+            Player1.image = load_image('Image_PlayerLEFT.png')
+            self.image.draw(self.sx, self.sy)
+        if (self.state == self.RIGHT_RUN):
+            Player1.image = load_image('Image_PlayerRIGHT.png')
+            self.image.draw(self.sx, self.sy)
+        if (self.state == self.DOWN_RUN):
+            Player1.image = load_image('Image_PlayerDOWN.png')
+            self.image.draw(self.sx, self.sy)
+        if (self.state == self.UP_RUN):
+            Player1.image = load_image('Image_PlayerUP.png')
+            self.image.draw(self.sx, self.sy)
         #debug_print('x=%d, y= %d, sx = %d, sy = %d' %(self.x, self.y,self.sx, self.sy))
         #font.draw(self.x-30,self.y+20, 'HP : %3f' %self.life)
 
@@ -110,8 +116,6 @@ class Player1:
                 self.state = self.DOWN_RUN
                 self.ydir = -1
                 self.xdir = 0
-        elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_s):
-            if self.state in (self.RIGHT_RUN, self.UP_RUN, self.STAY, self.LEFT_RUN):
-                self.state = self.STAY
-                self.ydir = 0
-                self.xdir = 0
+        elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
+                _Bullet.append(Bullet(self.sx, self.sy, self.xdir, self.ydir))
+

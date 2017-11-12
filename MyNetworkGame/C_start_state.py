@@ -1,8 +1,8 @@
-import game_framework
+import C_game_framework
 from pico2d import *
 
 
-import title_state
+import C_title_state
 
 name = "StartState"
 image = None
@@ -21,16 +21,16 @@ def update(frame_time):
     global name
     global logo_time
 
-    if (logo_time > 0.2):
+    if (logo_time > 1):
         logo_time = 0
-        game_framework.push_state(title_state)
+        C_game_framework.push_state(C_title_state)
         #game_framework.quit()
     logo_time += frame_time
 
 def draw(frame_time):
     global image
     clear_canvas()
-    image.draw(400, 300)
+    image.draw(640, 480)
     update_canvas()
 
 def handle_events(frame_time):
