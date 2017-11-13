@@ -6,7 +6,6 @@ import C_game_framework
 from Background.C_BG import BackGround
 from Enemy.C_Enemy import Enemy1
 from Player.C_Player import Player1
-
 name = "collision"
 wand = None
 _Enemy1 = []
@@ -44,24 +43,11 @@ class Timer():
         self.potintime += frame_time
         self.add()
     def add(self):
-        if self.Whattime >= 2.0:
+        if self.Whattime >= 0.5:
             self.EnemyDirNum = random.randint(0, 3)
-            if self.EnemyDirNum ==0 :
-                newEnemy = Enemy1(witch.sx, witch.sy)
-                _Enemy3.append(newEnemy)
-                self.Whattime = 0
-            elif self.EnemyDirNum ==1 :
-                newEnemy = Enemy1(witch.sx, witch.sy)
-                _Enemy3.append(newEnemy)
-                self.Whattime = 0
-            elif self.EnemyDirNum ==2 :
-                newEnemy = Enemy1(witch.sx, witch.sy)
-                _Enemy3.append(newEnemy)
-                self.Whattime = 0
-            elif self.EnemyDirNum ==3 :
-                newEnemy = Enemy1(witch.sx, witch.sy)
-                _Enemy3.append(newEnemy)
-                self.Whattime = 0
+            newEnemy = Enemy1(witch.sx, witch.sy, self.EnemyDirNum)
+            _Enemy3.append(newEnemy)
+            self.Whattime = 0
 
 def create_world():
     global witch, _Bg, _Enemy1, FB3 ,wand ,FB4, Fireballnum, timer, _Enemy3,GameScore, bgm, select_witch, font
@@ -127,7 +113,7 @@ def get_time(frame_time):
 
 def update(frame_time):
     for enemy in _Enemy3:
-        enemy.update(frame_time)
+        enemy.update(frame_time,witch.sx, witch.sy)
     for enemy in _Enemy3 :
         if collide(enemy, witch):
             _Enemy3.remove(enemy)
@@ -135,7 +121,6 @@ def update(frame_time):
         if enemy.alive == 0 :
             _Enemy3.remove(enemy)
     witch.update(frame_time)
-
     timer.update(frame_time)
 
 
@@ -157,4 +142,4 @@ def draw(frame_time):
 def delete_object(objects):
     for object in objects:
         if object.alive == 0:
-            object.remove(object)
+            objects.remove(object)

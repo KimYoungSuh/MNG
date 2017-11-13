@@ -3,18 +3,18 @@ import random
 from pico2d import *
 
 class Bullet:
-    PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
+    PIXEL_PER_METER = (2.0 / 0.3)  # 10 pixel 30 cm
     RUN_SPEED_KMPH = random.randint(4,30)  # Km / Hour
     RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
     RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
     RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
     image = None
 
-    def __init__(self,Pl_x, Pl_y, Pl_xdir, Pl_ydir):
+    def __init__(self,Pl_x, Pl_y, PL_X, PL_Y):
         self.x = Pl_x
         self.y = Pl_y
-        self.xdir = Pl_xdir
-        self.ydir = Pl_ydir
+        self.xdir = math.cos(math.atan((PL_X - self.x) / (PL_Y - self.y)))
+        self.ydir = math.sin(math.atan((PL_X - self.x) / (PL_Y - self.y)))
         self.speed = 0
         self.alive =1
         if Bullet.image == None:
@@ -26,7 +26,11 @@ class Bullet:
         self.y += self.speed * self.ydir
         if self.x >3500 :
             self.alive = 0
+        if self.x < 0 :
+            self.alive = 0
         if self.y >900 :
+            self.alive = 0
+        if self.y <0 :
             self.alive = 0
 
         #need collsion check
