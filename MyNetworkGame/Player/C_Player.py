@@ -8,7 +8,7 @@ from Bullet.C_PlayerBullet import Bullet
 world = None
 _bg = None
 _Bullet = []
-Scean_x, Scean_y = 320, 420
+Scean_x, Scean_y = 195, 250
 
 def clamp(minimum, x, maximum):
     return max(minimum, min(x, maximum))
@@ -33,7 +33,7 @@ class Player1:
         self.bg = 0
         self.beforestate = 1
         if Player1.image == None:
-            Player1.image = load_image('Player\Image_PlayerUP.png')
+            Player1.image = load_image('Player\Image_Player.png')
 
     def update(self, frame_time):
         distance = Player1.RUN_SPEED_PPS * frame_time
