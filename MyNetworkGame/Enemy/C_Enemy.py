@@ -59,7 +59,11 @@ class Enemy1:
             self.alive = 0
         if self.y <0:
             self.alive = 0
+
+
         delete_object(_Bullet)
+
+
         #self.delete_object(_Bullet)
 
 
@@ -82,7 +86,10 @@ class Enemy1:
         return self.x-10 , self.y-10, self.x+10, self.y+10
 
 
+
 def delete_object(objects):
     for object in objects:
         if object.alive == 0:
             objects.remove(object)
+
+
