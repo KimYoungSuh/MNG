@@ -8,7 +8,7 @@ from Bullet.C_PlayerBullet import Bullet
 world = None
 _bg = None
 _Bullet = []
-Scean_x, Scean_y = 195, 250
+Scean_x, Scean_y = 82, 105
 
 def clamp(minimum, x, maximum):
     return max(minimum, min(x, maximum))
@@ -107,5 +107,4 @@ class Player1:
                 self.xdir = 0
         elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
                 _Bullet.append(Bullet(self.sx, self.sy, self.xdir, self.ydir))
-
 
