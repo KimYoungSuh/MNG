@@ -121,7 +121,6 @@ def update(frame_time):
         if enemy.alive == 0 :
             _Enemy3.remove(enemy)
 
-
     witch.update(frame_time)
     timer.update(frame_time)
 

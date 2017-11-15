@@ -23,6 +23,7 @@ class Player1:
     UP_RUN, RIGHT_RUN, LEFT_RUN,  DOWN_RUN, STAY = 0,1,2,3, 4
 
     def __init__(self):
+        global _Bullet
         global _Bg
         global _Enemy
         self.x, self.y = 0, 0
@@ -50,6 +51,7 @@ class Player1:
             self.y = _Bg.h
         for bullets in _Bullet:
             bullets.update(frame_time)
+
 
 
     def draw_bb(self):
@@ -107,4 +109,5 @@ class Player1:
                 self.xdir = 0
         elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
                 _Bullet.append(Bullet(self.sx, self.sy, self.xdir, self.ydir))
+
 
