@@ -118,7 +118,6 @@ class Player1:
         if(input_shoot):
             _Bullet.append(Bullet(self.sx, self.sy, self.xdir, self.ydir))
 
-
     def move_up(self):
         self.state = self.UP_RUN
         self.beforestate = self.UP_RUN
@@ -135,11 +134,5 @@ class Player1:
         self.state = self.RIGHT_RUN
         self.beforestate = self.RIGHT_RUN
         self.xdir = 1
-
-'''
-        
-        elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
-                _Bullet.append(Bullet(self.sx, self.sy, self.xdir, self.ydir))
-                '''
 
 
