@@ -50,5 +50,3 @@ class InputSys:
         else:
             print(False)
             return  False
-
-'''(event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):'''

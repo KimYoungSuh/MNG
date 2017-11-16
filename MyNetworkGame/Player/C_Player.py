@@ -136,10 +136,5 @@ class Player1:
         self.beforestate = self.RIGHT_RUN
         self.xdir = 1
 
-'''
         
-        elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
-                _Bullet.append(Bullet(self.sx, self.sy, self.xdir, self.ydir))
-                '''
-
 
