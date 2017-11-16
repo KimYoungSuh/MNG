@@ -2,6 +2,8 @@ from pico2d import *
 
 from Background.C_BG import BackGround
 from Bullet.C_PlayerBullet import Bullet
+from State.C_Input import InputSys
+
 #font = load_font('ENCR10B.TTF')
 #font.draw(self.x - 30, self.y + 20, 'HP : %3.2f' % self.life)
 
@@ -77,37 +79,67 @@ class Player1:
         return self.sx-5, self.sy-5, self.sx+5, self.sy+5
 
     def handle_event(self, event):
-        if (event.type, event.key) == (SDL_KEYDOWN, SDLK_LEFT):
-            if self.state in (self.RIGHT_RUN, self.DOWN_RUN, self.STAY, self.UP_RUN):
-                self.state = self.LEFT_RUN
-                self.beforestate = self.LEFT_RUN
+        #C_input 으로 부터 InputSys 가져옴
+        input_move = InputSys().Get_move(event)
+        input_shoot = InputSys().Get_shoot_key(event)
+        input_last_vertical = InputSys().Get_last_vertical()
+        input_last_horizon = InputSys().Get_last_horizon()
 
-                self.xdir = -1
-                self.ydir = 0
-        elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_RIGHT):
-            if self.state in (self.LEFT_RUN, self.DOWN_RUN, self.STAY, self.UP_RUN):
-                self.state = self.RIGHT_RUN
-                self.beforestate = self.RIGHT_RUN
-                self.xdir = 1
-                self.ydir = 0
-        elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_UP):
-            if self.state in (self.RIGHT_RUN, self.DOWN_RUN, self.STAY, self.LEFT_RUN):
-                self.state = self.UP_RUN
-                self.beforestate = self.UP_RUN
-                self.ydir = 1
-                self.xdir = 0
-        elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_DOWN):
-            if self.state in (self.RIGHT_RUN, self.UP_RUN, self.STAY, self.LEFT_RUN):
-                self.state = self.DOWN_RUN
-                self.beforestate = self.DOWN_RUN
-                self.ydir = -1
-                self.xdir = 0
-        elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_s):
-            if self.state in (self.RIGHT_RUN, self.UP_RUN, self.DOWN_RUN, self.LEFT_RUN):
-                self.state = self.STAY
-                self.ydir = 0
-                self.xdir = 0
+        #조건판별
+        is_up = (input_move & 0b1000) == 0b1000
+        is_down = (input_move & 0b0100) == 0b0100
+        is_left = (input_move & 0b0010) == 0b0010
+        is_right = (input_move & 0b0001) == 0b0001
+
+        self.xdir = 0
+        self.ydir = 0
+
+        if(is_up):
+            if(input_last_vertical==1):
+                self.move_up()
+            if(is_down & (input_last_vertical==-1)):
+                self.move_down()
+        if(is_down):
+            if (input_last_vertical == -1):
+                self.move_down()
+            if(is_up & (input_last_vertical == 1)):
+                self.move_up()
+        if(is_left):
+            if (input_last_horizon== -1):
+                self.move_left()
+            if (is_right & (input_last_horizon == 1)):
+                self.move_right()
+        if(is_right):
+            if (input_last_horizon == 1):
+                self.move_right()
+            if (is_left & (input_last_horizon == -1)):
+                self.move_left()
+
+        if(input_shoot):
+            _Bullet.append(Bullet(self.sx, self.sy, self.xdir, self.ydir))
+
+
+    def move_up(self):
+        self.state = self.UP_RUN
+        self.beforestate = self.UP_RUN
+        self.ydir = 1
+    def move_down(self):
+        self.state = self.DOWN_RUN
+        self.beforestate = self.DOWN_RUN
+        self.ydir = -1
+    def move_left(self):
+        self.state = self.LEFT_RUN
+        self.beforestate = self.LEFT_RUN
+        self.xdir = -1
+    def move_right(self):
+        self.state = self.RIGHT_RUN
+        self.beforestate = self.RIGHT_RUN
+        self.xdir = 1
+
+'''
+        
         elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
                 _Bullet.append(Bullet(self.sx, self.sy, self.xdir, self.ydir))
+                '''
 
 

@@ -5,8 +5,9 @@ test =  InputSys()
 open_canvas()
 while(1):
     events=get_events()
-    test.Move(events)
-    test.Test()
+    for event in events:
+        test.Move(event)
+        test.Test()
 
 
 
