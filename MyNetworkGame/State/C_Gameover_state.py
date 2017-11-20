@@ -1,16 +1,15 @@
 from pico2d import *
 
 import C_game_framework
-from State import C_CharSellect_State
-from State import C_Collision
-
-name = "TitleState"
+from State import C_Title_state
+from Background.C_BG import BackGround
+name = "Game Over"
 image = None
 
 def enter():
-    global image
-    image = load_image('State\Image_GameTitle.png')
-
+    global image , _BG
+    image = load_image('State\Image_Gameover_state.jpg')
+    _BG = BackGround()
 def exit():
     global image
     del(image)
@@ -32,7 +31,7 @@ def handle_events(frame_time):
             if (event.type, event.key) == (SDL_KEYDOWN, SDLK_ESCAPE):
                 C_game_framework.quit()
             elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
-                C_game_framework.change_state(C_CharSellect_State)
+                C_game_framework.change_state(C_Title_state)
 
 
 
@@ -42,8 +41,8 @@ def update(frame_time):
 
 def draw(frame_time):
     global image
+    image.draw(_BG.canvas_width/2 ,_BG.canvas_height/2)
     clear_canvas()
-    image.draw(640, 480)
     update_canvas()
 
 
