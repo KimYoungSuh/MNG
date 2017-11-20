@@ -6,6 +6,7 @@ import C_game_framework
 from Background.C_BG import BackGround
 from Enemy.C_Enemy import Enemy1
 from Player.C_Player import Player1
+from State import C_Gameover_state
 name = "collision"
 wand = None
 _Enemy1 = []
@@ -36,15 +37,19 @@ class Timer():
         self.itemtime = 0
         self.potintime =0
         self.Scoretime = 0
+        self.EnemyNum =0
     def update(self, frame_time):
         self.Whattime +=  frame_time
         self.itemtime += frame_time
         self.Scoretime += frame_time
         self.potintime += frame_time
         self.add()
+        if self.EnemyNum > 2 :
+            C_game_framework.change_state(C_Gameover_state)
     def add(self):
         if self.Whattime >= 0.5:
             self.EnemyDirNum = random.randint(0, 3)
+            self.EnemyNum+=1
             newEnemy = Enemy1(witch.sx, witch.sy, self.EnemyDirNum)
             _Enemy3.append(newEnemy)
             self.Whattime = 0
@@ -63,11 +68,12 @@ def create_world():
 
 
 def destroy_world():
-    global witch, _Bg, _Enemy3  , timer, bgm
+    global witch, _Bg,_Enemy1, _Enemy3  , timer
     del(witch)
+    del(_Enemy1)
     del(_Enemy3)
+    del(timer)
     del(_Bg)
-    del(bgm)
 
 
 

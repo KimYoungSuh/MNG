@@ -1,7 +1,7 @@
 from pico2d import *
 
 from Background.C_BG import BackGround
-from Bullet.C_PlayerBullet import Bullet
+from Bullet.C_PlayerBullet import PBullet
 from State.C_Input import InputSys
 
 #font = load_font('ENCR10B.TTF')
@@ -116,7 +116,7 @@ class Player1:
                 self.move_left()
 
         if(input_shoot):
-            _Bullet.append(Bullet(self.sx, self.sy, self.xdir, self.ydir))
+            _Bullet.append(PBullet(self.sx, self.sy, self.xdir, self.ydir))
 
 
     def move_up(self):
