@@ -20,7 +20,7 @@ class EBullet:
 
 
         if EBullet.image == None:
-            EBullet.image = load_image('Bullet\Image_Bullet.png')
+            EBullet.image = load_image('Bullet\Image_EBullet.png')
 
     def update(self,frame_time, PL_X, PL_Y):
         self.speed = EBullet.RUN_SPEED_PPS * frame_time

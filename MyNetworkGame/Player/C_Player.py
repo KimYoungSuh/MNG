@@ -1,14 +1,8 @@
 from pico2d import *
 
 from Background.C_BG import BackGround
-<<<<<<< HEAD
 from Bullet.C_PlayerBullet import PBullet
-=======
-from Bullet.C_PlayerBullet import Bullet
-<<<<<<< HEAD
->>>>>>> origin/master
-=======
->>>>>>> origin/master
+
 from State.C_Input import InputSys
 
 #font = load_font('ENCR10B.TTF')
@@ -42,6 +36,8 @@ class Player1:
         self.state = self.STAY
         self.bg = 0
         self.beforestate = 1
+        self.sx = self.x - _Bg.window_left
+        self.sy = self.y - _Bg.window_bottom
         if Player1.image == None:
             Player1.image = load_image('Player\Image_Player.png')
 
@@ -123,15 +119,9 @@ class Player1:
                 self.move_left()
 
         if(input_shoot):
-<<<<<<< HEAD
-<<<<<<< HEAD
             _Bullet.append(PBullet(self.sx, self.sy, self.xdir, self.ydir))
-=======
-            _Bullet.append(Bullet(self.sx, self.sy, self.xdir, self.ydir))
->>>>>>> origin/master
-=======
-            _Bullet.append(Bullet(self.sx, self.sy, self.xdir, self.ydir))
->>>>>>> origin/master
+            _Bullet.append(PBullet(self.sx, self.sy, self.xdir, self.ydir))
+            _Bullet.append(PBullet(self.sx, self.sy, self.xdir, self.ydir))
 
 
     def move_up(self):

@@ -2,14 +2,13 @@ from pico2d import *
 
 import C_game_framework
 from State import C_CharSellect_State
-from State import C_Collision
 
 name = "TitleState"
 image = None
 
 def enter():
     global image
-    image = load_image('State\Image_GameTitle.png')
+    image = load_image('State\GameTitle.png')
 
 def exit():
     global image
