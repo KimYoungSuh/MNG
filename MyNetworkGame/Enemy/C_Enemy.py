@@ -1,6 +1,6 @@
 import random
 from pico2d import *
-from Bullet.C_EnemyBullet import Bullet
+from Bullet.C_EnemyBullet import EBullet
 
 _Bullet = []
 
@@ -72,7 +72,7 @@ class Enemy1:
 
     def add(self,PL_X, PL_Y):
         if self.Whattime >= 1.3:
-            _Bullet.append(Bullet(self.x, self.y, PL_X,PL_Y))
+            _Bullet.append(EBullet(self.x, self.y, PL_X,PL_Y))
             self.Whattime = 0
 
 
