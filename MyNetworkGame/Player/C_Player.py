@@ -5,6 +5,9 @@ from Background.C_BG import BackGround
 from Bullet.C_PlayerBullet import PBullet
 =======
 from Bullet.C_PlayerBullet import Bullet
+<<<<<<< HEAD
+>>>>>>> origin/master
+=======
 >>>>>>> origin/master
 from State.C_Input import InputSys
 
@@ -121,7 +124,11 @@ class Player1:
 
         if(input_shoot):
 <<<<<<< HEAD
+<<<<<<< HEAD
             _Bullet.append(PBullet(self.sx, self.sy, self.xdir, self.ydir))
+=======
+            _Bullet.append(Bullet(self.sx, self.sy, self.xdir, self.ydir))
+>>>>>>> origin/master
 =======
             _Bullet.append(Bullet(self.sx, self.sy, self.xdir, self.ydir))
 >>>>>>> origin/master
