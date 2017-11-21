@@ -1,9 +1,16 @@
 import random
 
 from pico2d import *
-from Enemy.C_Enemy import Enemy1
 
-class Bullet:
+def collide(left_a, bottom_a,right_a, top_a, left_b, bottom_b,right_b, top_b):
+
+    if left_a > right_b : return False
+    if right_a < left_b : return False
+    if top_a < bottom_b : return False
+    if bottom_a > top_b : return False
+
+    return True
+class PBullet:
     PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
     RUN_SPEED_KMPH = random.randint(4,30)  # Km / Hour
     RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
@@ -21,11 +28,11 @@ class Bullet:
         self.alive =1
 
 
-        if Bullet.image == None:
-            Bullet.image = load_image('Bullet\Image_Bullet.png')
+        if PBullet.image == None:
+            PBullet.image = load_image('Bullet\Image_Bullet.png')
 
     def update(self,frame_time):
-        self.speed = Bullet.RUN_SPEED_PPS * frame_time
+        self.speed = PBullet.RUN_SPEED_PPS * frame_time
         self.x += self.speed * self.xdir
         self.y += self.speed * self.ydir
         if self.x >3500 :
@@ -46,13 +53,9 @@ class Bullet:
         draw_rectangle(*self.get_bb())
     def get_bb(self):
         return self.x-10 , self.y-10, self.x+10, self.y+10
+    def checkCollide(self, left_a, bottom_a,right_a, top_a) :
+        if collide(left_a, bottom_a,right_a, top_a , self.x-10 , self.y-10, self.x+10, self.y+10) :
+            self.alive = 0
+            return 0
 
 
-def collide(left_a, bottom_a,right_a, top_a, left_b, bottom_b,right_b, top_b):
-
-    if left_a > right_b : return False
-    if right_a < left_b : return False
-    if top_a < bottom_b : return False
-    if bottom_a > top_b : return False
-
-    return True
