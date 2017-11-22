@@ -4,27 +4,33 @@ from pico2d import *
 import C_game_framework
 from Background.C_BG import BackGround
 from Enemy.C_Enemy import Enemy1
+from Bullet.C_EnemyBullet import EBullet
+from Bullet.C_PlayerBullet import PBullet
+import State.C_Gameover_state
+
+#import C_DebugClass
+
 from Player.C_Player import Player1
 name = "collision"
 wand = None
-_Enemy1 = []
-_Enemy3 = []
+font = None
 _Bg = None
 _Enemys = None
-font = None
+_Enemy1 = []
+_PBullet = []
+_EBullet = []
+
 item = []
 potion = []
 Time = 0.0
 GameScore = 0
+
 #
 bgm = None
 
 def enter():
-
     C_game_framework.reset_time()
     create_world()
-
-
 
 def exit():
     destroy_world()
@@ -35,45 +41,42 @@ class Timer():
         self.itemtime = 0
         self.potintime =0
         self.Scoretime = 0
+        self.EnemyNum=0
     def update(self, frame_time):
         self.Whattime +=  frame_time
         self.itemtime += frame_time
         self.Scoretime += frame_time
         self.potintime += frame_time
         self.add()
+        if(self.EnemyNum >100):
+            C_game_framework.change_state(State.C_Gameover_state)
     def add(self):
         if self.Whattime >= 0.5:
             self.EnemyDirNum = random.randint(0, 3)
-            newEnemy = Enemy1(witch.sx, witch.sy, self.EnemyDirNum)
-            _Enemy3.append(newEnemy)
+            newEnemy = Enemy1(_player.sx, _player.sy, self.EnemyDirNum)
+            _Enemy1.append(newEnemy)
             self.Whattime = 0
 
 def create_world():
-    global witch, _Bg, _Enemy1, FB3 ,wand ,FB4, Fireballnum, timer, _Enemy3,GameScore, bgm, select_witch, font
+    global _player, _Bg, _Enemy1, timer,GameScore, font, _EBullet, _PBullet
+    _player = Player1()
+    _Bg = BackGround()
+    _Enemy1 = []
     timer = Timer()
-
     GameScore =0
     font = load_font('ENCR10B.TTF')
-    witch = Player1()
-
-    _Enemy1 = []
-    _Enemy3 = []
-    _Bg = BackGround()
-
+    _EBullet= EBullet.get_list()
+    _PBullet = PBullet.get_list()
 
 def destroy_world():
-    global witch, _Bg, _Enemy3  , timer, bgm
-    del(witch)
-    del(_Enemy3)
+    global _player, _Bg, _Enemy1, timer,GameScore, font,_EBullet, _PBullet
+    del(_player)
     del(_Bg)
-    del(bgm)
-
-
-
+    del(_EBullet)
+    del(_PBullet)
 
 def pause():
     pass
-
 
 def resume():
     pass
@@ -87,11 +90,7 @@ def handle_events(frame_time):
             if (event.type, event.key) == (SDL_KEYDOWN, SDLK_ESCAPE):
                 C_game_framework.quit()
             else:
-                witch.handle_event(event)
-
-
-
-
+                _player.handle_event(event)
 
 def collide(a, b):
     left_a, bottom_a,right_a, top_a = a.get_bb()
@@ -111,30 +110,55 @@ def get_time(frame_time):
     return Time
 
 def update(frame_time):
-    for enemy in _Enemy3:
-        enemy.update(frame_time,witch.sx, witch.sy)
-    for enemy in _Enemy3 :
-        if collide(enemy, witch):
-            _Enemy3.remove(enemy)
-    for enemy in _Enemy3 :
+    for enemy in _Enemy1:
+        enemy.update(frame_time, _player.sx, _player.sy)
+    for enemy in _Enemy1 :
+        if collide(enemy, _player):
+            _Enemy1.remove(enemy)
+    for ebullets in _EBullet:
+        ebullets.update(frame_time, _player.sx, _player.sy)
+    for ebullets in _EBullet :
+        if collide(ebullets, _player):
+            _EBullet.remove(ebullets)
+    for pbullets in _PBullet:
+        pbullets.update(frame_time,)
+    for pbullets in _PBullet :
+        for enemys in _Enemy1 :
+            if collide(pbullets, enemys):
+                _PBullet.remove(pbullets)
+                _Enemy1.remove(enemys)
+    for enemy in _Enemy1 :
         if enemy.alive == 0 :
-            _Enemy3.remove(enemy)
+            _Enemy1.remove(enemy)
+    for pbullets in _PBullet :
+        if pbullets.alive == 0 :
+            _PBullet.remove(pbullets)
+    for ebullets in _EBullet :
+        if ebullets.alive == 0 :
+            _EBullet.remove(ebullets)
 
-    witch.update(frame_time)
+    _player.update(frame_time)
     timer.update(frame_time)
 
 
 
 def draw(frame_time):
     clear_canvas()
-    witch.draw()
-    for enemy in _Enemy3:
+    _player.draw()
+    for enemy in _Enemy1:
         enemy.draw()
-
+    for ebullets in _EBullet:
+        ebullets.draw()
+    for pbullets in _PBullet:
+        pbullets.draw()
  #   grass.draw_bb()
-    witch.draw_bb()
-    for enemy in _Enemy3 :
+    _player.draw_bb()
+    for enemy in _Enemy1 :
         enemy.draw_bb()
+    for ebullets in _EBullet:
+        ebullets.draw_bb()
+    for pbullets in _PBullet:
+        pbullets.draw_bb()
 
     update_canvas()
 

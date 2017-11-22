@@ -3,10 +3,10 @@ from pico2d import *
 from Bullet.C_EnemyBullet import EBullet
 
 _Bullet = []
-
+font = None
 class Enemy1:
     PIXEL_PER_METER = (4.0 / 0.3)  # 6 pixel 30 cm
-    RUN_SPEED_KMPH = random.randint(4,30)  # Km / Hour
+    RUN_SPEED_KMPH = random.randint(4,10)  # Km / Hour
     RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
     RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
     RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
@@ -15,8 +15,8 @@ class Enemy1:
     ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
     FRAMES_PER_ACTION = 3
     image = None
-    global _Enemy3
-
+    global _Enemy3, font
+    font = load_font('ENCR10B.TTF')
     def __init__(self, PL_X, PL_Y, Enemy_dir):
         self.rand = Enemy_dir
         if self.rand == 0:
@@ -59,30 +59,23 @@ class Enemy1:
 #
         self.x += self.x_speed * self.xdir * frame_time
         self.y += self.y_speed * self.ydir * frame_time
-        for bullets in _Bullet:
-            bullets.update(frame_time,PL_X, PL_Y)
+
         self.add(PL_X,PL_Y)
 
 
-
-        delete_object(_Bullet)
 
         #self.delete_object(_Bullet)
 
 
     def add(self,PL_X, PL_Y):
-        if self.Whattime >= 1.3:
-            _Bullet.append(EBullet(self.x, self.y, PL_X,PL_Y))
+        if self.Whattime >= 2.0:
+            EBullet(self.x, self.y, PL_X,PL_Y)
             self.Whattime = 0
 
 
 
     def draw(self):
         self.image.draw(self.x, self.y)
-        for bullets in _Bullet:
-            bullets.draw()
-        for bullets in _Bullet:
-            bullets.draw_bb()
     def draw_bb(self):
         draw_rectangle(*self.get_bb())
     def get_bb(self):

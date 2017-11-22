@@ -21,6 +21,7 @@ def enter():
     select_witch = 0
 
 def exit():
+    global image, font, _BG, _WAND, select_witch
     del(image)
     del(font)
     del(_BG)
