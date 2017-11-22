@@ -2,7 +2,7 @@ from pico2d import *
 
 from Background.C_BG import BackGround
 from Bullet.C_PlayerBullet import PBullet
-
+#
 from State.C_Input import InputSys
 
 #font = load_font('ENCR10B.TTF')
@@ -10,7 +10,6 @@ from State.C_Input import InputSys
 
 world = None
 _bg = None
-_Bullet = []
 Scean_x, Scean_y = 82, 105
 
 def clamp(minimum, x, maximum):
@@ -26,10 +25,9 @@ class Player1:
     UP_RUN, RIGHT_RUN, LEFT_RUN,  DOWN_RUN, STAY = 0,1,2,3, 4
 
     def __init__(self):
-        global _Bullet
         global _Bg
         global _Enemy
-        self.x, self.y = 0, 0
+        self.x, self.y = 110, 110
         _Bg = BackGround()
         self.xdir = 0
         self.ydir =0
@@ -38,6 +36,7 @@ class Player1:
         self.beforestate = 1
         self.sx = self.x - _Bg.window_left
         self.sy = self.y - _Bg.window_bottom
+        self.iSpace = False
         if Player1.image == None:
             Player1.image = load_image('Player\Image_Player.png')
 
@@ -54,10 +53,6 @@ class Player1:
             self.y = 0
         elif (self.y > _Bg.h):
             self.y = _Bg.h
-        for bullets in _Bullet:
-            bullets.update(frame_time)
-
-
 
     def draw_bb(self):
         draw_rectangle(*self.get_bb())
@@ -66,10 +61,6 @@ class Player1:
         self.sx = self.x - _Bg.window_left
         self.sy = self.y - _Bg.window_bottom
         _Bg.draw()
-        for bullets in _Bullet:
-            bullets.draw()
-        for bullets in _Bullet:
-            bullets.draw_bb()
         if(self.state == 4):
             self.image.clip_draw(Scean_x * self.beforestate, 0, Scean_x, Scean_y, self.sx, self.sy)
         else :
@@ -119,10 +110,7 @@ class Player1:
                 self.move_left()
 
         if(input_shoot):
-            _Bullet.append(PBullet(self.sx, self.sy, self.xdir, self.ydir))
-            _Bullet.append(PBullet(self.sx, self.sy, self.xdir, self.ydir))
-            _Bullet.append(PBullet(self.sx, self.sy, self.xdir, self.ydir))
-
+            PBullet(self.sx, self.sy, self.xdir, self.ydir, self.nowDir)
 
     def move_up(self):
         self.state = self.UP_RUN
@@ -140,6 +128,8 @@ class Player1:
         self.state = self.RIGHT_RUN
         self.beforestate = self.RIGHT_RUN
         self.xdir = 1
+
+
 
         
 

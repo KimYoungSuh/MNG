@@ -1,7 +1,7 @@
 import random
 
 from pico2d import *
-
+#
 class BackGround:
     def __init__(self):
         self.image = load_image('Background\Image_BG.png')

@@ -2,22 +2,16 @@ import random
 
 from pico2d import *
 
-def collide(left_a, bottom_a,right_a, top_a, left_b, bottom_b,right_b, top_b):
 
-    if left_a > right_b : return False
-    if right_a < left_b : return False
-    if top_a < bottom_b : return False
-    if bottom_a > top_b : return False
-
-    return True
 class PBullet:
     PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
-    RUN_SPEED_KMPH = random.randint(4,30)  # Km / Hour
+    RUN_SPEED_KMPH = 25  # Km / Hour
     RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
     RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
     RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
 
     image = None
+    _pBullet = []
 
     def __init__(self,Pl_x, Pl_y, Pl_xdir, Pl_ydir):
         self.x = Pl_x
@@ -26,6 +20,7 @@ class PBullet:
         self.ydir = Pl_ydir
         self.speed = 0
         self.alive =1
+        PBullet._pBullet.append(self)
 
 
         if PBullet.image == None:
@@ -53,6 +48,8 @@ class PBullet:
         draw_rectangle(*self.get_bb())
     def get_bb(self):
         return self.x-10 , self.y-10, self.x+10, self.y+10
+    def get_list():
+        return (PBullet._pBullet)
     def checkCollide(self, left_a, bottom_a,right_a, top_a) :
         if collide(left_a, bottom_a,right_a, top_a , self.x-10 , self.y-10, self.x+10, self.y+10) :
             self.alive = 0
