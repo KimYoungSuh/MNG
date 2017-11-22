@@ -27,7 +27,7 @@ class Player1:
     def __init__(self):
         global _Bg
         global _Enemy
-        self.x, self.y = 0, 0
+        self.x, self.y = 110, 110
         _Bg = BackGround()
         self.xdir = 0
         self.ydir =0
@@ -110,7 +110,7 @@ class Player1:
                 self.move_left()
 
         if(input_shoot):
-            PBullet(self.sx, self.sy, self.xdir, self.ydir)
+            PBullet(self.sx, self.sy, self.xdir, self.ydir, self.nowDir)
 
     def move_up(self):
         self.state = self.UP_RUN

@@ -43,7 +43,7 @@ def handle_events(frame_time):
         else:
             if (event.type, event.key) == (SDL_KEYDOWN, SDLK_ESCAPE):
                 C_game_framework.quit()
-            elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
+            elif (event.type) == (SDL_MOUSEBUTTONDOWN):
                 if _WAND.x > 30 :
                     if _WAND.x < 275:
                         if _WAND.y > 40:
@@ -59,17 +59,20 @@ def handle_events(frame_time):
                         if _WAND.y > 40:
                             if _WAND.y < 350:
                                 select_witch=3
+
+                #READY!
                 if _WAND.x > 905 :
                     if _WAND.x < 1115:
-                        if _WAND.y > 190:
-                            if _WAND.y < 285:
+                        if _WAND.y > 230:
+                            if _WAND.y < 330:
                                 readyState= 1
                                 if select_witch != 0 :
                                     C_game_framework.run(C_Collision)
+                #EXIT
                 if _WAND.x > 905 :
                     if _WAND.x < 1115:
-                        if _WAND.y > 45:
-                            if _WAND.y < 140:
+                        if _WAND.y > 90:
+                            if _WAND.y < 190:
                                 C_game_framework.run(C_Title_state)
             else:
                 _WAND.handle_event(event)
