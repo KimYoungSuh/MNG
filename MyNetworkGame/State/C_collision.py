@@ -1,5 +1,4 @@
 import random
-
 from pico2d import *
 
 import C_game_framework
@@ -17,7 +16,7 @@ item = []
 potion = []
 Time = 0.0
 GameScore = 0
-
+#
 bgm = None
 
 def enter():

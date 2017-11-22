@@ -56,7 +56,7 @@ class Wand:
         is_down = (input_move & 0b0100) == 0b0100
         is_left = (input_move & 0b0010) == 0b0010
         is_right = (input_move & 0b0001) == 0b0001
-
+#
         self.xdir = 0
         self.ydir = 0
 

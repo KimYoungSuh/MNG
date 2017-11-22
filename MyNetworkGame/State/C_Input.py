@@ -8,7 +8,7 @@ class InputSys:
     move_state = 0
     last_vertical = 0
     last_horizon = 0
-
+#
     def Get_move(self, event):
         if (event.type == SDL_KEYDOWN):
             if (event.key==SDLK_UP):

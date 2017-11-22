@@ -3,7 +3,7 @@ from pico2d import *
 
 
 class Enemy1:
-
+#
     image = None
     def __init__(self, Pl_x, Pl_y, Enemy_dir):
         self.rand = Enemy_dir

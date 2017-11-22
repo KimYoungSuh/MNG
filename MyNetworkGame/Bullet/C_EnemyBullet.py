@@ -34,7 +34,7 @@ class EBullet:
             self.alive = 0
         if self.y <0 :
             self.alive = 0
-
+#
         if collide(self.x, self.y, self.x+10, self.y+10, PL_X, PL_Y, PL_X+10, PL_Y+10) :
             self.alive = 0
 

@@ -26,7 +26,7 @@ class PBullet:
         self.ydir = Pl_ydir
         self.speed = 0
         self.alive =1
-
+#
 
         if PBullet.image == None:
             PBullet.image = load_image('Bullet\Image_PBullet.png')

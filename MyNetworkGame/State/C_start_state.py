@@ -25,7 +25,7 @@ def update(frame_time):
         C_game_framework.push_state(C_Title_state)
         #game_framework.quit()
     logo_time += frame_time
-
+#
 def draw(frame_time):
     global image
     clear_canvas()
@@ -33,7 +33,7 @@ def draw(frame_time):
     update_canvas()
 
 def handle_events(frame_time):
-    events = get_events()
+     events = get_events()
 
 
 def pause(): pass

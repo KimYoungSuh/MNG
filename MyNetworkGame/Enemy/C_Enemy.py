@@ -56,7 +56,7 @@ class Enemy1:
             self.y_speed *= -1
         self.Whattime +=frame_time
 
-
+#
         self.x += self.x_speed * self.xdir * frame_time
         self.y += self.y_speed * self.ydir * frame_time
         for bullets in _Bullet:

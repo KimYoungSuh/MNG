@@ -80,7 +80,7 @@ def handle_events(frame_time):
 def update(frame_time):
     _WAND.update(frame_time)
 
-
+#
 
 def draw(frame_time):
     global image
