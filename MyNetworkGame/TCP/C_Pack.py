@@ -2,10 +2,6 @@ import sys
 import struct
 from Data import *
 
-
-
-
-
 class Pack:
     # Room_data
     def pack_room_data(room_data):
@@ -20,8 +16,6 @@ class Pack:
                            room_data['player_name4'],
                            room_data['is_started'],
                            room_data['ready_player'])
-
-
     # Bullet_data
     def pack_bullet_data(bullet_data):
         packed = struct.pack('iiBfB',
@@ -32,7 +26,7 @@ class Pack:
                              bullet_data['shoot_time'],
                              bullet_data['shooter'])
     def unpack_enemy_data(packed):
-        unpacked_data = struct.unpack('iiB', packed)
+        unpacked_data = struct.unpack('iiBfB', packed)
         return unpacked_data
 
     # enemy_data
