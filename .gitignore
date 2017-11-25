@@ -6,3 +6,5 @@
 *.pyc
 
 MyNetworkGame/.idea/workspace.xml
+*.xml
+MyNetworkGame/.idea/misc.xml

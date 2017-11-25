@@ -45,8 +45,6 @@ class InputSys:
 
     def Get_shoot_key(self, event):
         if (event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
-            print(True)
             return  True
         else:
-            print(False)
             return  False
