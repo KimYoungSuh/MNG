@@ -12,7 +12,10 @@ RoomDataStruct = {'room_number':0,
             'host_number':0,
             'room_name':'default_name',
             'full_player':0,
-            'player_data':PlayerDataStruct,
+            'player_name1':'default_name',
+            'player_name2':'default_name',
+            'player_name3':'default_name',
+            'player_name4':'default_name',
             'is_started':False,
             'ready_player':0b0000}
 

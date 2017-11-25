@@ -1,53 +1,69 @@
 import sys
 import struct
-
-Point = {'pos_x': 0, 'pos_y': 0}
-PlayerData = {'player_name': 'default_player',
-              'player_number': 0,
-              'player_pos': Point,
-              'direction': 0,
-              'life': 0,
-              'is_damaged': True,
-              'player_score': 0}
-
-EnemyData = {'enemy_pos': 0,
-             'direction': 0}
-
-BulletData = {'start_pos': 0,
-              'direction': 0,
-              'speed': 0,
-              'shoot_time': 0,
-              'shooter': 0}
-
-RoomData = {'room_number': 0,
-            'host_number': 0,
-            'room_name': 'default_name',
-            'full_player': 0,
-            'player_data': PlayerData,
-            'is_started': False,
-            'ready_player': 0b0000}
+from Data import *
 
 
-class DataStruct:
-    def pack_player_data(player_data):
-        packed = struct.pack('30s BBBBB?L',
-                             player_data.player_data['player_name'].encode('utf-8'),
-                             player_data.player_data['player_number'],
-                             (player_data.player_data['player_pos'])['pos_x'],
-                             (player_data.player_data['player_pos'])['pos_y'],
-                             player_data.player_data['direction'],
-                             player_data.player_data['life'],
-                             player_data.player_data['is_damaged'],
-                             player_data.player_data['player_score'])
-        return packed
 
-    def unpack_player_data(packed):
-        unpacked_data = struct.unpack('30s BBBBB?L', packed)
+
+
+class Pack:
+    # Room_data
+    def pack_room_data(room_data):
+        pack = struct.pack('BB 30s B 30s 30s 30s 30s ? B',
+                           room_data['room_number'],
+                           room_data['host_number'],
+                           room_data['room_name'],
+                           room_data['full_player'],
+                           room_data['player_name1'],
+                           room_data['player_name2'],
+                           room_data['player_name3'],
+                           room_data['player_name4'],
+                           room_data['is_started'],
+                           room_data['ready_player'])
+
+
+    # Bullet_data
+    def pack_bullet_data(bullet_data):
+        packed = struct.pack('iiBfB',
+                             (bullet_data['start_pos'])['pos_x'],
+                             (bullet_data['start_pos'])['pos_y'],
+                             bullet_data['direction'],
+                             bullet_data['speed'],
+                             bullet_data['shoot_time'],
+                             bullet_data['shooter'])
+    def unpack_enemy_data(packed):
+        unpacked_data = struct.unpack('iiB', packed)
         return unpacked_data
 
+    # enemy_data
+    def pack_enemy_data(enemy_data):
+        packed = struct.pack('iiB',
+                             (enemy_data['enemy_pos'])['pox_x'],
+                             (enemy_data['enemy_pos'])['pox_y'],
+                             enemy_data['direction'])
+    def unpack_enemy_data(packed):
+        unpacked_data = struct.unpack('iiB', packed)
+        return unpacked_data
+
+    #player_data
+    def pack_player_data(player_data):
+        packed = struct.pack('30s BiiBB?L',
+             player_data['player_name'].encode('utf-8'),
+             player_data['player_number'],
+             (player_data['player_pos'])['pos_x'],
+             (player_data['player_pos'])['pos_y'],
+             player_data['direction'],
+             player_data['life'],
+             player_data['is_damaged'],
+             player_data['player_score'])
+        return packed
+    def unpack_player_data(packed):
+        unpacked_data = struct.unpack('30s BiiBB?L', packed)
+        return unpacked_data
+
+    #is_game_over
     def pack_is_game_over(is_game_over):
         return struct.pack('?', is_game_over)
-
     def unpack_is_game_over(packed):
         return struct.unpack('?', packed)
 
