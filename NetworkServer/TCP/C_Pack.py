@@ -32,7 +32,7 @@ class Pack:
                              bullet_data['shoot_time'],
                              bullet_data['shooter'])
     def unpack_enemy_data(packed):
-        unpacked_data = struct.unpack('iiB', packed)
+        unpacked_data = struct.unpack('iiBfB', packed)
         return unpacked_data
 
     # enemy_data
