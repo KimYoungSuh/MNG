@@ -24,7 +24,11 @@ class TcpContoller:
 
     def loof(self):
         while 1:
-            self.recv_is_game_over()
+            while 1:
+                #todo: 게임중
+                self.recv_is_game_over()
+
+            #todo: 리더보드
 
     def recv_is_game_over(self):
         # recv is_game_over
