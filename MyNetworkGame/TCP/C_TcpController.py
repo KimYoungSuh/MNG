@@ -1,6 +1,12 @@
 import socket
 import time
-from C_DataStruct import DataStruct
+
+from TCP.C_Pack import DataStruct
+from Data.C_BulletData import *
+from Data.C_EnemyData import *
+from Data.C_PlayerData import *
+from Data.C_RoomData import *
+from Data.C_StructSet import *
 
 data_struct = DataStruct
 

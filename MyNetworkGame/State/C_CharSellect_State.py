@@ -2,8 +2,8 @@ import C_game_framework
 from pico2d import *
 
 from C_Wand import Wand
-from State import C_Collision
-from State import C_Title_state
+from State import C_collision
+from State import C_title_state
 from Background.C_SellectBG import C_SellectBG
 
 name = "Char_sellect"
@@ -67,13 +67,13 @@ def handle_events(frame_time):
                             if _WAND.y < 330:
                                 readyState= 1
                                 if select_witch != 0 :
-                                    C_game_framework.run(C_Collision)
+                                    C_game_framework.run(C_collision)
                 #EXIT
                 if _WAND.x > 905 :
                     if _WAND.x < 1115:
                         if _WAND.y > 90:
                             if _WAND.y < 190:
-                                C_game_framework.run(C_Title_state)
+                                C_game_framework.run(C_title_state)
             else:
                 _WAND.handle_event(event)
 

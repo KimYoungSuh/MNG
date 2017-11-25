@@ -110,7 +110,7 @@ class Player1:
                 self.move_left()
 
         if(input_shoot):
-            PBullet(self.sx, self.sy, self.xdir, self.ydir, self.nowDir)
+            PBullet(self.sx, self.sy, self.xdir, self.ydir)
 
     def move_up(self):
         self.state = self.UP_RUN

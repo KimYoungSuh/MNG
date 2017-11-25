@@ -1,6 +1,4 @@
-import C_TcpController
-
-from C_TcpController import TcpController
+from TCP.C_TcpController import TcpController
 
 tcp_controller = TcpController()
 

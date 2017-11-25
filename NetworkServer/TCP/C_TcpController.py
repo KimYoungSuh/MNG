@@ -1,9 +1,17 @@
 import socket
 import threading
 import time
-from C_DataStruct import DataStruct
 
-data_struct= DataStruct
+from GameSys.C_GameSysMain import *
+from Data.C_BulletData import *
+from Data.C_EnemyData import *
+from Data.C_PlayerData import *
+from Data.C_RoomData import *
+from Data.C_StructSet import *
+from TCP.C_Pack import *
+
+data_struct = Pack
+game_sys_main = GameSysMain()
 
 class TcpController:
     PORT = 19000
@@ -32,17 +40,30 @@ class TcpController:
             t1.start()
 
     '''
-    정보교환이 이루어 집니다.
-    정보교환 로직을 이안에 쓰는것은 지양합니다.
+    클라이언트와 통신하는 스레드입니다.
+    로직을 이안에 쓰는것은 지양합니다.
     함수를 호출하여 수정을 최소화 하세요.
     '''
-    def process_client(socket):
+    def process_client(client_socket):
         while 1:
-            packed_is_game_over =data_struct.pack_is_game_over(False)
-            socket.send(packed_is_game_over)
+            #테스트용으로 넣음 완성본에는 지울것임을 감안하시오.
             time.sleep(1)
+            # todo :recv_player_data
+            # todo :recv_bullet_data
+            # todo :충돌체크하시오
+            # todo :if isdameged
+            TcpController.send_is_game_over(client_socket)
+            # todo :gamelogic damaged
+            # todo :send_player_data
+            # todo :send_enemy_data
+            # todo :send_bullet_data
+            # todo :리더보드
 
 
+    def send_is_game_over(socket):
+         # 게임결과를 보냅니다
+         packed_is_game_over = data_struct.pack_is_game_over(game_sys_main.is_game_over)
+         socket.send(packed_is_game_over)
 
     def exit(self):
         TcpController.server_socket.close()
