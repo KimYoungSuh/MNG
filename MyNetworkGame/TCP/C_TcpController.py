@@ -43,6 +43,50 @@ class TcpContoller:
         print("SOCKET closed... END")
 
 
+    #Lobby
+    def send_create_room(self, host_number, room_name, full_player, player_name):
+        #방 정보를 모두 불러들이면 서버 내 최대 방 개수 확인할필요없음
+        room_data = {
+            'room_number': 0,
+            'host_number': host_number,
+            'room_name': room_name,
+            'full_player': full_player,
+            'player_name1': player_name,
+            'player_name2': 0,
+            'player_name3': 0,
+            'player_name4': 0,
+            'is_started': False,
+            'ready_player': 0
+        }
+        create_room = data_struct.pack_room_data(room_data)
+        self.client_socket.send(create_room)
+
+    def send_join_room(self, room_number, player_data):
+        join_request_data = {
+            'room_number': room_number,
+            'player_name': player_data['player_name'],
+            'player_number': player_data['player_number']
+        }
+        join_room = data_struct.pack_room_data(join_request_data)
+        self.client_socket.send(join_room)
+        #방 정보를 모두 불러들이면 구현할필요 없음 (임시)
+        packed_room_is_full = self.client_socket.recv(1)
+        room_is_full = DataStruct.unpack_room_is_full(packed_room_is_full)
+        if(room_is_full):
+            #disconnect room
+            print("room is full")
+        else:
+            #connect room
+            print("connecting")
+            pass
+
+    #Wait Room
+    def send_ready_state(self, is_ready):
+        packed_is_ready = DataStruct.pack_is_game_over(is_ready)
+        self.client_socket.send(packed_is_ready)
+
+
+
 
 tcp_controller = TcpContoller()
 tcp_controller.tcp_client_init()

@@ -59,6 +59,15 @@ class TcpController:
             # todo :send_bullet_data
             # todo :리더보드
 
+    #Lobby
+    def send_room_data(socket):
+        room_count = game_sys_main.exist_room_count()
+        packed_room_count = data_struct.pack_count_data(room_count)
+        socket.send(packed_room_count)
+        for i in range(room_count):
+            packed_room_data = data_struct.pack_room_data(game_sys_main.rooms_data[i])
+            socket.send(packed_room_data)
+
 
     def send_is_game_over(socket):
          # 게임결과를 보냅니다

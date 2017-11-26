@@ -2,10 +2,10 @@ import sys
 import struct
 from Data import *
 
-class Pack:
+class DataStruct:
     # Room_data
     def pack_room_data(room_data):
-        pack = struct.pack('BB 30s B 30s 30s 30s 30s ? B',
+        packed_data = struct.pack('BB 30s B 30s 30s 30s 30s ? B',
                            room_data['room_number'],
                            room_data['host_number'],
                            room_data['room_name'],
@@ -16,6 +16,25 @@ class Pack:
                            room_data['player_name4'],
                            room_data['is_started'],
                            room_data['ready_player'])
+        return packed_data
+
+    def unpack_room_data(packed):
+        unpacked_data = struct.unpack('BB 30s B 30s 30s 30s 30s ? B', packed)
+        return unpacked_data
+
+    #join_request_data
+    def pack_join_request_data(join_request_data):
+        packed_data = struct.pack('B 30s B',
+                           join_request_data['room_number'],
+                           join_request_data['player_name'],
+                           join_request_data['player_number'])
+        return packed_data
+
+    #room_is_full
+    def unpack_room_is_full(packed_data):
+        unpacked_data = struct.unpack('?', packed_data)
+        return unpacked_data
+
     # Bullet_data
     def pack_bullet_data(bullet_data):
         packed = struct.pack('iiBfB',
