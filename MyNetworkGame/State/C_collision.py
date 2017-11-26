@@ -1,11 +1,13 @@
 import random
 from pico2d import *
 
-import C_game_framework
+import State.C_Game_framework
 from Background.C_BG import BackGround
 from Enemy.C_Enemy import Enemy1
+from Enemy.C_Enemy2 import Enemy2
 from Bullet.C_EnemyBullet import EBullet
 from Bullet.C_PlayerBullet import PBullet
+from Life.C_Life import Life
 import State.C_Gameover_state
 
 #import C_DebugClass
@@ -29,7 +31,7 @@ GameScore = 0
 bgm = None
 
 def enter():
-    C_game_framework.reset_time()
+    State.C_Game_framework.reset_time()
     create_world()
 
 def exit():
@@ -49,19 +51,26 @@ class Timer():
         self.potintime += frame_time
         self.add()
         if(self.EnemyNum >100):
-            C_game_framework.change_state(State.C_Gameover_state)
+            State.C_Game_framework.change_state(State.C_Gameover_state)
     def add(self):
         if self.Whattime >= 0.5:
-            self.EnemyDirNum = random.randint(0, 3)
-            newEnemy = Enemy1(_player.sx, _player.sy, self.EnemyDirNum)
-            _Enemy1.append(newEnemy)
+            self.EnemyDirNum = random.randint(0, 8)
+            if self.EnemyDirNum <= 3 :
+                newEnemy = Enemy1(_player.sx, _player.sy, self.EnemyDirNum)
+                _Enemy1.append(newEnemy)
+            elif self.EnemyDirNum >= 4 :
+                newEnemy = Enemy2(_player.sx, _player.sy, self.EnemyDirNum)
+                _Enemy1.append(newEnemy)
+
+
             self.Whattime = 0
 
 def create_world():
-    global _player, _Bg, _Enemy1, timer,GameScore, font, _EBullet, _PBullet
+    global _player, _Bg, _Enemy1, timer,GameScore, font, _EBullet, _PBullet, _Life
     _player = Player1()
     _Bg = BackGround()
     _Enemy1 = []
+    _Life = Life(_player.life)
     timer = Timer()
     GameScore =0
     font = load_font('ENCR10B.TTF')
@@ -85,10 +94,10 @@ def handle_events(frame_time):
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
-            C_game_framework.quit()
+            State.C_Game_framework.quit()
         else:
             if (event.type, event.key) == (SDL_KEYDOWN, SDLK_ESCAPE):
-                C_game_framework.quit()
+                State.C_Game_framework.quit()
             else:
                 _player.handle_event(event)
 
@@ -114,11 +123,13 @@ def update(frame_time):
         enemy.update(frame_time, _player.sx, _player.sy)
     for enemy in _Enemy1 :
         if collide(enemy, _player):
+            _player.life -=1
             _Enemy1.remove(enemy)
     for ebullets in _EBullet:
         ebullets.update(frame_time, _player.sx, _player.sy)
     for ebullets in _EBullet :
         if collide(ebullets, _player):
+            _player.life -= 1
             _EBullet.remove(ebullets)
     for pbullets in _PBullet:
         pbullets.update(frame_time,)
@@ -159,7 +170,7 @@ def draw(frame_time):
         ebullets.draw_bb()
     for pbullets in _PBullet:
         pbullets.draw_bb()
-
+    _Life.draw()
     update_canvas()
 
 

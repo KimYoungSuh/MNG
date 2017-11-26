@@ -27,7 +27,8 @@ class Player1:
     def __init__(self):
         global _Bg
         global _Enemy
-        self.x, self.y = 110, 110
+        self.x, self.y = 400,400
+        self.life = 3
         _Bg = BackGround()
         self.xdir = 0
         self.ydir =0

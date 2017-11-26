@@ -1,28 +1,35 @@
-import C_game_framework
+import State.C_Game_framework
 from pico2d import *
-
 from C_Wand import Wand
-from State import C_collision
-from State import C_title_state
+from State import C_Collision
+from State import C_Game_framework
+from State import C_Title_state
 from Background.C_SellectBG import C_SellectBG
 
 name = "Char_sellect"
-image = None
+image1 = None
+image2= None
+image3 = None
 font = None
 sel = None
 Scean_x, Scean_y = 82, 105
 select_witch =0
 def enter():
-    global image, font, _BG, _WAND, select_witch
-    image = load_image('Player\Image_Player.png')
+    global image1,image2,image3, font, _BG, _WAND, select_witch
+    image1 = load_image('Player\Image_Player.png')
+    image2 = load_image('Player\Image_Player2.png')
+    image3 = load_image('Player\Image_Player3.png')
+
     font = load_font('ENCR10B.TTF')
     _BG = C_SellectBG()
     _WAND = Wand()
     select_witch = 0
 
 def exit():
-    global image, font, _BG, _WAND, select_witch
-    del(image)
+    global image1,image2,image3, font, _BG, _WAND, select_witch
+    del(image1)
+    del(image2)
+    del(image3)
     del(font)
     del(_BG)
     del(_WAND)
@@ -39,10 +46,10 @@ def handle_events(frame_time):
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
-            C_game_framework.quit()
+            State.C_Game_framework.quit()
         else:
             if (event.type, event.key) == (SDL_KEYDOWN, SDLK_ESCAPE):
-                C_game_framework.quit()
+                State.C_Game_framework.quit()
             elif (event.type) == (SDL_MOUSEBUTTONDOWN):
                 if _WAND.x > 30 :
                     if _WAND.x < 275:
@@ -67,13 +74,15 @@ def handle_events(frame_time):
                             if _WAND.y < 330:
                                 readyState= 1
                                 if select_witch != 0 :
-                                    C_game_framework.run(C_collision)
+                                    C_Game_framework.run(C_Collision)
+                                    State.C_Game_framework.run(C_Collision)
                 #EXIT
                 if _WAND.x > 905 :
                     if _WAND.x < 1115:
                         if _WAND.y > 90:
                             if _WAND.y < 190:
-                                C_game_framework.run(C_title_state)
+                                C_Game_framework.run(C_Title_state)
+                                State.C_Game_framework.run(C_Title_state)
             else:
                 _WAND.handle_event(event)
 
@@ -87,17 +96,22 @@ def update(frame_time):
 #
 
 def draw(frame_time):
-    global image
+    global image1,image2,image3
     clear_canvas()
     _BG.draw()
-    image.clip_draw(Scean_x * 1, 0, Scean_x, Scean_y, 140, 250)
-    image.clip_draw(Scean_x * 2, 0, Scean_x, Scean_y, 420, 250)
-    image.clip_draw(Scean_x * 3, 0, Scean_x, Scean_y, 700, 250)
+    image1.clip_draw(Scean_x * 3, 0, Scean_x, Scean_y, 140, 250)
+    image2.clip_draw(Scean_x * 3, 0, Scean_x, Scean_y, 420, 250)
+    image3.clip_draw(Scean_x * 3, 0, Scean_x, Scean_y, 700, 250)
     font.draw(160, 430, 'Wand_X = %d' % (_WAND.x))
     font.draw(160, 460, 'Wand_Y = %d' % (_WAND.y))
 
-    if select_witch != 0 :
-        image.clip_draw(Scean_x * select_witch, 0, Scean_x, Scean_y, 230, 600)
+    if select_witch == 1 :
+        image1.clip_draw( Scean_x * 3, 0, Scean_x, Scean_y, 230, 600)
+    if select_witch ==2 :
+        image2.clip_draw(Scean_x * 3, 0, Scean_x, Scean_y, 230, 600)
+    if select_witch ==3 :
+        image3.clip_draw(Scean_x * 3, 0, Scean_x, Scean_y, 230, 600)
+
     _WAND.draw()
     update_canvas()
 

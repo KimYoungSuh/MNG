@@ -7,10 +7,10 @@ else:
     os.environ["PYSDL2_DLL_PATH"] = "./SDL2/x64"
 
 
-import C_game_framework
+import State.C_Game_framework
 import State.C_Start_state
 import pico2d
 #
 pico2d.open_canvas(1200,900)
-C_game_framework.run(State.C_Start_state)
+State.C_Game_framework.run(State.C_Start_state)
 pico2d.close_canvas()
