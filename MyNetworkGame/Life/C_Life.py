@@ -10,7 +10,7 @@ class Life:
         _Bg = BackGround()
         self.Now = playerlife
         if Life.image == None:
-            Life.image = load_image('Life\Image_Life.png')
+            Life.image = load_image('..\Life\Image_Life.png')
 
     def update(self,frame_time, PL_X, PL_Y):
         self.Whattime += frame_time

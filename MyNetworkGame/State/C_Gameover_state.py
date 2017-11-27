@@ -1,9 +1,9 @@
 from pico2d import *
 
 
-import State.C_Title_state
+import State.C_title_state
 import State.C_Game_framework
-import State.C_Title_state
+import State.C_title_state
 
 name = "Game Over"
 image = None

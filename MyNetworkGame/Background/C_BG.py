@@ -4,7 +4,7 @@ from pico2d import *
 #
 class BackGround:
     def __init__(self):
-        self.image = load_image('Background\Image_BG.png')
+        self.image = load_image('..\Background\Image_BG.png')
         self.canvas_width = get_canvas_width()
         self.canvas_height = get_canvas_height()
         self.w = self.image.w
