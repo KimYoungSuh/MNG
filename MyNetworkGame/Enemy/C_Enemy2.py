@@ -39,20 +39,18 @@ class Enemy2:
         self.alive = 1
         self.xdir = math.cos(math.atan((PL_Y - self.y) / (PL_X - self.x)))
         self.ydir = math.sin(math.atan((PL_Y - self.y) / (PL_X - self.x)))
-        if self.xdir >0  :
-            if self.ydir > 0 :
+        if self.xdir > self.ydir  :
+            if self.xdir > 0 :
                 self.state = 1
-        if self.xdir > 0:
-            if self.ydir < 0:
+            else:
                 self.state = 2
-        if self.xdir <0 :
-            if self.ydir > 0 :
-                self.state = 3
-        if self.xdir <0 :
-            if self.ydir < 0 :
+        else:
+            if self.ydir > 0:
                 self.state = 0
+            else:
+                self.state = 3
         if Enemy2.image == None:
-            Enemy2.image = load_image('Enemy\Image_Enermy2.png')
+            Enemy2.image = load_image('..\Enemy\Image_Enermy2.png')
 
     def returnDir(self, x,y):
         pass
@@ -61,29 +59,27 @@ class Enemy2:
     def update(self,frame_time, PL_X, PL_Y):
         if self.x > 3500:
             self.x = 3500
-            self.x_speed *= -1
+            self.xdir *= -1
         if self.x < 0:
             self.x = 0
-            self.x_speed *= -1
+            self.xdir *= -1
         if self.y > 900:
             self.y = 900
-            self.y_speed *= -1
+            self.ydir *= -1
         if self.y < 0:
             self.y = 0
-            self.y_speed *= -1
+            self.ydir *= -1
         self.Whattime +=frame_time
-        if self.xdir >0  :
-            if self.ydir > 0 :
+        if self.xdir > self.ydir  :
+            if self.xdir > 0 :
                 self.state = 1
-        if self.xdir > 0:
-            if self.ydir < 0:
+            else:
                 self.state = 2
-        if self.xdir <0 :
-            if self.ydir > 0 :
-                self.state = 3
-        if self.xdir <0 :
-            if self.ydir < 0 :
+        else:
+            if self.ydir > 0:
                 self.state = 0
+            else:
+                self.state = 3
 
 #
         self.x += self.x_speed * self.xdir * frame_time

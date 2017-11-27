@@ -24,7 +24,7 @@ class PBullet:
 
 
         if PBullet.image == None:
-            PBullet.image = load_image('Bullet\Image_PBullet.png')
+            PBullet.image = load_image('..\Bullet\Image_PBullet.png')
 
     def update(self,frame_time):
         self.speed = PBullet.RUN_SPEED_PPS * frame_time
