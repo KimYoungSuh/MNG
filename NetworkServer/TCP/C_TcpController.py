@@ -12,12 +12,11 @@ from TCP.C_Pack import *
 
 data_struct = Pack
 game_sys_main = GameSysMain()
-
+_enemylist = []
 class TcpController:
     PORT = 19000
     IP = ''
     MAX_BIND = 5
-
     def tcp_server_init(self):
         TcpController.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         TcpController.server_socket.bind((self.IP, self.PORT))
@@ -52,6 +51,9 @@ class TcpController:
             # todo :recv_bullet_data
             # todo :충돌체크하시오
             # todo :if isdameged
+            data = client_socket.recv(1024)
+            _enemylist.append(data_struct.unpack_enemy_data(data))
+            print(_enemylist)
             TcpController.send_is_game_over(client_socket)
             # todo :gamelogic damaged
             # todo :send_player_data

@@ -57,12 +57,10 @@ class Pack:
 
     # enemy_data
     def pack_enemy_data(enemy_data):
-        packed = struct.pack('iiB',
-                             (enemy_data['enemy_pos'])['pox_x'],
-                             (enemy_data['enemy_pos'])['pox_y'],
-                             enemy_data['direction'])
+        packed = struct.pack('fff', enemy_data.x, enemy_data.y, enemy_data.alive)
+
     def unpack_enemy_data(packed):
-        unpacked_data = struct.unpack('iiB', packed)
+        unpacked_data = struct.unpack('=fff', packed)
         return unpacked_data
 
     #player_data

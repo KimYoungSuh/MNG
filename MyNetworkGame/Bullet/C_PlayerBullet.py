@@ -50,9 +50,5 @@ class PBullet:
         return self.x-10 , self.y-10, self.x+10, self.y+10
     def get_list():
         return (PBullet._pBullet)
-    def checkCollide(self, left_a, bottom_a,right_a, top_a) :
-        if collide(left_a, bottom_a,right_a, top_a , self.x-10 , self.y-10, self.x+10, self.y+10) :
-            self.alive = 0
-            return 0
 
 

@@ -8,9 +8,10 @@ else:
 
 
 import State.C_Game_framework
-import State.C_Start_state
+from State import C_start_state
+from State import C_collision
 import pico2d
 #
-pico2d.open_canvas(1200,900)
-State.C_Game_framework.run(State.C_Start_state)
+pico2d.open_canvas(800,600)
+State.C_Game_framework.run(C_collision)
 pico2d.close_canvas()

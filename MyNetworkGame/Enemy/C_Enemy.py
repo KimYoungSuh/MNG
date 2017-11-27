@@ -1,7 +1,7 @@
 import random
 from pico2d import *
 from Bullet.C_EnemyBullet import EBullet
-
+from Background.C_BG import BackGround
 _Bullet = []
 font = None
 class Enemy1:
@@ -15,18 +15,23 @@ class Enemy1:
     ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
     FRAMES_PER_ACTION = 3
     image = None
-    global _Enemy3, font
-    font = load_font('ENCR10B.TTF')
-    def __init__(self, PL_X, PL_Y, Enemy_dir):
+    #_enemy = []
+
+    def __init__(self, PL_X, PL_Y, Enemy_dir, BG_X, BG_Y):
         self.rand = Enemy_dir
+        global font
+        font = load_font('..\ENCR10B.TTF')
+
         if self.rand == 0:
-            self.x, self.y = random.randint(0, 50), random.randint(0, 900)
+            self.x, self.y = random.randint(0, 50), random.randint(0, 1800)
         elif self.rand == 1:
-            self.x, self.y = random.randint(3450, 3500), random.randint(0, 900)
+            self.x, self.y = random.randint(3150, 3200), random.randint(0, 1800)
         elif self.rand == 2:
-            self.x, self.y = random.randint(0, 3500), random.randint(0, 50)
+            self.x, self.y = random.randint(0, 3200), random.randint(0, 50)
         elif self.rand == 3:
-            self.x, self.y = random.randint(0, 3500), random.randint(850, 900)
+            self.x, self.y = random.randint(0, 3200), random.randint(1750, 1800)
+        #self.sx = self.x - PL_X
+        #self.sy = self.y - PL_Y
         self.x_speed = Enemy1.RUN_SPEED_PPS
         self.y_speed = Enemy1.RUN_SPEED_PPS
 
@@ -36,38 +41,41 @@ class Enemy1:
         self.ydir = math.sin(math.atan((PL_Y - self.y) / (PL_X - self.x)))
         if Enemy1.image == None:
             Enemy1.image = load_image('..\Enemy\Image_Enermy.png')
+        #Enemy1._enemy.append(self)
+    def returnx(self):
+        return self.x
+    def returny(self) :
+        return self.y
 
-    def returnDir(self, x,y):
-        pass
-
-
-    def update(self,frame_time, PL_X, PL_Y):
-        if self.x > 3500:
-            self.x = 3500
-            self.x_speed *= -1
+    def update(self,frame_time, PL_X, PL_Y, _BG_X , _BG_Y):
+        if self.x > 3200:
+            self.x = 3200
+            self.xdir *= -1
         if self.x < 0:
             self.x = 0
-            self.x_speed *= -1
-        if self.y > 900:
-            self.y = 900
-            self.y_speed *= -1
+            self.xdir *= -1
+        if self.y > 1800:
+            self.y = 1800
+            self.ydir *= -1
         if self.y < 0:
             self.y = 0
-            self.y_speed *= -1
+            self.ydir *= -1
         self.Whattime +=frame_time
 
 #
         self.x += self.x_speed * self.xdir * frame_time
         self.y += self.y_speed * self.ydir * frame_time
-
-        self.add(PL_X,PL_Y)
+        self.sx = self.x - PL_X
+        self.sy = self.y - PL_Y
+        self.ADD_Bullet(PL_X,PL_Y)
 
 
 
         #self.delete_object(_Bullet)
 
-
-    def add(self,PL_X, PL_Y):
+    #def get_list():
+    #    return (Enemy1._enemy)
+    def ADD_Bullet(self,PL_X, PL_Y):
         if self.Whattime >= 2.0:
             EBullet(self.x, self.y, PL_X,PL_Y)
             self.Whattime = 0
@@ -75,12 +83,20 @@ class Enemy1:
 
 
     def draw(self):
+        font.draw(self.x, self.y, 'X , Y : [%d, %d]' % (self.x, self.y))
+    #    font.draw(self.x, self.y+20, 'SX , SY : [%d, %d]' % (self.sx, self.sy))
+
         self.image.draw(self.x, self.y)
+        #font.draw(self.sx, self.sy+20 , 'X , Y : [%d, %d]' % (self.sx, self.sy))
+        #font.draw(self.sx, self.sy, 'X , Y : [%d, %d]' % (self.x, self.y))
+
+        #self.image.draw(self.sx , self.sy)
     def draw_bb(self):
         draw_rectangle(*self.get_bb())
     def get_bb(self):
         return self.x-10 , self.y-10, self.x+10, self.y+10
 
+        #return self.sx - 10, self.sy - 10, self.sx + 10, self.sy + 10
 
 
 def delete_object(objects):
