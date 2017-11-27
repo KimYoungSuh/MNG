@@ -35,7 +35,7 @@ class Enemy1:
         self.xdir = math.cos(math.atan((PL_Y - self.y) / (PL_X - self.x)))
         self.ydir = math.sin(math.atan((PL_Y - self.y) / (PL_X - self.x)))
         if Enemy1.image == None:
-            Enemy1.image = load_image('Enemy\Image_Enermy.png')
+            Enemy1.image = load_image('..\Enemy\Image_Enermy.png')
 
     def returnDir(self, x,y):
         pass

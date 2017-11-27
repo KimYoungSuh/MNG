@@ -8,7 +8,7 @@ image = None
 
 def enter():
     global image
-    image = load_image('State\Image_GameTitle.png')
+    image = load_image('Image_GameTitle.png')
 #
 def exit():
     global image

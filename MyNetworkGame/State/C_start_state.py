@@ -1,9 +1,9 @@
 from pico2d import *
 
 from State import C_Game_framework
-from State import C_Title_state
+from State import C_title_state
 import State.C_Game_framework
-from State import C_Title_state
+from State import C_title_state
 
 name = "StartState"
 image = None
@@ -11,7 +11,7 @@ logo_time = 0.0
 
 def enter():
     global image
-    image = load_image('State\kpu_credit.png')
+    image = load_image('kpu_credit.png')
 
 
 def exit():
@@ -24,8 +24,8 @@ def update(frame_time):
 
     if (logo_time > 1):
         logo_time = 0
-        C_Game_framework.push_state(C_Title_state)
-        State.C_Game_framework.push_state(C_Title_state)
+        C_Game_framework.push_state(C_title_state)
+        State.C_Game_framework.push_state(C_title_state)
         #game_framework.quit()
     logo_time += frame_time
 #

@@ -39,7 +39,7 @@ class Player1:
         self.sy = self.y - _Bg.window_bottom
         self.iSpace = False
         if Player1.image == None:
-            Player1.image = load_image('Player\Image_Player.png')
+            Player1.image = load_image('..\Player\Image_Player.png')
 
     def update(self, frame_time):
         distance = Player1.RUN_SPEED_PPS * frame_time
