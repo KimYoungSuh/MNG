@@ -27,7 +27,6 @@ _Enemys = None
 _Enemy1 = []
 _PBullet = []
 _EBullet = []
-_DS = []
 item = []
 potion = []
 Time = 0.0
@@ -132,8 +131,6 @@ def get_time(frame_time):
 def update(frame_time):
     for enemy in _Enemy1:
         enemy.update(frame_time, _player.sx, _player.sy, _Bg.window_left, _Bg.window_bottom)
-        get_list(_Enemy1)
-
     for enemy in _Enemy1 :
         if collide(enemy, _player):
             _player.life -=1
@@ -160,9 +157,10 @@ def update(frame_time):
     for ebullets in _EBullet :
         if ebullets.alive == 0 :
             _EBullet.remove(ebullets)
-
+    #get_list(_Enemy1)
 
     _player.update(frame_time)
+    get_lists(_player)
     timer.update(frame_time)
 
 
@@ -187,15 +185,17 @@ def draw(frame_time):
     _Life.draw(_player.life)
     update_canvas()
 
-def get_list(objects):
-    for object in objects:
-
+def get_lists(objects):
+    #for object in objects:
         #todo: 게임중
         #packed = DataStruct.pack_enemy_data(object)
-        packed = struct.pack('=fff', object.x, object.y, object.alive)
-        client_socket.sendall(packed)
+        #packed = struct.pack('=fff', object.x, object.y, object.alive)
+        #client_socket.sendall(packed)
         #packed = struct.pack('fff', object.x, object.y, object.alive)
         #DataStruct.pack_enemy_data(object)
+    Player_packed = DataStruct.pack_player_data(objects)
+    print(DataStruct.unpack_player_data(Player_packed))
+    client_socket.sendall(Player_packed)
 
 def delete_object(objects):
     for object in objects:

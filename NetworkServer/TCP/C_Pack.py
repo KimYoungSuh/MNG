@@ -65,20 +65,35 @@ class Pack:
 
     #player_data
     def pack_player_data(player_data):
-        packed = struct.pack('30s BiiBB?L',
-             player_data['player_name'].encode('utf-8'),
-             player_data['player_number'],
-             (player_data['player_pos'])['pos_x'],
-             (player_data['player_pos'])['pos_y'],
-             player_data['direction'],
-             player_data['life'],
-             player_data['is_damaged'],
-             player_data['player_score'])
-        return packed
+        packed = struct.pack('=fff',
+#             player_data['player_name'].encode('utf-8'),
+#             player_data['player_number'],
+             (player_data.x),
+             (player_data.y),
+#             player_data['direction'],
+             player_data.life)
+#             player_data['is_damaged'],
+#             player_data['player_score'])
     def unpack_player_data(packed):
-        unpacked_data = struct.unpack('30s BiiBB?L', packed)
+        unpacked_data = struct.unpack('=fff', packed)
         return unpacked_data
 
+        '''
+            def pack_player_data(player_data):
+                packed = struct.pack('30s BiiBB?L',
+                     player_data['player_name'].encode('utf-8'),
+                     player_data['player_number'],
+                     (player_data['player_pos'])['pos_x'],
+                     (player_data['player_pos'])['pos_y'],
+                     player_data['direction'],
+                     player_data['life'],
+                     player_data['is_damaged'],
+                     player_data['player_score'])
+                return packed
+            def unpack_player_data(packed):
+                unpacked_data = struct.unpack('30s BiiBB?L', packed)
+                return unpacked_data
+        '''
     #is_game_over
     def pack_is_game_over(is_game_over):
         return struct.pack('?', is_game_over)
