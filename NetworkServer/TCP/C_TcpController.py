@@ -95,6 +95,38 @@ class TcpController:
 
     #Lobby
     def send_room_data(socket):
+        packed_request_data = socket.recv(1)
+        unpack_join_request_data = data_struct.unpack_join_request_data(packed_request_data)
+        #방 정보를 모두 불러들이면 구현할필요 없음 (임시)
+        for i in range(game_sys_main.exist_room_count()):
+            if game_sys_main.rooms_data[i]['room_number'] == unpack_join_request_data['room_number']:
+                packed_room_data = data_struct.pack_room_data(game_sys_main.rooms_data[i])
+                socket.send(packed_room_data)
+                if (game_sys_main.rooms_data[i]['full_player'] == 4 and
+                            game_sys_main.rooms_data[i]['player_name4'] == 'default_name') or\
+                    (game_sys_main.rooms_data[i]['full_player'] == 3 and
+                             game_sys_main.rooms_data[i]['player_name3'] == 'default_name') or\
+                    (game_sys_main.rooms_data[i]['full_player'] == 2 and
+                             game_sys_main.rooms_data[i]['player_name2'] == 'default_name'):
+                    for i in range(2, 5):
+                        if(game_sys_main.rooms_data[i]['full_player'] == 2):
+                            game_sys_main.rooms_data[i]['player_name2'] = unpack_join_request_data[1]
+                            #언팩시 딕셔너리 형태 유지되는지 확인필요
+                        if(game_sys_main.rooms_data[i]['full_player'] == 3):
+                            if(game_sys_main.rooms_data[i]['player_name2'] == 'default_name'):
+                                game_sys_main.rooms_data[i]['player_name2'] = unpack_join_request_data[1]
+                            else:
+                                game_sys_main.rooms_data[i]['player_name3'] = unpack_join_request_data[1]
+                        if(game_sys_main.rooms_data[i]['full_player'] == 4):
+                            if(game_sys_main.rooms_data[i]['player_name2'] == 'default_name'):
+                                game_sys_main.rooms_data[i]['player_name2'] = unpack_join_request_data[1]
+                            elif(game_sys_main.rooms_data[i]['player_name3'] == 'default_name'):
+                                game_sys_main.rooms_data[i]['player_name3'] = unpack_join_request_data[1]
+                            else:
+                                game_sys_main.rooms_data[i]['player_name4'] = unpack_join_request_data[1]
+                break
+
+    def send_lobby_data(socket):
         room_count = game_sys_main.exist_room_count()
         packed_room_count = data_struct.pack_count_data(room_count)
         socket.send(packed_room_count)
@@ -102,6 +134,7 @@ class TcpController:
             packed_room_data = data_struct.pack_room_data(game_sys_main.rooms_data[i])
             socket.send(packed_room_data)
 
+<<<<<<< HEAD
     def recv_thread(client_socket):
         while 1:
             recv_packed_data = client_socket.recv(2)
@@ -111,6 +144,14 @@ class TcpController:
             print(temp)
             game_sys_main.waitting_room_data[temp] = recv_data[1]
             print(game_sys_main.waitting_room_data)
+=======
+    def recv_create_room(socket):
+        packed_create_room_data = socket.recv(1)
+        create_room_data = data_struct.unpack_room_data(packed_create_room_data)
+        if game_sys_main.exist_room_count() <= game_sys_main.MAXROOMCOUNT:
+            game_sys_main.rooms_data[game_sys_main.exist_room_count()] = create_room_data
+
+>>>>>>> bc72cd4972b68522bc2fedeaa997813eba48b0ab
 
 
     def send_is_game_over(socket):

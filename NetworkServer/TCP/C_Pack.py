@@ -5,7 +5,6 @@ from Data import *
 
 
 
-
 class Pack:
     # count_data
     def pack_count_data(count_data):

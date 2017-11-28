@@ -64,24 +64,26 @@ class TcpContoller:
         create_room = data_struct.pack_room_data(room_data)
         self.client_socket.send(create_room)
 
-    def send_join_room(self, room_number, player_data):
+    def send_join_room(self, room_number):
         join_request_data = {
             'room_number': room_number,
             'player_name': player_data['player_name'],
             'player_number': player_data['player_number']
         }
-        join_room = data_struct.pack_room_data(join_request_data)
+        join_room = data_struct.pack_join_request_data(join_request_data)
         self.client_socket.send(join_room)
         #방 정보를 모두 불러들이면 구현할필요 없음 (임시)
-        packed_room_is_full = self.client_socket.recv(1)
-        room_is_full = DataStruct.unpack_room_is_full(packed_room_is_full)
-        if(room_is_full):
-            #disconnect room
-            print("room is full")
+        packed_room_data = self.client_socket.recv(1)
+        room_data = DataStruct.unpack_room_data(packed_room_data)
+
+        if room_data['is_started'] == True:
+           return 3
+        elif (room_data['full_player'] == 4 and room_data['player_name4'] == 'default_name') or\
+            (room_data['full_player'] == 3 and room_data['player_name3'] == 'default_name') or\
+            (room_data['full_player'] == 2 and room_data['player_name2'] == 'default_name'):
+            return 1
         else:
-            #connect room
-            print("connecting")
-            pass
+            return 2
 
     #Wait Room
     def send_ready_state(self, is_ready):
