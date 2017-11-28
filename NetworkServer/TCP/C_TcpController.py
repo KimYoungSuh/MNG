@@ -134,7 +134,7 @@ class TcpController:
             packed_room_data = data_struct.pack_room_data(game_sys_main.rooms_data[i])
             socket.send(packed_room_data)
 
-<<<<<<< HEAD
+
     def recv_thread(client_socket):
         while 1:
             recv_packed_data = client_socket.recv(2)
@@ -144,14 +144,14 @@ class TcpController:
             print(temp)
             game_sys_main.waitting_room_data[temp] = recv_data[1]
             print(game_sys_main.waitting_room_data)
-=======
+
     def recv_create_room(socket):
         packed_create_room_data = socket.recv(1)
         create_room_data = data_struct.unpack_room_data(packed_create_room_data)
         if game_sys_main.exist_room_count() <= game_sys_main.MAXROOMCOUNT:
             game_sys_main.rooms_data[game_sys_main.exist_room_count()] = create_room_data
 
->>>>>>> bc72cd4972b68522bc2fedeaa997813eba48b0ab
+
 
 
     def send_is_game_over(socket):

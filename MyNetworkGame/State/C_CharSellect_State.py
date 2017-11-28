@@ -127,7 +127,6 @@ def recv_data(recv_size):
         game_data.waitting_room_data['player2_witch_selcet'] = recved_data[2]
         game_data.waitting_room_data['player3_witch_selcet'] = recved_data[3]
         game_data.waitting_room_data['ready_state'] = recved_data[4]
-        print(recved_data)
 
 def draw(frame_time):
     global image1,image2,image3, _WAND
@@ -151,10 +150,11 @@ def draw(frame_time):
         select_witchs()
         image3.clip_draw(Scean_x * 3, 0, Scean_x, Scean_y, 30+(170*game_data.player_number)+(230*(game_data.player_number-1)) , 600)
 
-    for i in range(1, game_data.waitting_room_data['player_count']):
+    for i in range(1, game_data.waitting_room_data['player_count']+1):
         if(i != game_data.player_number):
             temp = 'player' + str(i) + '_witch_selcet'
             temp_select_witch = game_data.waitting_room_data[temp]
+
             if temp_select_witch == 1:
                 select_witchs()
                 image1.clip_draw(Scean_x * 3, 0, Scean_x, Scean_y,
