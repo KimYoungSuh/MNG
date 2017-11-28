@@ -24,7 +24,7 @@ class Player1:
     RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
     image = None
 
-    UP_RUN, RIGHT_RUN, LEFT_RUN,  DOWN_RUN, STAY = 0,1,2,3, 4
+    UP_RUN, RIGHT_RUN, LEFT_RUN,  DOWN_RUN = 0,1,2,3,
     def __init__(self):
         global font
         font = load_font('..\ENCR10B.TTF')
@@ -36,7 +36,7 @@ class Player1:
         _Bg = BackGround()
         self.xdir = 0
         self.ydir =0
-        self.state = self.STAY
+        self.state = self.DOWN_RUN
         self.bg = 0
         self.beforestate = 1
         self.sx = self.x - _Bg.window_left
@@ -129,7 +129,16 @@ class Player1:
 
 
         if(input_shoot):
-            PBullet(self.sx, self.sy, self.xdir, self.ydir)
+            bullet_dir = (0,0)
+            if(self.state ==self.UP_RUN):
+                bullet_dir = (0, 1)
+            if (self.state == self.DOWN_RUN):
+                bullet_dir = (0, -1)
+            if (self.state == self.LEFT_RUN):
+                bullet_dir = (-1, 0)
+            if (self.state == self.RIGHT_RUN):
+                bullet_dir = (1, 0)
+            PBullet(self.sx, self.sy, bullet_dir[0], bullet_dir[1])
 
     def move_up(self):
         self.state = self.UP_RUN
