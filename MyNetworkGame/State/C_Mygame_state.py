@@ -1,11 +1,6 @@
 import os
 import platform
 
-if platform.architecture()[0] == '32bit':
-    os.environ["PYSDL2_DLL_PATH"] = "./SDL2/x86"
-else:
-    os.environ["PYSDL2_DLL_PATH"] = "./SDL2/x64"
-
 
 import State.C_Game_framework
 from State import C_start_state

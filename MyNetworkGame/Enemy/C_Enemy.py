@@ -1,7 +1,6 @@
 import random
 from pico2d import *
 from Bullet.C_EnemyBullet import EBullet
-from Background.C_BG import BackGround
 _Bullet = []
 font = None
 class Enemy1:
@@ -20,7 +19,9 @@ class Enemy1:
     def __init__(self, PL_X, PL_Y, Enemy_dir, BG_X, BG_Y):
         self.rand = Enemy_dir
         global font
+
         font = load_font('..\ENCR10B.TTF')
+
 
         if self.rand == 0:
             self.x, self.y = random.randint(0, 50), random.randint(0, 1800)
@@ -34,6 +35,9 @@ class Enemy1:
         #self.sy = self.y - PL_Y
         self.x_speed = Enemy1.RUN_SPEED_PPS
         self.y_speed = Enemy1.RUN_SPEED_PPS
+
+        self.sx = self.x - BG_X
+        self.sy = self.y - BG_Y
 
         self.Whattime = 0
         self.alive = 1
@@ -65,8 +69,8 @@ class Enemy1:
 #
         self.x += self.x_speed * self.xdir * frame_time
         self.y += self.y_speed * self.ydir * frame_time
-        self.sx = self.x - PL_X
-        self.sy = self.y - PL_Y
+        self.sx = self.x - _BG_X
+        self.sy = self.y - _BG_Y
         self.ADD_Bullet(PL_X,PL_Y)
 
 
@@ -83,10 +87,10 @@ class Enemy1:
 
 
     def draw(self):
-        font.draw(self.x, self.y, 'X , Y : [%d, %d]' % (self.x, self.y))
+        font.draw(self.sx, self.sy, 'sX , sY : [%d, %d]' % (self.sx, self.sy))
     #    font.draw(self.x, self.y+20, 'SX , SY : [%d, %d]' % (self.sx, self.sy))
 
-        self.image.draw(self.x, self.y)
+        self.image.draw(self.sx, self.sy)
         #font.draw(self.sx, self.sy+20 , 'X , Y : [%d, %d]' % (self.sx, self.sy))
         #font.draw(self.sx, self.sy, 'X , Y : [%d, %d]' % (self.x, self.y))
 
@@ -94,7 +98,7 @@ class Enemy1:
     def draw_bb(self):
         draw_rectangle(*self.get_bb())
     def get_bb(self):
-        return self.x-10 , self.y-10, self.x+10, self.y+10
+        return self.sx-10 , self.sy-10, self.sx+10, self.sy+10
 
         #return self.sx - 10, self.sy - 10, self.sx + 10, self.sy + 10
 
