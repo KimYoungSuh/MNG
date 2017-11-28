@@ -1,3 +1,4 @@
+
 PointStruct = {'pos_x': 0, 'pos_y': 0}
 
 PlayerDataStruct = {'player_name': 'default_player',
@@ -27,4 +28,11 @@ BulletDataStruct ={'start_pos':0,
              'speed':0,
              'shoot_time':0,
              'shooter':0}
+
+WaittingRoomData ={'player_count':0,
+                  'player1_witch_selcet':0,
+                  'player2_witch_selcet':0,
+                  'player3_witch_selcet':0,
+                  'ready_state':False
+                  }
 

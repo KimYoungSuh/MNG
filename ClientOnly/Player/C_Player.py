@@ -25,15 +25,15 @@ class Player1:
     image = None
 
     UP_RUN, RIGHT_RUN, LEFT_RUN,  DOWN_RUN = 0,1,2,3,
-    def __init__(self, backGround):
+    def __init__(self):
         global font
         font = load_font('..\ENCR10B.TTF')
         self.imagenum = State.C_CharSellect_State.select_witchs()
-        global _Enemy
         global _Bg
+        global _Enemy
         self.x, self.y = 400,400
         self.life = 3
-        _Bg = backGround
+        _Bg = BackGround()
         self.xdir = 0
         self.ydir =0
         self.state = self.DOWN_RUN

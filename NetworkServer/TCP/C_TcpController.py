@@ -37,8 +37,8 @@ class TcpController:
             client_socket, address = TcpController.server_socket.accept()
 
             print("I got a connection from ", address)
-            t1 = threading.Thread(target=TcpController.process_client, args=(client_socket,))
-            t1.start()
+            client_thread = threading.Thread(target=TcpController.process_client, args=(client_socket,))
+            client_thread.start()
 
 
 
@@ -48,13 +48,31 @@ class TcpController:
     함수를 호출하여 수정을 최소화 하세요.
     '''
     def process_client(client_socket):
-
         player_data_size = struct.calcsize('=fff')
 
-        game_sys_main.join_player()
+        game_sys_main.join_player(PlayerData)
+
         #접속한 플레이어를 구분짓는 넘버링
-        player_number = game_sys_main.player_count
-        game_sys_main.players_data.append(PlayerData)
+        player_number = game_sys_main.waitting_room_data['player_count']
+
+        #플레이어넘버를 보냄
+        packed_player_number =  struct.pack('i',player_number)
+        client_socket.send(packed_player_number)
+
+        recv_thread = threading.Thread(target=TcpController.recv_thread, args=(client_socket,))
+        recv_thread.start()
+
+        while 1:
+            #todo:
+            packed_data = struct.pack('BBBB?', game_sys_main.waitting_room_data['player_count'],
+                    game_sys_main.waitting_room_data['player1_witch_selcet'] ,
+                    game_sys_main.waitting_room_data['player2_witch_selcet'] ,
+                    game_sys_main.waitting_room_data['player3_witch_selcet'] ,
+                    game_sys_main.waitting_room_data['ready_state'] )
+            client_socket.send(packed_data)
+
+
+        a=1
 
         while 1:
             # todo :recv_player_data
@@ -83,6 +101,16 @@ class TcpController:
         for i in range(room_count):
             packed_room_data = data_struct.pack_room_data(game_sys_main.rooms_data[i])
             socket.send(packed_room_data)
+
+    def recv_thread(client_socket):
+        while 1:
+            recv_packed_data = client_socket.recv(2)
+            recv_data = struct.unpack('BB', recv_packed_data)
+            print(recv_data)
+            temp = 'player' + str(recv_data[0]) + '_witch_selcet'
+            print(temp)
+            game_sys_main.waitting_room_data[temp] = recv_data[1]
+            print(game_sys_main.waitting_room_data)
 
 
     def send_is_game_over(socket):

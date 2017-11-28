@@ -72,10 +72,12 @@ class Timer():
             self.Whattime = 0
 
 def create_world():
-    global _DS,_player, _Bg, _Enemy1, timer,GameScore, font, _EBullet, _PBullet, _Life
+    global _DS,_player, _Bg, _Enemy1, timer,GameScore, font, _EBullet, _PBullet, _Life, client_socket
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client_socket.connect((SERVER_IP_ADDR, SERVER_PORT))
+    _player = Player1()
     _Bg = BackGround()
     _DS = DataStruct()
-    _player = Player1(_Bg)
     _Enemy1 = []
     _Life = Life(_player.life)
     timer = Timer()

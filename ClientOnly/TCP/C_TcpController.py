@@ -20,7 +20,6 @@ class TcpContoller:
     def tcp_client_init(self):
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.client_socket.connect((self.SERVER_IP_ADDR, self.SERVER_PORT))
-        return self.client_socket
 
     def loof(self):
         while 1:
@@ -91,7 +90,7 @@ class TcpContoller:
 
 
 
-#tcp_controller = TcpContoller()
-#tcp_controller.tcp_client_init()
-#tcp_controller.loof()
-#tcp_controller.exit()
+tcp_controller = TcpContoller()
+tcp_controller.tcp_client_init()
+tcp_controller.loof()
+tcp_controller.exit()

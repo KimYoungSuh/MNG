@@ -1,17 +1,17 @@
 from pico2d import *
 
+
+import State.C_title_state
 import State.C_Game_framework
-from State import C_CharSellect_State
-from TCP.C_TcpController import TcpContoller
+import State.C_title_state
 
-name = "TitleState"
+name = "Game Over"
 image = None
-
-
+#
 def enter():
     global image
-    image = load_image('Image_GameTitle.png')
-#
+    image = load_image('State\Image_Gameover_state.jpg')
+
 def exit():
     global image
     del(image)
@@ -33,7 +33,7 @@ def handle_events(frame_time):
             if (event.type, event.key) == (SDL_KEYDOWN, SDLK_ESCAPE):
                 State.C_Game_framework.quit()
             elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
-                State.C_Game_framework.change_state(C_CharSellect_State)
+                State.C_Game_framework.change_state(State.C_Title_state)
 
 
 
@@ -44,7 +44,6 @@ def update(frame_time):
 def draw(frame_time):
     global image
     clear_canvas()
-    image.draw(640, 480)
     update_canvas()
 
 

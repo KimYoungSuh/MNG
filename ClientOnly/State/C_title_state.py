@@ -2,11 +2,9 @@ from pico2d import *
 
 import State.C_Game_framework
 from State import C_CharSellect_State
-from TCP.C_TcpController import TcpContoller
 
 name = "TitleState"
 image = None
-
 
 def enter():
     global image
