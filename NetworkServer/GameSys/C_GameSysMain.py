@@ -1,9 +1,11 @@
 from Data.C_RoomData import RoomData
 
+
 class GameSysMain:
     def __init__(self):
         self.is_game_over = False
-        #self.rooms_data= [RoomData() for RoomData() in range(1,5)]
+        self.rooms_data= [RoomData() for i in range(5)]
+        self.maxroomcount = 4
 
     def init_game_sys(self):
         self.is_game_over = False
