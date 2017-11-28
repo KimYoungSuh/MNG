@@ -23,6 +23,7 @@ class Enemy2:
 
     def __init__(self, PL_X, PL_Y, Enemy_dir, BG_X, BG_Y):
         global font
+
         font = load_font('..\ENCR10B.TTF')
         self.rand = Enemy_dir
 
@@ -36,6 +37,8 @@ class Enemy2:
             self.x, self.y = random.randint(0, 3200), random.randint(1750, 1800)
     #    self.sx = self.x - PL_X
     #    self.sy = self.y - PL_Y
+        self.sx = self.x - BG_X
+        self.sy = self.y - BG_Y
         self.x_speed = Enemy2.RUN_SPEED_PPS
         self.y_speed = Enemy2.RUN_SPEED_PPS
 
@@ -85,6 +88,8 @@ class Enemy2:
                 self.state = 0
             else:
                 self.state = 3
+        self.sx = self.x - _BG_X
+        self.sy = self.y - _BG_Y
     #    self.sx = self.x - PL_X
     #    self.sy = self.y - PL_Y
 #
@@ -104,15 +109,15 @@ class Enemy2:
             self.Whattime = 0
 
     def draw(self,):
-        font.draw(self.x, self.y, 'X , Y : [%d, %d]' % (self.x, self.y))
-        self.image.clip_draw(Scean_x* self.state, 0, Scean_x, Scean_y, self.x, self.y)
+        font.draw(self.sx, self.sy, 'sX , sY : [%d, %d]' % (self.sx, self.sy))
+        self.image.clip_draw(Scean_x* self.state, 0, Scean_x, Scean_y, self.sx, self.sy)
     #    font.draw(self.sx, self.sy, 'X , Y : [%d, %d]' % (self.sx, self.sy))
     #    self.image.clip_draw(Scean_x* self.state, 0, Scean_x, Scean_y, self.sx, self.sy)
 
     def draw_bb(self):
         draw_rectangle(*self.get_bb())
     def get_bb(self):
-        return self.x-10 , self.y-10, self.x+10, self.y+10
+        return self.sx-10 , self.sy-10, self.sx+10, self.sy+10
 
         #return self.sx-10 , self.sy-10, self.sx+10, self.sy+10
 

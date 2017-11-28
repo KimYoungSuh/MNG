@@ -46,13 +46,15 @@ class TcpController:
     함수를 호출하여 수정을 최소화 하세요.
     '''
     def process_client(client_socket):
+
+        player_data_size = struct.calcsize('=fff')
+
         while 1:
-            #테스트용으로 넣음 완성본에는 지울것임을 감안하시오.
             # todo :recv_player_data
             # todo :recv_bullet_data
             # todo :충돌체크하시오
             # todo :if isdameged
-            data = client_socket.recv(struct.calcsize('=fff'))
+            data = client_socket.recv(player_data_size)
             _Player_Packed = data_struct.unpack_player_data(data)
             print(_Player_Packed)
             #_enemylist.append(data_struct.unpack_enemy_data(data))
