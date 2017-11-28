@@ -40,6 +40,8 @@ class TcpController:
             t1 = threading.Thread(target=TcpController.process_client, args=(client_socket,))
             t1.start()
 
+
+
     '''
     클라이언트와 통신하는 스레드입니다.
     로직을 이안에 쓰는것은 지양합니다.
@@ -49,17 +51,24 @@ class TcpController:
 
         player_data_size = struct.calcsize('=fff')
 
+        game_sys_main.join_player()
+        #접속한 플레이어를 구분짓는 넘버링
+        player_number = game_sys_main.player_count
+        game_sys_main.players_data.append(PlayerData)
+
         while 1:
             # todo :recv_player_data
             # todo :recv_bullet_data
             # todo :충돌체크하시오
             # todo :if isdameged
             data = client_socket.recv(player_data_size)
-            _Player_Packed = data_struct.unpack_player_data(data)
-            print(_Player_Packed)
+            game_sys_main.players_data[player_number-1] = data_struct.unpack_player_data(data)
+            #print(game_sys_main.players_data[player_number-1])
+            #print(_Player_Packed)
             #_enemylist.append(data_struct.unpack_enemy_data(data))
             #print(_enemylist)
-            TcpController.send_is_game_over(client_socket)
+
+            #TcpController.send_is_game_over(client_socket)
             # todo :gamelogic damaged
             # todo :send_player_data
             # todo :send_enemy_data
