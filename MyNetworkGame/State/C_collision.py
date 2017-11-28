@@ -130,13 +130,13 @@ def get_time(frame_time):
 
 def update(frame_time):
     for enemy in _Enemy1:
-        enemy.update(frame_time, _player.x, _player.y, _Bg.window_left, _Bg.window_bottom)
+        enemy.update(frame_time, _player.sx, _player.sy, _Bg.window_left, _Bg.window_bottom)
     for enemy in _Enemy1 :
         if collide(enemy, _player):
             _player.life -=1
             _Enemy1.remove(enemy)
     for ebullets in _EBullet:
-        ebullets.update(frame_time, _player.x, _player.y, _Bg.window_left, _Bg.window_bottom )
+        ebullets.update(frame_time, _player.sx, _player.sy, _Bg.window_left, _Bg.window_bottom )
     for ebullets in _EBullet :
         if collide(ebullets, _player):
             _player.life -= 1

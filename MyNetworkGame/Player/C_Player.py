@@ -10,6 +10,7 @@ from State.C_Input import InputSys
 #font.draw(self.x - 30, self.y + 20, 'HP : %3.2f' % self.life)
 
 world = None
+_bg = None
 Scean_x, Scean_y = 82, 105
 Select_W = None
 font = None
@@ -105,7 +106,6 @@ class Player1:
         self.xdir = 0
         self.ydir = 0
 
-
         if(is_up):
             if(input_last_vertical==1):
                 self.move_up()
@@ -126,7 +126,6 @@ class Player1:
                 self.move_right()
             if (is_left & (input_last_horizon == -1)):
                 self.move_left()
-
 
         if(input_shoot):
             PBullet(self.sx, self.sy, self.xdir, self.ydir)
