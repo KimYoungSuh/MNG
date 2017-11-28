@@ -17,7 +17,6 @@ class TcpContoller:
 
     client_socket=socket
 
-
     def tcp_client_init(self):
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.client_socket.connect((self.SERVER_IP_ADDR, self.SERVER_PORT))
@@ -26,6 +25,9 @@ class TcpContoller:
         while 1:
             while 1:
                 #todo: 게임중
+                data = "Hello world"
+                self.client_socket.sendall(data_struct.pack_enemy_data())
+                print("send data = ", data)
                 self.recv_is_game_over()
 
             #todo: 리더보드

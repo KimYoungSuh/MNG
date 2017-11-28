@@ -19,7 +19,7 @@ RoomDataStruct = {'room_number':0,
             'is_started':False,
             'ready_player':0b0000}
 
-EnemyDataStruct = {'enemy_pos':0,
+EnemyDataStruct = {'enemy_pos':PointStruct,
              'direction':0}
 
 BulletDataStruct ={'start_pos':0,

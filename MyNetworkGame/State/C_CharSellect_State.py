@@ -109,14 +109,18 @@ def draw(frame_time):
     #font.draw(160, 460, 'Wand_Y = %d' % (_WAND.y))
 
     if select_witch == 1 :
+        select_witchs()
         image1.clip_draw( Scean_x * 3, 0, Scean_x, Scean_y, 230, 600)
     if select_witch ==2 :
+        select_witchs()
         image2.clip_draw(Scean_x * 3, 0, Scean_x, Scean_y, 230, 600)
     if select_witch ==3 :
+        select_witchs()
         image3.clip_draw(Scean_x * 3, 0, Scean_x, Scean_y, 230, 600)
 
     _WAND.draw()
     update_canvas()
 
 
-
+def select_witchs():
+    return select_witch

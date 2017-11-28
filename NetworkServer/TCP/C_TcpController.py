@@ -12,12 +12,11 @@ from TCP.C_Pack import *
 
 data_struct = Pack
 game_sys_main = GameSysMain()
-
+_enemylist = []
 class TcpController:
     PORT = 19000
     IP = ''
     MAX_BIND = 5
-
     def tcp_server_init(self):
         TcpController.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         TcpController.server_socket.bind((self.IP, self.PORT))
@@ -34,10 +33,14 @@ class TcpController:
         print("[정보] 접속 대기중...")
         print("=" * 50)
         while 1:
+
             client_socket, address = TcpController.server_socket.accept()
+
             print("I got a connection from ", address)
             t1 = threading.Thread(target=TcpController.process_client, args=(client_socket,))
             t1.start()
+
+
 
     '''
     클라이언트와 통신하는 스레드입니다.
@@ -45,14 +48,27 @@ class TcpController:
     함수를 호출하여 수정을 최소화 하세요.
     '''
     def process_client(client_socket):
+
+        player_data_size = struct.calcsize('=fff')
+
+        game_sys_main.join_player()
+        #접속한 플레이어를 구분짓는 넘버링
+        player_number = game_sys_main.player_count
+        game_sys_main.players_data.append(PlayerData)
+
         while 1:
-            #테스트용으로 넣음 완성본에는 지울것임을 감안하시오.
-            time.sleep(1)
             # todo :recv_player_data
             # todo :recv_bullet_data
             # todo :충돌체크하시오
             # todo :if isdameged
-            TcpController.send_is_game_over(client_socket)
+            data = client_socket.recv(player_data_size)
+            game_sys_main.players_data[player_number-1] = data_struct.unpack_player_data(data)
+            #print(game_sys_main.players_data[player_number-1])
+            #print(_Player_Packed)
+            #_enemylist.append(data_struct.unpack_enemy_data(data))
+            #print(_enemylist)
+
+            #TcpController.send_is_game_over(client_socket)
             # todo :gamelogic damaged
             # todo :send_player_data
             # todo :send_enemy_data

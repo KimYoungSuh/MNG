@@ -19,8 +19,8 @@ class Life:
         self.y += self.speed * self.ydir
         #self.delete_object(_Bullet)
 
-    def draw(self):
-        for i in range(0,self.Now) :
+    def draw(self, pl_life):
+        for i in range(0,pl_life) :
             self.image.draw(200+40 *i,200)
 
 

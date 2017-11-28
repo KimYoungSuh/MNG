@@ -1,6 +1,7 @@
 import random
 from pico2d import *
-
+import socket
+import time
 import State.C_Game_framework
 from Background.C_BG import BackGround
 from Enemy.C_Enemy import Enemy1
@@ -8,25 +9,30 @@ from Enemy.C_Enemy2 import Enemy2
 from Bullet.C_EnemyBullet import EBullet
 from Bullet.C_PlayerBullet import PBullet
 from Life.C_Life import Life
+from TCP.C_Pack import DataStruct
 import State.C_Gameover_state
-
+from Data.C_BulletData import *
+from Data.C_EnemyData import *
+from Data.C_PlayerData import *
+from Data.C_RoomData import *
+from Data.C_StructSet import *
+import struct
 #import C_DebugClass
 
 from Player.C_Player import Player1
 name = "collision"
 wand = None
 font = None
-_Bg = None
 _Enemys = None
 _Enemy1 = []
 _PBullet = []
 _EBullet = []
-
 item = []
 potion = []
 Time = 0.0
 GameScore = 0
-
+SERVER_IP_ADDR ="127.0.0.1"
+SERVER_PORT = 19000
 #
 bgm = None
 
@@ -56,19 +62,22 @@ class Timer():
         if self.Whattime >= 0.5:
             self.EnemyDirNum = random.randint(0, 8)
             if self.EnemyDirNum <= 3 :
-                newEnemy = Enemy1(_player.sx, _player.sy, self.EnemyDirNum)
-                _Enemy1.append(newEnemy)
-            elif self.EnemyDirNum >= 4 :
-                newEnemy = Enemy2(_player.sx, _player.sy, self.EnemyDirNum)
+                newEnemy = Enemy1(_player.sx, _player.sy, self.EnemyDirNum ,_Bg.window_left, _Bg.window_bottom )
                 _Enemy1.append(newEnemy)
 
+            elif self.EnemyDirNum >= 4 :
+                newEnemy = Enemy2(_player.sx, _player.sy, self.EnemyDirNum,_Bg.window_left, _Bg.window_bottom)
+                _Enemy1.append(newEnemy)
 
             self.Whattime = 0
 
 def create_world():
-    global _player, _Bg, _Enemy1, timer,GameScore, font, _EBullet, _PBullet, _Life
+    global _DS,_player, _Bg, _Enemy1, timer,GameScore, font, _EBullet, _PBullet, _Life, client_socket
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    client_socket.connect((SERVER_IP_ADDR, SERVER_PORT))
     _player = Player1()
     _Bg = BackGround()
+    _DS = DataStruct()
     _Enemy1 = []
     _Life = Life(_player.life)
     timer = Timer()
@@ -78,9 +87,10 @@ def create_world():
     _PBullet = PBullet.get_list()
 
 def destroy_world():
-    global _player, _Bg, _Enemy1, timer,GameScore, font,_EBullet, _PBullet
+    global _DS,_player, _Bg, _Enemy1, timer,GameScore, font,_EBullet, _PBullet
     del(_player)
     del(_Bg)
+    del(_DS)
     del(_EBullet)
     del(_PBullet)
 
@@ -120,13 +130,13 @@ def get_time(frame_time):
 
 def update(frame_time):
     for enemy in _Enemy1:
-        enemy.update(frame_time, _player.sx, _player.sy)
+        enemy.update(frame_time, _player.x, _player.y, _Bg.window_left, _Bg.window_bottom)
     for enemy in _Enemy1 :
         if collide(enemy, _player):
             _player.life -=1
             _Enemy1.remove(enemy)
     for ebullets in _EBullet:
-        ebullets.update(frame_time, _player.sx, _player.sy)
+        ebullets.update(frame_time, _player.x, _player.y, _Bg.window_left, _Bg.window_bottom )
     for ebullets in _EBullet :
         if collide(ebullets, _player):
             _player.life -= 1
@@ -147,8 +157,10 @@ def update(frame_time):
     for ebullets in _EBullet :
         if ebullets.alive == 0 :
             _EBullet.remove(ebullets)
+    #get_list(_Enemy1)
 
     _player.update(frame_time)
+    get_lists(_player)
     timer.update(frame_time)
 
 
@@ -170,11 +182,25 @@ def draw(frame_time):
         ebullets.draw_bb()
     for pbullets in _PBullet:
         pbullets.draw_bb()
-    _Life.draw()
+    _Life.draw(_player.life)
     update_canvas()
 
+def get_lists(objects):
+    #for object in objects:
+        #todo: 게임중
+        #packed = DataStruct.pack_enemy_data(object)
+        #packed = struct.pack('=fff', object.x, object.y, object.alive)
+        #client_socket.sendall(packed)
+        #packed = struct.pack('fff', object.x, object.y, object.alive)
+        #DataStruct.pack_enemy_data(object)
+    Player_packed = DataStruct.pack_player_data(objects)
+    print(DataStruct.unpack_player_data(Player_packed))
+    client_socket.sendall(Player_packed)
 
 def delete_object(objects):
     for object in objects:
         if object.alive == 0:
             objects.remove(object)
+
+
+
