@@ -190,6 +190,7 @@ def draw(frame_time):
 def PACK_DATA_Player(objects):
     Player_packed = DataStruct.pack_player_data(objects)
     #print(DataStruct.unpack_player_data(Player_packed))
+    return Player_packed
     #client_socket.sendall(Player_packed)
 
 def PACK_DATA_Enemy(objects):
@@ -200,13 +201,15 @@ def PACK_DATA_Enemy(objects):
         #print(Enemy_packed)
         #client_socket.sendall(packed)
     Enemy_packed = DataStruct.pack_enemy_data(objects)
+    return Enemy_packed
     #print(DataStruct.unpack_enemy_data(Enemy_packed))
     #client_socket.sendall(Enemy_packed)
 
 def PACK_DATA_PBULLET(objects):
     Bullet_packed = DataStruct.pack_bullet_data(objects)
     print(DataStruct.unpack_bullet_data(Bullet_packed))
-    client_socket.sendall(Bullet_packed)
+    #client_socket.sendall(Bullet_packed)
+    pass
 
 def delete_object(objects):
     for object in objects:

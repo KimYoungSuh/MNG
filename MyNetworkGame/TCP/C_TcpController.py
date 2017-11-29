@@ -7,7 +7,7 @@ from Data.C_EnemyData import *
 from Data.C_PlayerData import *
 from Data.C_RoomData import *
 from Data.C_StructSet import *
-
+from State import C_collision
 data_struct = DataStruct
 
 class TcpContoller:
@@ -27,7 +27,7 @@ class TcpContoller:
             while 1:
                 #todo: 게임중
                 data = "Hello world"
-                self.client_socket.sendall(data_struct.pack_enemy_data())
+                self.client_socket.sendall(C_collision.DATA_PACK_ENEMY)
                 print("send data = ", data)
                 self.recv_is_game_over()
 

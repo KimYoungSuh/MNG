@@ -78,7 +78,6 @@ class TcpController:
             # todo :recv_bullet_data
             # todo :충돌체크하시오
             # todo :if isdameged
-<<<<<<< HEAD
 
             #플레이어 데이터 받기
             #data = client_socket.recv(player_data_size)
@@ -94,7 +93,6 @@ class TcpController:
             data3 = client_socket.recv(struct.calcsize('=ffffff'))
             _bullet_packed = (data_struct.unpack_bullet_data(data3))
             print("_bullet_packed : ", _bullet_packed)
-=======
             data = client_socket.recv(player_data_size)
             game_sys_main.players_data[player_number-1] = data_struct.unpack_player_data(data)
             #print(game_sys_main.players_data[player_number-1])
@@ -102,7 +100,6 @@ class TcpController:
             #_enemylist.append(data_struct.unpack_enemy_data(data))
             #print(_enemylist)
 
->>>>>>> origin/master
             #TcpController.send_is_game_over(client_socket)
             # todo :gamelogic damaged
             # todo :send_player_data

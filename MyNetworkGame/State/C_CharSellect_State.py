@@ -36,7 +36,7 @@ def enter():
     tcp_controller = TcpContoller()
     client_sock = tcp_controller.tcp_client_init()
     game_data.client_socket=client_sock
-    packed_player_data = game_data.client_socket.recv(4)
+    packed_player_data = game_data.client_socket.recv(struct.calcsize('i'))
     game_data.player_number = (struct.unpack('i',packed_player_data))[0]
     game_data.watting_room_data = WaittingRoomData().waitting_room_data
     game_data.watting_room_data['player_count']=game_data.player_number
@@ -154,7 +154,7 @@ def draw(frame_time):
         if(i != game_data.player_number):
             temp = 'player' + str(i) + '_witch_selcet'
             temp_select_witch = game_data.waitting_room_data[temp]
-
+            print('player' , str(i) , '_witch_selcet')
             if temp_select_witch == 1:
                 select_witchs()
                 image1.clip_draw(Scean_x * 3, 0, Scean_x, Scean_y,

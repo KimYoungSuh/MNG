@@ -2,11 +2,8 @@ from pico2d import *
 
 import State.C_Game_framework
 from State import C_CharSellect_State
-<<<<<<< HEAD
 from C_Wand import Wand
-=======
 from TCP.C_TcpController import TcpContoller
->>>>>>> origin/master
 
 name = "TitleState"
 image = None
@@ -37,6 +34,7 @@ def resume():
 
 
 def handle_events(frame_time):
+    global _WAND
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
