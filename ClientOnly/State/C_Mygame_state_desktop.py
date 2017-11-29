@@ -4,7 +4,6 @@ import platform
 
 import State.C_Game_framework
 from State import C_start_state
-from State import C_title_state
 from State import C_collision
 import pico2d
 #

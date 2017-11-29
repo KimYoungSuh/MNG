@@ -20,7 +20,6 @@ class TcpContoller:
     def tcp_client_init(self):
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         self.client_socket.connect((self.SERVER_IP_ADDR, self.SERVER_PORT))
-        return self.client_socket
 
     def loof(self):
         while 1:
@@ -64,26 +63,24 @@ class TcpContoller:
         create_room = data_struct.pack_room_data(room_data)
         self.client_socket.send(create_room)
 
-    def send_join_room(self, room_number):
+    def send_join_room(self, room_number, player_data):
         join_request_data = {
             'room_number': room_number,
             'player_name': player_data['player_name'],
             'player_number': player_data['player_number']
         }
-        join_room = data_struct.pack_join_request_data(join_request_data)
+        join_room = data_struct.pack_room_data(join_request_data)
         self.client_socket.send(join_room)
         #방 정보를 모두 불러들이면 구현할필요 없음 (임시)
-        packed_room_data = self.client_socket.recv(1)
-        room_data = DataStruct.unpack_room_data(packed_room_data)
-
-        if room_data['is_started'] == True:
-           return 3
-        elif (room_data['full_player'] == 4 and room_data['player_name4'] == 'default_name') or\
-            (room_data['full_player'] == 3 and room_data['player_name3'] == 'default_name') or\
-            (room_data['full_player'] == 2 and room_data['player_name2'] == 'default_name'):
-            return 1
+        packed_room_is_full = self.client_socket.recv(1)
+        room_is_full = DataStruct.unpack_room_is_full(packed_room_is_full)
+        if(room_is_full):
+            #disconnect room
+            print("room is full")
         else:
-            return 2
+            #connect room
+            print("connecting")
+            pass
 
     #Wait Room
     def send_ready_state(self, is_ready):
@@ -93,7 +90,7 @@ class TcpContoller:
 
 
 
-#tcp_controller = TcpContoller()
-#tcp_controller.tcp_client_init()
-#tcp_controller.loof()
-#tcp_controller.exit()
+tcp_controller = TcpContoller()
+tcp_controller.tcp_client_init()
+tcp_controller.loof()
+tcp_controller.exit()

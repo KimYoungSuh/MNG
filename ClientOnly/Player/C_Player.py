@@ -25,15 +25,15 @@ class Player1:
     image = None
 
     UP_RUN, RIGHT_RUN, LEFT_RUN,  DOWN_RUN = 0,1,2,3,
-    def __init__(self, backGround):
+    def __init__(self):
         global font
         font = load_font('..\ENCR10B.TTF')
         self.imagenum = State.C_CharSellect_State.select_witchs()
-        global _Enemy
         global _Bg
+        global _Enemy
         self.x, self.y = 400,400
         self.life = 3
-        _Bg = backGround
+        _Bg = BackGround()
         self.xdir = 0
         self.ydir =0
         self.state = self.DOWN_RUN
@@ -138,7 +138,7 @@ class Player1:
                 bullet_dir = (-1, 0)
             if (self.state == self.RIGHT_RUN):
                 bullet_dir = (1, 0)
-            PBullet(self.x, self.y, bullet_dir[0], bullet_dir[1])
+            PBullet(self.sx, self.sy, bullet_dir[0], bullet_dir[1])
 
     def move_up(self):
         self.state = self.UP_RUN
