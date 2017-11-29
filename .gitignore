@@ -15,3 +15,5 @@ MyNetworkGame/.idea/misc.xml
 *.iml
 
 *.xml
+
+*.pyc

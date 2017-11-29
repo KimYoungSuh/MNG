@@ -87,11 +87,11 @@ class TcpController:
             # todo :if isdameged
 
             #플레이어 데이터 받기
-            print('In Line1')
+            print('Line1')
             data = client_socket.recv(struct.calcsize('=fff'))
-            print('In Line2')
+            print('Line2')
             _Player_Packed = data_struct.unpack_player_data(data)
-            print('In Line3')
+            print('Line3')
             print("Player Packed : ", _Player_Packed)
 
             #에너미 받기
