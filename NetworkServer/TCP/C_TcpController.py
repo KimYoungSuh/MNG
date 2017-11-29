@@ -60,15 +60,18 @@ class TcpController:
 
         recv_thread = threading.Thread(target=TcpController.recv_thread, args=(client_socket,))
         recv_thread.start()
+        arfter_time = time.time()+1/30
 
         while 1:
             #todo:
-            packed_data = struct.pack('BBBB?', game_sys_main.waitting_room_data['player_count'],
-                    game_sys_main.waitting_room_data['player1_witch_selcet'] ,
-                    game_sys_main.waitting_room_data['player2_witch_selcet'] ,
-                    game_sys_main.waitting_room_data['player3_witch_selcet'] ,
-                    game_sys_main.waitting_room_data['ready_state'] )
-            client_socket.send(packed_data)
+            if(time.time()>arfter_time):
+                arfter_time = time.time() + 1 / 30
+                packed_data = struct.pack('BBBB?', game_sys_main.waitting_room_data['player_count'],
+                        game_sys_main.waitting_room_data['player1_witch_selcet'] ,
+                        game_sys_main.waitting_room_data['player2_witch_selcet'] ,
+                        game_sys_main.waitting_room_data['player3_witch_selcet'] ,
+                        game_sys_main.waitting_room_data['ready_state'] )
+                client_socket.send(packed_data)
 
 
         a=1
