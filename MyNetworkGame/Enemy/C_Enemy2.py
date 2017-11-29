@@ -21,6 +21,7 @@ class Enemy2:
     #_enemy2 = []
 
     def __init__(self, PL_X, PL_Y, Enemy_dir, BG_X, BG_Y):
+        self.TEAM =1
 
         self.rand = Enemy_dir
 

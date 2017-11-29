@@ -60,15 +60,16 @@ class DataStruct:
 
     # enemy_data
     def pack_enemy_data(enemy_data):
-        packed = struct.pack('=ffff',
+        packed = struct.pack('=ffffI',
                              enemy_data.x,
                              enemy_data.y,
                              enemy_data.xdir,
-                             enemy_data.ydir)
+                             enemy_data.ydir,
+                             enemy_data.TEAM)
                              #enemy_data['direction'] )
         return packed
     def unpack_enemy_data(packed):
-        unpacked_data = struct.unpack('=ffff', packed)
+        unpacked_data = struct.unpack('=ffffI', packed)
         return unpacked_data
 
     #player_data

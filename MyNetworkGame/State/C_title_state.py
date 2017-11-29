@@ -1,7 +1,8 @@
 from pico2d import *
 
-import State.C_Game_framework
+from State import C_Game_framework
 from State import C_CharSellect_State
+from State import C_collision
 from C_Wand import Wand
 from TCP.C_TcpController import TcpContoller
 
@@ -38,13 +39,31 @@ def handle_events(frame_time):
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
-            State.C_Game_framework.quit()
+            C_Game_framework.quit()
         else:
             if (event.type, event.key) == (SDL_KEYDOWN, SDLK_ESCAPE):
-                State.C_Game_framework.quit()
-            elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
-                State.C_Game_framework.change_state(C_CharSellect_State)
-            else :
+                C_Game_framework.quit()
+            elif (event.type) == (SDL_MOUSEBUTTONDOWN):
+                if _WAND.x > 400 :
+                    if _WAND.x < 580:
+                        if _WAND.y > 270:
+                            if _WAND.y < 405:
+                                C_Game_framework.run(C_collision)
+
+                if _WAND.x > 600:
+                    if _WAND.x < 780:
+                        if _WAND.y > 270:
+                            if _WAND.y < 405:
+                                C_Game_framework.run(C_CharSellect_State)
+
+                if _WAND.x > 800:
+                    if _WAND.x < 980:
+                        if _WAND.y > 270:
+                            if _WAND.y < 405:
+                                C_Game_framework.quit()
+
+
+            else:
                 _WAND.handle_event(event)
 
 

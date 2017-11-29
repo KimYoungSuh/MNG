@@ -75,10 +75,15 @@ class Pack:
     '''
     # enemy_data
     def pack_enemy_data(enemy_data):
-        packed = struct.pack('=ffff', enemy_data.x, enemy_data.y, enemy_data.alive)
+        packed = struct.pack('=ffffI',
+                             enemy_data.x,
+                             enemy_data.y,
+                             enemy_data.xdir,
+                             enemy_data.ydir,
+                             enemy_data.TEAM)
 
     def unpack_enemy_data(packed):
-        unpacked_data = struct.unpack('=ffff', packed)
+        unpacked_data = struct.unpack('=ffffI', packed)
         return unpacked_data
 
     #player_data

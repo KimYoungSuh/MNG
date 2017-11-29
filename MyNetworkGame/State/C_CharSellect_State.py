@@ -20,7 +20,7 @@ sel = None
 Scean_x, Scean_y = 82, 105
 select_witch =0
 _WAND = None
-
+state =0
 def enter():
     global image1,image2,image3, font, _BG, _WAND, select_witch, game_data
     image1 = load_image('..\Player\Image_Player.png')
@@ -31,6 +31,7 @@ def enter():
     _BG = C_SellectBG()
     _WAND = Wand()
     select_witch = 0
+    state = 0
     game_data = C_Game_data.GameData()
     game_data.player_number = 1
     tcp_controller = TcpContoller()
@@ -45,13 +46,16 @@ def enter():
     recv_thread.start()
 
 def exit():
-    global image1,image2,image3, font, _BG, _WAND, select_witch
+    global image1,image2,image3, font, _BG, _WAND, select_witch,state
+
     del(image1)
     del(image2)
     del(image3)
     del(font)
     del(_BG)
     del(_WAND)
+    del(select_witch)
+    del(state)
 
 def pause():
     pass
@@ -61,7 +65,7 @@ def resume():
 
 
 def handle_events(frame_time):
-    global select_witch, readyState, _WAND
+    global select_witch, readyState, _WAND,state
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
@@ -75,18 +79,22 @@ def handle_events(frame_time):
                         if _WAND.y > 40:
                             if _WAND.y < 350:
                                 select_witch= 1
+                                packed_data = struct.pack('=BBI', game_data.player_number, select_witch, 0)
+                                game_data.client_socket.send(packed_data)
                 if _WAND.x > 305:
                     if _WAND.x < 545:
                         if _WAND.y > 40:
                             if _WAND.y < 350:
                                 select_witch =2
+                                packed_data = struct.pack('=BBI', game_data.player_number, select_witch, 0)
+                                game_data.client_socket.send(packed_data)
                 if _WAND.x > 580:
                     if _WAND.x < 820:
                         if _WAND.y > 40:
                             if _WAND.y < 350:
                                 select_witch=3
-                packed_data = struct.pack('BB', game_data.player_number, select_witch)
-                game_data.client_socket.send(packed_data)
+                                packed_data = struct.pack('=BBI', game_data.player_number, select_witch, 0)
+                                game_data.client_socket.send(packed_data)
 
                 #READY!
                 if _WAND.x > 905 :
@@ -94,16 +102,18 @@ def handle_events(frame_time):
                         if _WAND.y > 230:
                             if _WAND.y < 330:
                                 readyState= 1
+                                state=1
                                 if select_witch != 0 :
-                                    C_Game_framework.run(C_collision)
+                                    packed_data = struct.pack('=BBI', game_data.player_number, select_witch, 1)
+                                    game_data.client_socket.send(packed_data)
                                     State.C_Game_framework.run(C_collision)
+
                 #EXIT
                 if _WAND.x > 905 :
                     if _WAND.x < 1115:
                         if _WAND.y > 90:
                             if _WAND.y < 190:
                                 C_Game_framework.run(C_title_state)
-                                State.C_Game_framework.run(C_title_state)
             else:
                 _WAND.handle_event(event)
 

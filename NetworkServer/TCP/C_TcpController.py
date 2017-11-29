@@ -9,10 +9,14 @@ from Data.C_PlayerData import *
 from Data.C_RoomData import *
 from Data.C_StructSet import *
 from TCP.C_Pack import *
-
+_enemylist= []
+_enemylist2= []
 data_struct = Pack
+GAME_STATE =0
 game_sys_main = GameSysMain()
 class TcpController:
+    global GAME_STATE
+    GAME_STATE = 0
     PORT = 19000
     IP = ''
     MAX_BIND = 5
@@ -58,43 +62,50 @@ class TcpController:
         packed_player_number =  struct.pack('i',player_number)
         client_socket.send(packed_player_number)
 
-        recv_thread = threading.Thread(target=TcpController.recv_thread, args=(client_socket,))
-        recv_thread.start()
+        if GAME_STATE != 1:
+            recv_thread = threading.Thread(target=TcpController.recv_thread, args=(client_socket,))
+            recv_thread.start()
 
-        while 1:
-            #todo:
-            packed_data = struct.pack('BBBB?', game_sys_main.waitting_room_data['player_count'],
-                    game_sys_main.waitting_room_data['player1_witch_selcet'] ,
-                    game_sys_main.waitting_room_data['player2_witch_selcet'] ,
-                    game_sys_main.waitting_room_data['player3_witch_selcet'] ,
-                    game_sys_main.waitting_room_data['ready_state'] )
-            client_socket.send(packed_data)
+            while 1 :
+                #todo:
+                packed_data = struct.pack('BBBB?', game_sys_main.waitting_room_data['player_count'],
+                        game_sys_main.waitting_room_data['player1_witch_selcet'] ,
+                        game_sys_main.waitting_room_data['player2_witch_selcet'] ,
+                        game_sys_main.waitting_room_data['player3_witch_selcet'] ,
+                        game_sys_main.waitting_room_data['ready_state'] )
+                client_socket.send(packed_data)
+
 
 
         a=1
 
         while 1:
+            print('In LOCAL_AREA')
             # todo :recv_player_data
             # todo :recv_bullet_data
             # todo :충돌체크하시오
             # todo :if isdameged
 
             #플레이어 데이터 받기
-            #data = client_socket.recv(player_data_size)
-            #_Player_Packed = data_struct.unpack_player_data(data)
-            #print("Player Packed : ", _Player_Packed)
+            print('In Line1')
+            data = client_socket.recv(struct.calcsize('=fff'))
+            print('In Line2')
+            _Player_Packed = data_struct.unpack_player_data(data)
+            print('In Line3')
+            print("Player Packed : ", _Player_Packed)
 
             #에너미 받기
-            #data2 = client_socket.recv(struct.calcsize('=ffff'))
-            #_enemylist = (data_struct.unpack_enemy_data(data2))
+            #data2 = client_socket.recv(struct.calcsize('=ffffI'))
+            #_enemylist.append(data_struct.unpack_enemy_data(data2))
             #print("Enemy Packed : ", _enemylist)
 
             #총알 받기
-            data3 = client_socket.recv(struct.calcsize('=ffffff'))
-            _bullet_packed = (data_struct.unpack_bullet_data(data3))
-            print("_bullet_packed : ", _bullet_packed)
-            data = client_socket.recv(player_data_size)
-            game_sys_main.players_data[player_number-1] = data_struct.unpack_player_data(data)
+            #data3 = client_socket.recv(struct.calcsize('=ffffff'))
+            #_bullet_packed = (data_struct.unpack_bullet_data(data3))
+            #print("_bullet_packed : ", _bullet_packed)
+
+            #data = client_socket.recv(player_data_size)
+            #game_sys_main.players_data[player_number-1] = data_struct.unpack_player_data(data)
             #print(game_sys_main.players_data[player_number-1])
             #print(_Player_Packed)
             #_enemylist.append(data_struct.unpack_enemy_data(data))
@@ -105,6 +116,7 @@ class TcpController:
             # todo :send_player_data
 
             # todo :send_enemy_data
+
             # todo :send_bullet_data
             # todo :리더보드
 
@@ -151,14 +163,18 @@ class TcpController:
 
 
     def recv_thread(client_socket):
+        global GAME_STATE
         while 1:
-            recv_packed_data = client_socket.recv(2)
-            recv_data = struct.unpack('BB', recv_packed_data)
-            print(recv_data)
+            recv_packed_data = client_socket.recv(struct.calcsize('=BBI'))
+            recv_data = struct.unpack('=BBI', recv_packed_data)
+            print('recv_data :',recv_data)
             temp = 'player' + str(recv_data[0]) + '_witch_selcet'
-            print(temp)
+            print('temp: ',temp)
             game_sys_main.waitting_room_data[temp] = recv_data[1]
-            print(game_sys_main.waitting_room_data)
+            print('game_sys_main.waitting_room_data',game_sys_main.waitting_room_data)
+            GAME_STATE = recv_data[2]
+            print('GAME_STATE : ', GAME_STATE)
+
 
     def recv_create_room(socket):
         packed_create_room_data = socket.recv(1)

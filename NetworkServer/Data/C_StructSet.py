@@ -20,19 +20,22 @@ RoomDataStruct = {'room_number':0,
             'is_started':False,
             'ready_player':0b0000}
 
-EnemyDataStruct = {'enemy_pos':0,
-             'direction':0}
+EnemyDataStruct = {'E_x':0,
+                    'E_y':0,
+             'Ex_dir':0,
+                   'Ey_dir': 0,
+                   'TEAM' : 0}
 
 BulletDataStruct ={'start_pos':0,
              'direction':0,
              'speed':0,
              'shoot_time':0,
-             'shooter':0}
+             'TEAM':0}
 
 WaittingRoomData ={'player_count':0,
                   'player1_witch_selcet':0,
                   'player2_witch_selcet':0,
                   'player3_witch_selcet':0,
-                  'ready_state':False
+                  'ready_state':0
                   }
 

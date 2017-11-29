@@ -1,4 +1,5 @@
 import random
+import time
 from pico2d import *
 from Bullet.C_EnemyBullet import EBullet
 _Bullet = []
@@ -13,13 +14,14 @@ class Enemy1:
     ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
     FRAMES_PER_ACTION = 3
     image = None
+
     #_enemy = []
 
     def __init__(self, PL_X, PL_Y, Enemy_dir, BG_X, BG_Y):
         self.rand = Enemy_dir
         global font
 
-
+        self.TEAM = 1
 
         if self.rand == 0:
             self.x, self.y = random.randint(0, 50), random.randint(0, 1800)
