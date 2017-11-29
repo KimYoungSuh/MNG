@@ -3,7 +3,6 @@ from pico2d import *
 from Bullet.C_EnemyBullet import EBullet
 
 _Bullet = []
-font = None
 Scean_x, Scean_y = 49, 82
 
 class Enemy2:
@@ -22,9 +21,7 @@ class Enemy2:
     #_enemy2 = []
 
     def __init__(self, PL_X, PL_Y, Enemy_dir, BG_X, BG_Y):
-        global font
 
-        font = load_font('..\ENCR10B.TTF')
         self.rand = Enemy_dir
 
         if self.rand == 4:
@@ -109,7 +106,6 @@ class Enemy2:
             self.Whattime = 0
 
     def draw(self,):
-        font.draw(self.sx, self.sy, 'sX , sY : [%d, %d]' % (self.sx, self.sy))
         self.image.clip_draw(Scean_x* self.state, 0, Scean_x, Scean_y, self.sx, self.sy)
     #    font.draw(self.sx, self.sy, 'X , Y : [%d, %d]' % (self.sx, self.sy))
     #    self.image.clip_draw(Scean_x* self.state, 0, Scean_x, Scean_y, self.sx, self.sy)

@@ -12,6 +12,7 @@ class EBullet:
     _eBullet = []
     def __init__(self,E_x, E_y, PL_X, PL_Y):
         global font
+        self.shooter = 1
         self._Bg = BackGround
         font = load_font('..\ENCR10B.TTF')
         self.x = E_x
@@ -59,7 +60,6 @@ class EBullet:
         self.image.draw(self.sx, self.sy)
 #        self.image.draw(self.sx, self.sy)
     def draw_bb(self):
-        font.draw(self.sx, self.sy, 'X , Y : [%d, %d]' % (self.x, self.y))
         draw_rectangle(*self.get_bb())
     def get_bb(self):
         return self.sx - 10, self.sy - 10, self.sx + 10, self.sy + 10

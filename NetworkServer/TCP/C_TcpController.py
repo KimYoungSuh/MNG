@@ -12,7 +12,6 @@ from TCP.C_Pack import *
 
 data_struct = Pack
 game_sys_main = GameSysMain()
-_enemylist = []
 class TcpController:
     PORT = 19000
     IP = ''
@@ -54,14 +53,25 @@ class TcpController:
             # todo :recv_bullet_data
             # todo :충돌체크하시오
             # todo :if isdameged
-            data = client_socket.recv(player_data_size)
-            _Player_Packed = data_struct.unpack_player_data(data)
-            print(_Player_Packed)
-            #_enemylist.append(data_struct.unpack_enemy_data(data))
-            #print(_enemylist)
-            TcpController.send_is_game_over(client_socket)
+
+            #플레이어 데이터 받기
+            #data = client_socket.recv(player_data_size)
+            #_Player_Packed = data_struct.unpack_player_data(data)
+            #print("Player Packed : ", _Player_Packed)
+
+            #에너미 받기
+            #data2 = client_socket.recv(struct.calcsize('=ffff'))
+            #_enemylist = (data_struct.unpack_enemy_data(data2))
+            #print("Enemy Packed : ", _enemylist)
+
+            #총알 받기
+            data3 = client_socket.recv(struct.calcsize('=ffffff'))
+            _bullet_packed = (data_struct.unpack_bullet_data(data3))
+            print("_bullet_packed : ", _bullet_packed)
+            #TcpController.send_is_game_over(client_socket)
             # todo :gamelogic damaged
             # todo :send_player_data
+
             # todo :send_enemy_data
             # todo :send_bullet_data
             # todo :리더보드

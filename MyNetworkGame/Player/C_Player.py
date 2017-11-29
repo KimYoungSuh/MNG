@@ -138,7 +138,7 @@ class Player1:
                 bullet_dir = (-1, 0)
             if (self.state == self.RIGHT_RUN):
                 bullet_dir = (1, 0)
-            PBullet(self.sx, self.sy, bullet_dir[0], bullet_dir[1])
+            PBullet(self.x, self.y, bullet_dir[0], bullet_dir[1])
 
     def move_up(self):
         self.state = self.UP_RUN

@@ -37,24 +37,38 @@ class DataStruct:
 
     # Bullet_data
     def pack_bullet_data(bullet_data):
-        packed = struct.pack('iiBfB',
-                             (bullet_data['start_pos'])['pos_x'],
-                             (bullet_data['start_pos'])['pos_y'],
-                             bullet_data['direction'],
-                             bullet_data['speed'],
-                             bullet_data['shoot_time'],
-                             bullet_data['shooter'])
-    def unpack_enemy_data(packed):
-        unpacked_data = struct.unpack('iiBfB', packed)
-        return unpacked_data
+        packed = struct.pack('=ffffff',
+                             bullet_data.shooter,
+                             bullet_data.x,
+                             bullet_data.y,
+                             bullet_data.xdir,
+                             bullet_data.ydir,
+                             bullet_data.speed)
+#                             (bullet_data['start_pos'])['pos_x'],
+#                             (bullet_data['start_pos'])['pos_y'],
+#                             bullet_data['direction'],
+#                             bullet_data['speed'],
+#                             bullet_data['shoo,t_time'],
+#                             bullet_data['shooter'])
+        return packed
+    def unpack_bullet_data(packed):
+        unpaked_data = struct.unpack('=ffffff',packed)
+        return unpaked_data
+    #def unpack_enemy_data(packed):
+    #    unpacked_data = struct.unpack('iiBfB', packed)
+    #    return unpacked_data
 
     # enemy_data
     def pack_enemy_data(enemy_data):
-        packed = struct.pack('fff', enemy_data.x, enemy_data.y, enemy_data.alive)
+        packed = struct.pack('=ffff',
+                             enemy_data.x,
+                             enemy_data.y,
+                             enemy_data.xdir,
+                             enemy_data.ydir)
                              #enemy_data['direction'] )
-
+        return packed
     def unpack_enemy_data(packed):
-        unpacked_data = struct.unpack('iiB', packed)
+        unpacked_data = struct.unpack('=ffff', packed)
         return unpacked_data
 
     #player_data

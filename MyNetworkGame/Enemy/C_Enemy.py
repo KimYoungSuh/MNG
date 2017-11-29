@@ -2,7 +2,6 @@ import random
 from pico2d import *
 from Bullet.C_EnemyBullet import EBullet
 _Bullet = []
-font = None
 class Enemy1:
     PIXEL_PER_METER = (4.0 / 0.3)  # 6 pixel 30 cm
     RUN_SPEED_KMPH = random.randint(4,10)  # Km / Hour
@@ -20,7 +19,6 @@ class Enemy1:
         self.rand = Enemy_dir
         global font
 
-        font = load_font('..\ENCR10B.TTF')
 
 
         if self.rand == 0:
@@ -87,8 +85,6 @@ class Enemy1:
 
 
     def draw(self):
-        font.draw(self.sx, self.sy, 'sX , sY : [%d, %d]' % (self.sx, self.sy))
-    #    font.draw(self.x, self.y+20, 'SX , SY : [%d, %d]' % (self.sx, self.sy))
 
         self.image.draw(self.sx, self.sy)
         #font.draw(self.sx, self.sy+20 , 'X , Y : [%d, %d]' % (self.sx, self.sy))
