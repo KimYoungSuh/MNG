@@ -17,6 +17,7 @@ from Data.C_EnemyData import *
 from Data.C_PlayerData import *
 from Data.C_RoomData import *
 from Data.C_StructSet import *
+from State.C_Game_data import GameData
 import struct
 #import C_DebugClass
 
@@ -28,6 +29,7 @@ _Enemys = None
 _Enemy1 = []
 _PBullet = []
 _EBullet = []
+
 
 item = []
 potion = []
@@ -78,9 +80,8 @@ class Timer():
             self.Whattime = 0
 '''
 def create_world():
-    global _player, _Bg, _Enemy1, timer,GameScore, font, _EBullet, _PBullet, _Life,client_sock
-    tcp_controller = TcpContoller()
-    client_sock = tcp_controller.tcp_client_init()
+    global _player, _Bg, _Enemy1, timer,GameScore, font, _EBullet, _PBullet, _Life, client_sock
+    client_sock = GameData.client_socket
 
     _Bg = BackGround()
     _player = Player1(_Bg)
@@ -199,6 +200,7 @@ def PACK_DATA_Player(objects):
     Player_packed = DataStruct.pack_player_data(objects)
     #print(DataStruct.unpack_player_data(Player_packed))
     client_sock.send(Player_packed)
+
     return Player_packed
 
 def PACK_DATA_Enemy(objects):

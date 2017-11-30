@@ -18,6 +18,8 @@ class GameSysMain:
         self.maxroomcount = 4
         self.player_count = 0
         self.players_data = []
+        self.is_start=False
+        self.ready_state = 0b0000
 
 
     def init_game_sys(self):

@@ -59,40 +59,41 @@ class TcpController:
         player_number = game_sys_main.waitting_room_data['player_count']
 
         #플레이어넘버를 보냄
-        packed_player_number =  struct.pack('i',player_number)
+        packed_player_number = struct.pack('i', player_number)
         client_socket.send(packed_player_number)
 
+        arfter_time = time.time() + (1 / 30)
+
         if GAME_STATE != 1:
-            recv_thread = threading.Thread(target=TcpController.recv_thread, args=(client_socket,))
-            recv_thread.start()
+            recv_waiiting_room_thread = threading.Thread(target=TcpController.recv_waitting_room_thread, args=(client_socket, player_number))
+            recv_waiiting_room_thread.start()
+
+
 
             while 1 :
                 #todo:
-                packed_data = struct.pack('BBBB?', game_sys_main.waitting_room_data['player_count'],
-                        game_sys_main.waitting_room_data['player1_witch_selcet'] ,
-                        game_sys_main.waitting_room_data['player2_witch_selcet'] ,
-                        game_sys_main.waitting_room_data['player3_witch_selcet'] ,
-                        game_sys_main.waitting_room_data['ready_state'] )
-                client_socket.send(packed_data)
+                if (time.time() > arfter_time):
+                    arfter_time = time.time() + 1 / 30
+                    if(not game_sys_main.is_start):
+                        TcpController.send_waitting_room_data(client_socket)
+                    else:
+                        TcpController.send_waitting_room_data(client_socket)
+                        break
 
+            while 1:
+                print('In LOCAL_AREA')
+                # todo :recv_player_data
+                # todo :recv_bullet_data
+                # todo :충돌체크하시오
+                # todo :if isdameged
 
-
-        a=1
-
-        while 1:
-            print('In LOCAL_AREA')
-            # todo :recv_player_data
-            # todo :recv_bullet_data
-            # todo :충돌체크하시오
-            # todo :if isdameged
-
-            #플레이어 데이터 받기
-            print('Line1')
-            data = client_socket.recv(struct.calcsize('=fff'))
-            print('Line2')
-            _Player_Packed = data_struct.unpack_player_data(data)
-            print('Line3')
-            print("Player Packed : ", _Player_Packed)
+                #플레이어 데이터 받기
+                print('Line1')
+                data = client_socket.recv(struct.calcsize('=fff'))
+                print('Line2')
+                _Player_Packed = data_struct.unpack_player_data(data)
+                print('Line3')
+                print("Player Packed : ", _Player_Packed)
 
             #에너미 받기
             #data2 = client_socket.recv(struct.calcsize('=ffffI'))
@@ -121,14 +122,14 @@ class TcpController:
             # todo :리더보드
 
     #Lobby
-    def send_room_data(socket):
-        packed_request_data = socket.recv(1)
+    def send_room_data(client_socket):
+        packed_request_data = client_socket.recv(1)
         unpack_join_request_data = data_struct.unpack_join_request_data(packed_request_data)
         #방 정보를 모두 불러들이면 구현할필요 없음 (임시)
         for i in range(game_sys_main.exist_room_count()):
             if game_sys_main.rooms_data[i]['room_number'] == unpack_join_request_data['room_number']:
                 packed_room_data = data_struct.pack_room_data(game_sys_main.rooms_data[i])
-                socket.send(packed_room_data)
+                client_socket.send(packed_room_data)
                 if (game_sys_main.rooms_data[i]['full_player'] == 4 and
                             game_sys_main.rooms_data[i]['player_name4'] == 'default_name') or\
                     (game_sys_main.rooms_data[i]['full_player'] == 3 and
@@ -153,37 +154,68 @@ class TcpController:
                                 game_sys_main.rooms_data[i]['player_name4'] = unpack_join_request_data[1]
                 break
 
-    def send_lobby_data(socket):
+    def send_lobby_data(client_socket):
         room_count = game_sys_main.exist_room_count()
         packed_room_count = data_struct.pack_count_data(room_count)
-        socket.send(packed_room_count)
+        client_socket.send(packed_room_count)
         for i in range(room_count):
             packed_room_data = data_struct.pack_room_data(game_sys_main.rooms_data[i])
-            socket.send(packed_room_data)
+            client_socket.send(packed_room_data)
 
-
-    def recv_thread(client_socket):
-        global GAME_STATE
+    def recv_waitting_room_thread(client_socket, player_number):
         while 1:
-            recv_packed_data = client_socket.recv(struct.calcsize('=BBI'))
-            recv_data = struct.unpack('=BBI', recv_packed_data)
-            print('recv_data :',recv_data)
+            if(not game_sys_main.is_start):
+                try:
+                    TcpController.recv_waitting_room_data(client_socket, player_number)
+                except socket.error:
+                    print("비정상적 종료로 recv쓰래드가 종료됨")
+                    return
+            else :
+                print("정상적으로 recv쓰래드 종료")
+                return
+
+    def recv_waitting_room_data(client_socket, player_number):
+
+        recv_packed_data = client_socket.recv(struct.calcsize('=BBB'))
+        recv_data = struct.unpack('=BBB', recv_packed_data)
+
+        if(not recv_data[2]==0):
             temp = 'player' + str(recv_data[0]) + '_witch_selcet'
-            print('temp: ',temp)
+
             game_sys_main.waitting_room_data[temp] = recv_data[1]
-            print('game_sys_main.waitting_room_data',game_sys_main.waitting_room_data)
-            GAME_STATE = recv_data[2]
-            print('GAME_STATE : ', GAME_STATE)
+            print(recv_data)
+            print(player_number,"번 Player가 ", str(recv_data[1]), '번째 캐릭터를 선택하였습니다.')
 
+        if (recv_data[2] == 1):
+            #todo: ready state chage 함수로 만들 것
+            ready_state = game_sys_main.waitting_room_data['ready_state']
 
-    def recv_create_room(socket):
-        packed_create_room_data = socket.recv(1)
+            chang_ready_state = 1 << (player_number-1)
+            game_sys_main.waitting_room_data['ready_state'] = ready_state ^ chang_ready_state
+
+            if(game_sys_main.waitting_room_data['ready_state'] >> (player_number-1)&0b0001==1):
+                temp = ''
+            else:
+                temp = '해제'
+            print(player_number, '번 Player가 준비를',temp,'하였습니다.')
+
+        if(game_sys_main.waitting_room_data['ready_state'] == 0b0011):
+            print(player_number, '번 Player가 게임을 시작하였습니다.')
+            game_sys_main.is_start=True
+
+    def recv_create_room(client_socket):
+        packed_create_room_data = client_socket.recv(1)
         create_room_data = data_struct.unpack_room_data(packed_create_room_data)
         if game_sys_main.exist_room_count() <= game_sys_main.MAXROOMCOUNT:
             game_sys_main.rooms_data[game_sys_main.exist_room_count()] = create_room_data
 
-
-
+    def send_waitting_room_data(client_socket):
+        packed_data = struct.pack('BBBBB', game_sys_main.waitting_room_data['player_count'],
+                                  game_sys_main.waitting_room_data['player1_witch_selcet'],
+                                  game_sys_main.waitting_room_data['player2_witch_selcet'],
+                                  game_sys_main.waitting_room_data['player3_witch_selcet'],
+                                  game_sys_main.waitting_room_data['ready_state'])
+        client_socket.send(packed_data)
 
     def send_is_game_over(socket):
          # 게임결과를 보냅니다

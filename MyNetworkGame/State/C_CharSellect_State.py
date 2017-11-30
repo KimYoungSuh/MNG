@@ -32,7 +32,7 @@ def enter():
     _WAND = Wand()
     select_witch = 0
     state = 0
-    game_data = C_Game_data.GameData()
+    game_data = C_Game_data.GameData
     game_data.player_number = 1
     tcp_controller = TcpContoller()
     client_sock = tcp_controller.tcp_client_init()
@@ -79,21 +79,21 @@ def handle_events(frame_time):
                         if _WAND.y > 40:
                             if _WAND.y < 350:
                                 select_witch= 1
-                                packed_data = struct.pack('=BBI', game_data.player_number, select_witch, 0)
+                                packed_data = struct.pack('=BBB', game_data.player_number, select_witch, 0)
                                 game_data.client_socket.send(packed_data)
                 if _WAND.x > 305:
                     if _WAND.x < 545:
                         if _WAND.y > 40:
                             if _WAND.y < 350:
                                 select_witch =2
-                                packed_data = struct.pack('=BBI', game_data.player_number, select_witch, 0)
+                                packed_data = struct.pack('=BBB', game_data.player_number, select_witch, 0)
                                 game_data.client_socket.send(packed_data)
                 if _WAND.x > 580:
                     if _WAND.x < 820:
                         if _WAND.y > 40:
                             if _WAND.y < 350:
                                 select_witch=3
-                                packed_data = struct.pack('=BBI', game_data.player_number, select_witch, 0)
+                                packed_data = struct.pack('=BBB', game_data.player_number, select_witch, 0)
                                 game_data.client_socket.send(packed_data)
 
                 #READY!
@@ -101,12 +101,10 @@ def handle_events(frame_time):
                     if _WAND.x < 1115:
                         if _WAND.y > 230:
                             if _WAND.y < 330:
-                                readyState= 1
-                                state=1
                                 if select_witch != 0 :
-                                    packed_data = struct.pack('=BBI', game_data.player_number, select_witch, 1)
+                                    packed_data = struct.pack('=BBB', game_data.player_number, select_witch, 1)
                                     game_data.client_socket.send(packed_data)
-                                    State.C_Game_framework.run(C_collision)
+
 
                 #EXIT
                 if _WAND.x > 905 :
@@ -125,18 +123,28 @@ def update(frame_time):
     global _WAND
     _WAND.update(frame_time)
 
+    if (game_data.is_start):
+        State.C_Game_framework.run(C_collision)
+
 
 
 #
 def recv_data(recv_size):
     while 1:
         packed_waitting_room_data = game_data.client_socket.recv(recv_size)
-        recved_data = struct.unpack('BBBB?', packed_waitting_room_data)
+        recved_data = struct.unpack('BBBBB', packed_waitting_room_data)
         game_data.waitting_room_data['player_count'] = recved_data[0]
         game_data.waitting_room_data['player1_witch_selcet'] = recved_data[1]
         game_data.waitting_room_data['player2_witch_selcet'] = recved_data[2]
         game_data.waitting_room_data['player3_witch_selcet'] = recved_data[3]
         game_data.waitting_room_data['ready_state'] = recved_data[4]
+        print(str(recved_data[4]))
+
+        if (recved_data[4]==0b0011):
+            game_data.ready_state=recved_data[4]
+            game_data.is_start = True
+            print('게임이 시작되었습니다.')
+            return
 
 def draw(frame_time):
     global image1,image2,image3, _WAND
@@ -145,8 +153,6 @@ def draw(frame_time):
     image1.clip_draw(Scean_x * 3, 0, Scean_x, Scean_y, 140, 250)
     image2.clip_draw(Scean_x * 3, 0, Scean_x, Scean_y, 420, 250)
     image3.clip_draw(Scean_x * 3, 0, Scean_x, Scean_y, 700, 250)
-    #font.draw(160, 430, 'Wand_X = %d' % (_WAND.x))
-    #font.draw(160, 460, 'Wand_Y = %d' % (_WAND.y))
 
 
 
@@ -160,11 +166,11 @@ def draw(frame_time):
         select_witchs()
         image3.clip_draw(Scean_x * 3, 0, Scean_x, Scean_y, 30+(170*game_data.player_number)+(230*(game_data.player_number-1)) , 600)
 
+    #another player draw
     for i in range(1, game_data.waitting_room_data['player_count']+1):
         if(i != game_data.player_number):
             temp = 'player' + str(i) + '_witch_selcet'
             temp_select_witch = game_data.waitting_room_data[temp]
-            print('player' , str(i) , '_witch_selcet')
             if temp_select_witch == 1:
                 select_witchs()
                 image1.clip_draw(Scean_x * 3, 0, Scean_x, Scean_y,
