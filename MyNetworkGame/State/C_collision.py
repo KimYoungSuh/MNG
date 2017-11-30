@@ -39,6 +39,7 @@ Time = 0.0
 GameScore = 0
 SERVER_IP_ADDR ="127.0.0.1"
 SERVER_PORT = 19000
+arfter_time=0
 #
 bgm = None
 
@@ -83,7 +84,7 @@ class Timer():
 '''
 
 def create_world():
-    global _player, _Bg, _Enemy1, timer,GameScore, font, _EBullet, _PBullet, _Life, client_sock,_another_players
+    global _player, _Bg, _Enemy1, timer,GameScore, font, _EBullet, _PBullet, _Life, client_sock,_another_players, after_time
     client_sock = GameData.client_socket
 
     _Bg = BackGround()
@@ -97,6 +98,8 @@ def create_world():
     _PBullet = PBullet.get_list()
     _another_players = []
     _another_players.append(AnotherPlayer(_Bg))
+
+    after_time=0
 
 
     print('게임이 시작되었습니다.')
@@ -180,7 +183,11 @@ def update(frame_time):
             _EBullet.remove(ebullets)
     '''
     _player.update(frame_time)
-    PACK_DATA_Player(_player)
+
+
+    if (time.time() > after_time):
+        arfter_time = time.time() + 1 / 30
+        PACK_DATA_Player(_player)
 #    timer.update(frame_time)
 
 def recv_thread(client_sock):

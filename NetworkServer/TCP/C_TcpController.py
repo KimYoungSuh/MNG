@@ -72,41 +72,42 @@ class TcpController:
 
             while 1 :
                 #todo:
-                #if (time.time() > arfter_time):
-                #    arfter_time = time.time() + 1 / 30
-                if(not game_sys_main.is_start):
-                    TcpController.send_waitting_room_data(client_socket)
-                else:
-                    TcpController.send_waitting_room_data(client_socket)
-                    break
+                if (time.time() > arfter_time):
+                    arfter_time = time.time() + 1 / 10
+                    if(not game_sys_main.is_start):
+                        TcpController.send_waitting_room_data(client_socket)
+                    else:
+                        TcpController.send_waitting_room_data(client_socket)
+                        break
 
             at_first= True
             game_sys_main.players_data[0] = (400,400,3)
             game_sys_main.players_data[1] = (400,400,3)
 
             print('In LOCAL_AREA')
+
+            game_data_thread = threading.Thread(target=TcpController.recv_game_data,args=(client_socket, player_number))
+            game_data_thread.start()
             while 1:
+                if (time.time() > arfter_time):
+                    arfter_time = time.time() + 1 / 30
 
-                # todo :recv_player_data
-                # todo :recv_bullet_data
-                # todo :충돌체크하시오
-                # todo :if isdameged
-
-                #플레이어 데이터 받기
-                data = client_socket.recv(struct.calcsize('=fff'))
-                _Player_Data = data_struct.unpack_player_data(data)
-                print(_Player_Data)
-                game_sys_main.players_data[player_number-1] = _Player_Data
+                    # todo :recv_player_data
+                    # todo :recv_bullet_data
+                    # todo :충돌체크하시오
+                    # todo :if isdameged
 
 
-                #send_players_data
-                packed_players_data = data_struct.pack_players_data(game_sys_main.players_data)
-                temp=Pack.unpack_players_data(packed_players_data)
-                #print('test',temp)
-                client_socket.send(packed_players_data)
 
-                #print('Line3')
-                #print("Player Packed : ", _Player_Packed)
+
+                    #send_players_data
+                    packed_players_data = data_struct.pack_players_data(game_sys_main.players_data)
+                    temp=Pack.unpack_players_data(packed_players_data)
+                    #print('test',temp)
+                    client_socket.send(packed_players_data)
+
+                    #print('Line3')
+                    #print("Player Packed : ", _Player_Packed)
 
             #에너미 받기
             #data2 = client_socket.recv(struct.calcsize('=ffffI'))
@@ -221,6 +222,14 @@ class TcpController:
         create_room_data = data_struct.unpack_room_data(packed_create_room_data)
         if game_sys_main.exist_room_count() <= game_sys_main.MAXROOMCOUNT:
             game_sys_main.rooms_data[game_sys_main.exist_room_count()] = create_room_data
+
+    def recv_game_data(client_socket, player_number):
+        # 플레이어 데이터 받기
+        while 1:
+            data = client_socket.recv(struct.calcsize('=fff'))
+            _Player_Data = data_struct.unpack_player_data(data)
+            print(_Player_Data)
+            game_sys_main.players_data[player_number - 1] = _Player_Data
 
     def send_waitting_room_data(client_socket):
         packed_data = struct.pack('BBBBB', game_sys_main.waitting_room_data['player_count'],
