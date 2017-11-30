@@ -98,6 +98,7 @@ def handle_events(frame_time):
                     packed_data = struct.pack('=BBB', game_data.player_number, select_witch, 0)
                     game_data.client_socket.send(packed_data)
 
+                #READY
                 if(collide_point(point, ready_button_box)):
                     if select_witch != 0:
                         packed_data = struct.pack('=BBB', game_data.player_number, select_witch, 1)
@@ -120,6 +121,11 @@ def update(frame_time):
 
     if (game_data.is_start):
         packed_data = struct.pack('=BBB', game_data.player_number, select_witch, 0)
+        #todo:ready버튼누른사람은 send안하게 수정해야함
+        if(game_data.player_number==2):
+            print('버튼누른사람')
+            State.C_Game_framework.run(C_collision)
+        print('버튼안누른사람')
         game_data.client_socket.send(packed_data)
         State.C_Game_framework.run(C_collision)
 

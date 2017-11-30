@@ -79,7 +79,11 @@ class TcpController:
                 else:
                     TcpController.send_waitting_room_data(client_socket)
                     break
-            time.sleep(1)
+
+            at_first= True
+            game_sys_main.players_data[0] = (400,400,3)
+            game_sys_main.players_data[1] = (400,400,3)
+
             print('In LOCAL_AREA')
             while 1:
 
@@ -89,10 +93,18 @@ class TcpController:
                 # todo :if isdameged
 
                 #플레이어 데이터 받기
-                #print('Line1')
                 data = client_socket.recv(struct.calcsize('=fff'))
-                #print('Line2')
-                _Player_Packed = data_struct.unpack_player_data(data)
+                _Player_Data = data_struct.unpack_player_data(data)
+                print(_Player_Data)
+                game_sys_main.players_data[player_number-1] = _Player_Data
+
+
+                #send_players_data
+                packed_players_data = data_struct.pack_players_data(game_sys_main.players_data)
+                temp=Pack.unpack_players_data(packed_players_data)
+                #print('test',temp)
+                client_socket.send(packed_players_data)
+
                 #print('Line3')
                 #print("Player Packed : ", _Player_Packed)
 
@@ -167,7 +179,6 @@ class TcpController:
         while 1:
             if(game_sys_main.is_start):
                 print(player_number,"정상적으로 recv쓰래드 종료")
-                print(game_sys_main.is_start)
                 return
             else :
                 try:
