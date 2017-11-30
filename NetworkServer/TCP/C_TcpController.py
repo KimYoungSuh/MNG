@@ -72,28 +72,29 @@ class TcpController:
 
             while 1 :
                 #todo:
-                if (time.time() > arfter_time):
-                    arfter_time = time.time() + 1 / 30
-                    if(not game_sys_main.is_start):
-                        TcpController.send_waitting_room_data(client_socket)
-                    else:
-                        TcpController.send_waitting_room_data(client_socket)
-                        break
-
+                #if (time.time() > arfter_time):
+                #    arfter_time = time.time() + 1 / 30
+                if(not game_sys_main.is_start):
+                    TcpController.send_waitting_room_data(client_socket)
+                else:
+                    TcpController.send_waitting_room_data(client_socket)
+                    break
+            time.sleep(1)
+            print('In LOCAL_AREA')
             while 1:
-                print('In LOCAL_AREA')
+
                 # todo :recv_player_data
                 # todo :recv_bullet_data
                 # todo :충돌체크하시오
                 # todo :if isdameged
 
                 #플레이어 데이터 받기
-                print('Line1')
+                #print('Line1')
                 data = client_socket.recv(struct.calcsize('=fff'))
-                print('Line2')
+                #print('Line2')
                 _Player_Packed = data_struct.unpack_player_data(data)
-                print('Line3')
-                print("Player Packed : ", _Player_Packed)
+                #print('Line3')
+                #print("Player Packed : ", _Player_Packed)
 
             #에너미 받기
             #data2 = client_socket.recv(struct.calcsize('=ffffI'))
@@ -164,18 +165,19 @@ class TcpController:
 
     def recv_waitting_room_thread(client_socket, player_number):
         while 1:
-            if(not game_sys_main.is_start):
+            if(game_sys_main.is_start):
+                print(player_number,"정상적으로 recv쓰래드 종료")
+                print(game_sys_main.is_start)
+                return
+            else :
                 try:
                     TcpController.recv_waitting_room_data(client_socket, player_number)
                 except socket.error:
+                    print(player_number,game_sys_main.is_start)
                     print("비정상적 종료로 recv쓰래드가 종료됨")
                     return
-            else :
-                print("정상적으로 recv쓰래드 종료")
-                return
 
     def recv_waitting_room_data(client_socket, player_number):
-
         recv_packed_data = client_socket.recv(struct.calcsize('=BBB'))
         recv_data = struct.unpack('=BBB', recv_packed_data)
 

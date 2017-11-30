@@ -93,6 +93,9 @@ def create_world():
     _EBullet= EBullet.get_list()
     _PBullet = PBullet.get_list()
 
+    print('게임이 시작되었습니다.')
+
+
 def destroy_world():
     global _player, _Bg, _Enemy1, timer,GameScore, font,_EBullet, _PBullet
     del(_player)

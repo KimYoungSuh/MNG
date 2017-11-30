@@ -92,8 +92,3 @@ class TcpContoller:
 
 
 
-
-#tcp_controller = TcpContoller()
-#tcp_controller.tcp_client_init()
-#tcp_controller.loof()
-#tcp_controller.exit()

@@ -35,4 +35,4 @@ class GameSysMain:
     def join_player(self,player_data):
         self.players_data.append(player_data)
         (self.waitting_room_data)['player_count']+=1
-        print((self.waitting_room_data)['player_count'])
+        print('플레이어',(self.waitting_room_data)['player_count'],'가 접속했습니다.')

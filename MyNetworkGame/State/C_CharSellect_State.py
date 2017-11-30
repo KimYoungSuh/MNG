@@ -66,6 +66,13 @@ def resume():
 
 def handle_events(frame_time):
     global select_witch, readyState, _WAND,state
+
+    char_sellect_1_box = (30, 40, 275, 350)
+    char_sellect_2_box = (305, 40, 545, 350)
+    char_sellect_3_box = (580, 40, 820, 350)
+    ready_button_box = (905, 230, 1115, 330)
+    exit_button = (905, 90, 115, 190)
+
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
@@ -74,44 +81,32 @@ def handle_events(frame_time):
             if (event.type, event.key) == (SDL_KEYDOWN, SDLK_ESCAPE):
                 State.C_Game_framework.quit()
             elif (event.type) == (SDL_MOUSEBUTTONDOWN):
-                if _WAND.x > 30 :
-                    if _WAND.x < 275:
-                        if _WAND.y > 40:
-                            if _WAND.y < 350:
-                                select_witch= 1
-                                packed_data = struct.pack('=BBB', game_data.player_number, select_witch, 0)
-                                game_data.client_socket.send(packed_data)
-                if _WAND.x > 305:
-                    if _WAND.x < 545:
-                        if _WAND.y > 40:
-                            if _WAND.y < 350:
-                                select_witch =2
-                                packed_data = struct.pack('=BBB', game_data.player_number, select_witch, 0)
-                                game_data.client_socket.send(packed_data)
-                if _WAND.x > 580:
-                    if _WAND.x < 820:
-                        if _WAND.y > 40:
-                            if _WAND.y < 350:
-                                select_witch=3
-                                packed_data = struct.pack('=BBB', game_data.player_number, select_witch, 0)
-                                game_data.client_socket.send(packed_data)
 
-                #READY!
-                if _WAND.x > 905 :
-                    if _WAND.x < 1115:
-                        if _WAND.y > 230:
-                            if _WAND.y < 330:
-                                if select_witch != 0 :
-                                    packed_data = struct.pack('=BBB', game_data.player_number, select_witch, 1)
-                                    game_data.client_socket.send(packed_data)
+                point = (_WAND.x,_WAND.y)
+
+                #CHAR SELLECT
+                if ( collide_point(point, char_sellect_1_box) ):
+                    select_witch= 1
+                    packed_data = struct.pack('=BBB', game_data.player_number, select_witch, 0)
+                    game_data.client_socket.send(packed_data)
+                if ( collide_point(point, char_sellect_2_box) ):
+                    select_witch =2
+                    packed_data = struct.pack('=BBB', game_data.player_number, select_witch, 0)
+                    game_data.client_socket.send(packed_data)
+                if (collide_point(point, char_sellect_3_box)):
+                    select_witch=3
+                    packed_data = struct.pack('=BBB', game_data.player_number, select_witch, 0)
+                    game_data.client_socket.send(packed_data)
+
+                if(collide_point(point, ready_button_box)):
+                    if select_witch != 0:
+                        packed_data = struct.pack('=BBB', game_data.player_number, select_witch, 1)
+                        game_data.client_socket.send(packed_data)
 
 
                 #EXIT
-                if _WAND.x > 905 :
-                    if _WAND.x < 1115:
-                        if _WAND.y > 90:
-                            if _WAND.y < 190:
-                                C_Game_framework.run(C_title_state)
+                if(collide_point(point, exit_button)):
+                    C_Game_framework.run(C_title_state)
             else:
                 _WAND.handle_event(event)
 
@@ -124,9 +119,25 @@ def update(frame_time):
     _WAND.update(frame_time)
 
     if (game_data.is_start):
+        packed_data = struct.pack('=BBB', game_data.player_number, select_witch, 0)
+        game_data.client_socket.send(packed_data)
         State.C_Game_framework.run(C_collision)
 
+def collide_point(point, box):
+    x_point, y_point = point
+    left_b, bottom_b, right_b, top_b = box
 
+    if(left_b>x_point):
+        return False
+    if(right_b<x_point):
+        return False
+    if(top_b<y_point):
+        return False
+    if(bottom_b>y_point):
+        return False
+
+
+    return True
 
 #
 def recv_data(recv_size):
@@ -143,7 +154,6 @@ def recv_data(recv_size):
         if (recved_data[4]==0b0011):
             game_data.ready_state=recved_data[4]
             game_data.is_start = True
-            print('게임이 시작되었습니다.')
             return
 
 def draw(frame_time):
