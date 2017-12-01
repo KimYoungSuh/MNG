@@ -2,7 +2,7 @@ import sys
 import struct
 from Data import *
 
-class DataStruct:
+class Pack:
     # Room_data
     def pack_room_data(room_data):
         packed_data = struct.pack('BB 30s B 30s 30s 30s 30s ? B',
@@ -79,8 +79,8 @@ class DataStruct:
         packed = struct.pack('=fff',
 #           player_data['player_name'].encode('utf-8'),
 #           player_data['player_number'],
-                             p_data.sx,
-                             p_data.sy,
+                             p_data.x,
+                             p_data.y,
 #             player_data['direction'],
                              p_data.life)
 #             player_data['is_damaged'],
@@ -98,5 +98,16 @@ class DataStruct:
         return struct.pack('?', is_game_over)
     def unpack_is_game_over(packed):
         return struct.unpack('?', packed)
+
+
+
+    def unpack_players_data(packed_data_list):
+        temp=packed_data_list[:4]
+        list_size = struct.unpack('i',temp)
+        result_list=[]
+        for i in range (0, list_size[0]):
+            temp = packed_data_list[4+(struct.calcsize('fff'))*i:4+(struct.calcsize('fff'))*(i+1)]
+            result_list.append(Pack.unpack_player_data(temp))
+        return result_list
 
 

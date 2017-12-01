@@ -1,13 +1,18 @@
 import socket
 import time
 
-from TCP.C_Pack import DataStruct
+from TCP.C_Pack import Pack
 from Data.C_BulletData import *
 from Data.C_EnemyData import *
 from Data.C_PlayerData import *
 from Data.C_RoomData import *
 from Data.C_StructSet import *
+<<<<<<< HEAD
 data_struct = DataStruct
+=======
+from State import C_collision
+data_struct = Pack
+>>>>>>> origin/master
 
 class TcpContoller:
     SERVER_IP_ADDR ="127.0.0.1"
@@ -73,7 +78,7 @@ class TcpContoller:
         self.client_socket.send(join_room)
         #방 정보를 모두 불러들이면 구현할필요 없음 (임시)
         packed_room_data = self.client_socket.recv(1)
-        room_data = DataStruct.unpack_room_data(packed_room_data)
+        room_data = Pack.unpack_room_data(packed_room_data)
 
         if room_data['is_started'] == True:
            return 3
@@ -86,13 +91,8 @@ class TcpContoller:
 
     #Wait Room
     def send_ready_state(self, is_ready):
-        packed_is_ready = DataStruct.pack_is_game_over(is_ready)
+        packed_is_ready = Pack.pack_is_game_over(is_ready)
         self.client_socket.send(packed_is_ready)
 
 
 
-
-#tcp_controller = TcpContoller()
-#tcp_controller.tcp_client_init()
-#tcp_controller.loof()
-#tcp_controller.exit()

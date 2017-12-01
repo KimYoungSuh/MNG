@@ -33,7 +33,7 @@ def enter():
     _WAND = Wand()
     select_witch = 0
     state = 0
-    game_data = C_Game_data.GameData()
+    game_data = C_Game_data.GameData
     game_data.player_number = 1
     tcp_controller = TcpContoller()
     client_sock = tcp_controller.tcp_client_init()
@@ -67,7 +67,18 @@ def resume():
 
 
 def handle_events(frame_time):
+<<<<<<< HEAD
     global select_witch, readyState, _WAND,state,GAME_STATE
+=======
+    global select_witch, readyState, _WAND,state
+
+    char_sellect_1_box = (30, 40, 275, 350)
+    char_sellect_2_box = (305, 40, 545, 350)
+    char_sellect_3_box = (580, 40, 820, 350)
+    ready_button_box = (905, 230, 1115, 330)
+    exit_button = (905, 90, 115, 190)
+
+>>>>>>> origin/master
     events = get_events()
     for event in events:
         if event.type == SDL_QUIT:
@@ -76,6 +87,7 @@ def handle_events(frame_time):
             if (event.type, event.key) == (SDL_KEYDOWN, SDLK_ESCAPE):
                 State.C_Game_framework.quit()
             elif (event.type) == (SDL_MOUSEBUTTONDOWN):
+<<<<<<< HEAD
                 if _WAND.x > 30 :
                     if _WAND.x < 275:
                         if _WAND.y > 40:
@@ -119,6 +131,35 @@ def handle_events(frame_time):
                                 packed_data = struct.pack('=BBI', game_data.player_number, 0, 0)
                                 game_data.client_socket.send(packed_data)
                                 C_Game_framework.change_state(C_title_state)
+=======
+
+                point = (_WAND.x,_WAND.y)
+
+                #CHAR SELLECT
+                if ( collide_point(point, char_sellect_1_box) ):
+                    select_witch= 1
+                    packed_data = struct.pack('=BBB', game_data.player_number, select_witch, 0)
+                    game_data.client_socket.send(packed_data)
+                if ( collide_point(point, char_sellect_2_box) ):
+                    select_witch =2
+                    packed_data = struct.pack('=BBB', game_data.player_number, select_witch, 0)
+                    game_data.client_socket.send(packed_data)
+                if (collide_point(point, char_sellect_3_box)):
+                    select_witch=3
+                    packed_data = struct.pack('=BBB', game_data.player_number, select_witch, 0)
+                    game_data.client_socket.send(packed_data)
+
+                #READY
+                if(collide_point(point, ready_button_box)):
+                    if select_witch != 0:
+                        packed_data = struct.pack('=BBB', game_data.player_number, select_witch, 1)
+                        game_data.client_socket.send(packed_data)
+
+
+                #EXIT
+                if(collide_point(point, exit_button)):
+                    C_Game_framework.run(C_title_state)
+>>>>>>> origin/master
             else:
                 _WAND.handle_event(event)
 
@@ -130,7 +171,17 @@ def update(frame_time):
     global _WAND, GAME_STATE
     _WAND.update(frame_time)
 
+    if (game_data.is_start):
+        packed_data = struct.pack('=BBB', game_data.player_number, select_witch, 0)
+        #todo:ready버튼누른사람은 send안하게 수정해야함
+        if(game_data.player_number==2):
+            print('버튼누른사람')
+            State.C_Game_framework.run(C_collision)
+        print('버튼안누른사람')
+        game_data.client_socket.send(packed_data)
+        State.C_Game_framework.run(C_collision)
 
+<<<<<<< HEAD
 #
 def recv_data(recv_size):
     global GAME_STATE
@@ -154,6 +205,40 @@ def recv_data(recv_size):
             if player_count <= numofready:
                 GAME_STATE = 1
 
+=======
+def collide_point(point, box):
+    x_point, y_point = point
+    left_b, bottom_b, right_b, top_b = box
+
+    if(left_b>x_point):
+        return False
+    if(right_b<x_point):
+        return False
+    if(top_b<y_point):
+        return False
+    if(bottom_b>y_point):
+        return False
+
+
+    return True
+
+#
+def recv_data(recv_size):
+    while 1:
+        packed_waitting_room_data = game_data.client_socket.recv(recv_size)
+        recved_data = struct.unpack('BBBBB', packed_waitting_room_data)
+        game_data.waitting_room_data['player_count'] = recved_data[0]
+        game_data.waitting_room_data['player1_witch_selcet'] = recved_data[1]
+        game_data.waitting_room_data['player2_witch_selcet'] = recved_data[2]
+        game_data.waitting_room_data['player3_witch_selcet'] = recved_data[3]
+        game_data.waitting_room_data['ready_state'] = recved_data[4]
+        print(str(recved_data[4]))
+
+        if (recved_data[4]==0b0011):
+            game_data.ready_state=recved_data[4]
+            game_data.is_start = True
+            return
+>>>>>>> origin/master
 
 def draw(frame_time):
     global image1,image2,image3, _WAND
@@ -162,8 +247,6 @@ def draw(frame_time):
     image1.clip_draw(Scean_x * 3, 0, Scean_x, Scean_y, 140, 250)
     image2.clip_draw(Scean_x * 3, 0, Scean_x, Scean_y, 420, 250)
     image3.clip_draw(Scean_x * 3, 0, Scean_x, Scean_y, 700, 250)
-    #font.draw(160, 430, 'Wand_X = %d' % (_WAND.x))
-    #font.draw(160, 460, 'Wand_Y = %d' % (_WAND.y))
 
 
 
@@ -177,6 +260,7 @@ def draw(frame_time):
         select_witchs()
         image3.clip_draw(Scean_x * 3, 0, Scean_x, Scean_y, 30+(170*game_data.player_number)+(230*(game_data.player_number-1)) , 600)
 
+    #another player draw
     for i in range(1, game_data.waitting_room_data['player_count']+1):
         if(i != game_data.player_number):
             temp = 'player' + str(i) + '_witch_selcet'

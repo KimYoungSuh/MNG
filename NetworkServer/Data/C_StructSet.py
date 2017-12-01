@@ -17,7 +17,7 @@ RoomDataStruct = {'room_number':0,
             'player_name2':'default_name',
             'player_name3':'default_name',
             'player_name4':'default_name',
-            'is_started':False,
+            'is_start':False,
             'ready_player':0b0000}
 
 EnemyDataStruct = {'E_x':0,
@@ -36,8 +36,12 @@ WaittingRoomData ={'player_count':0,
                   'player1_witch_selcet':0,
                   'player2_witch_selcet':0,
                   'player3_witch_selcet':0,
+<<<<<<< HEAD
                   'player1_ready_state' : 0,
                   'player2_ready_state':0,
                   'player3_ready_state' :0
+=======
+                  'ready_state':0b0000
+>>>>>>> origin/master
                   }
 
