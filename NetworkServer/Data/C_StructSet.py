@@ -36,6 +36,8 @@ WaittingRoomData ={'player_count':0,
                   'player1_witch_selcet':0,
                   'player2_witch_selcet':0,
                   'player3_witch_selcet':0,
-                  'ready_state':0
+                  'player1_ready_state' : 0,
+                  'player2_ready_state':0,
+                  'player3_ready_state' :0
                   }
 

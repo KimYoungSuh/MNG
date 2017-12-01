@@ -75,15 +75,18 @@ class Pack:
     '''
     # enemy_data
     def pack_enemy_data(enemy_data):
-        packed = struct.pack('=ffffI',
+        packed = struct.pack('=fffffI',
                              enemy_data.x,
                              enemy_data.y,
                              enemy_data.xdir,
                              enemy_data.ydir,
-                             enemy_data.TEAM)
+                             enemy_data.speed,
+                             enemy_data.type
+                             )
+        return packed
 
     def unpack_enemy_data(packed):
-        unpacked_data = struct.unpack('=ffffI', packed)
+        unpacked_data = struct.unpack('=fffffI', packed)
         return unpacked_data
 
     #player_data
@@ -91,8 +94,8 @@ class Pack:
         packed = struct.pack('=fff',
 #             player_data['player_name'].encode('utf-8'),
 #             player_data['player_number'],
-             (player_data.x),
-             (player_data.y),
+             (player_data.sx),
+             (player_data.sy),
 #             player_data['direction'],
              player_data.life)
 #             player_data['is_damaged'],

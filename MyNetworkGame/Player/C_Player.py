@@ -5,7 +5,7 @@ from Bullet.C_PlayerBullet import PBullet
 #from State.C_CharSellect_State import select_witch
 import State.C_CharSellect_State
 from State.C_Input import InputSys
-
+import random
 #font = load_font('ENCR10B.TTF')
 #font.draw(self.x - 30, self.y + 20, 'HP : %3.2f' % self.life)
 
@@ -26,18 +26,15 @@ class Player1:
 
     UP_RUN, RIGHT_RUN, LEFT_RUN,  DOWN_RUN = 0,1,2,3,
     def __init__(self, backGround):
-        global font
-        font = load_font('..\ENCR10B.TTF')
         self.imagenum = State.C_CharSellect_State.select_witchs()
         global _Enemy
         global _Bg
-        self.x, self.y = 400,400
+        self.x, self.y = random.randint(300, 2900), random.randint(300, 1500)
         self.life = 3
         _Bg = backGround
         self.xdir = 0
         self.ydir =0
         self.state = self.DOWN_RUN
-        self.bg = 0
         self.beforestate = 1
         self.sx = self.x - _Bg.window_left
         self.sy = self.y - _Bg.window_bottom
@@ -75,11 +72,6 @@ class Player1:
 
 
         _Bg.draw()
-        font.draw(300,280, 'SX , SY : [%d, %d]' % (self.sx, self.sy))
-
-        font.draw(300,300, 'X , Y : [%d, %d]' % (self.x, self.y))
-        font.draw(300,320, 'windowleft , windowbottom : [%d, %d]' % (_Bg.window_left, _Bg.window_bottom))
-        font.draw(300,340, 'canvas_w , canvas_h : [%d, %d]' % (_Bg.canvas_width, _Bg.canvas_height))
 
         if(self.state == 4):
             self.image.clip_draw(Scean_x * self.beforestate, 0, Scean_x, Scean_y, self.sx, self.sy)

@@ -7,7 +7,6 @@ from Data.C_EnemyData import *
 from Data.C_PlayerData import *
 from Data.C_RoomData import *
 from Data.C_StructSet import *
-from State import C_collision
 data_struct = DataStruct
 
 class TcpContoller:
