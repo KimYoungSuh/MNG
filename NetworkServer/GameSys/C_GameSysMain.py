@@ -12,15 +12,21 @@ class GameSysMain:
 
         self.players_data = []
         self.waitting_room_data = WaittingRoomData().waitting_room_data
-        #self.rooms_data= [RoomData() for RoomData() in range(1,5)]
 
-        self.rooms_data= [RoomData() for i in range(5)]
+        self.rooms_data= [RoomData().room_data for i in range(5)]
         self.maxroomcount = 4
         self.player_count = 0
-        self.players_data = []
         self.is_start=False
         self.ready_state = 0b0000
 
+        self.player_number_table = [False for i in range(16)]
+
+    def empty_player_number(self):
+        for i in range(16):
+            if not self.player_number_table[i]:
+                self.player_number_table[i] = True
+                return i
+        return False
 
     def init_game_sys(self):
         self.is_game_over = False
@@ -28,7 +34,7 @@ class GameSysMain:
     def exist_room_count(self):
         count = 0
         for room in self.rooms_data:
-            if room.is_room_exist():
+            if room['full_player'] != 0:
                 count += 1
         return count
 
