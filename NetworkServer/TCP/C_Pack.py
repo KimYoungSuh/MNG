@@ -75,33 +75,34 @@ class Pack:
     '''
     # enemy_data
     def pack_enemy_data(enemy_data):
-        packed = struct.pack('=fffffI',
-                             enemy_data.x,
-                             enemy_data.y,
-                             enemy_data.xdir,
-                             enemy_data.ydir,
-                             enemy_data.speed,
+        packed = struct.pack('=fff',
+                             enemy_data.sx,
+                             enemy_data.sy,
                              enemy_data.type
+
                              )
         return packed
 
     def unpack_enemy_data(packed):
-        unpacked_data = struct.unpack('=fffffI', packed)
+        unpacked_data = struct.unpack('=fff', packed)
         return unpacked_data
 
     #player_data
     def pack_player_data(player_data):
-        packed = struct.pack('=fff',
+        packed = struct.pack('=fffff',
 #             player_data['player_name'].encode('utf-8'),
 #             player_data['player_number'],
-             (player_data.sx),
-             (player_data.sy),
+             player_data.x,
+             player_data.y,
+             player_data.sx,
+             player_data.sy,
 #             player_data['direction'],
-             (player_data.life))
+             player_data.life)
 #             player_data['is_damaged'],
 #             player_data['player_score'])
+        return packed
     def unpack_player_data(packed):
-        unpacked_data = struct.unpack('=fff', packed)
+        unpacked_data = struct.unpack('=fffff', packed)
         return unpacked_data
 
         '''
@@ -125,34 +126,5 @@ class Pack:
         return struct.pack('?', is_game_over)
     def unpack_is_game_over(packed):
         return struct.unpack('?', packed)
-
-    #players list
-    def pack_players_data(players_list):
-        result = bytes()
-        result += struct.pack('i',len(players_list))
-        for i in range (0,len(players_list)):
-            try:
-                temp = struct.pack('=fff',
-                                     (players_list[i][0]),
-                                     (players_list[i][1]),
-                                     (players_list[i][2]))
-            except:
-                print(i, players_list[i])
-                exit(1)
-            packed_player_data=temp
-            result += packed_player_data
-        return result
-
-    def unpack_players_data(packed_data_list):
-        temp=packed_data_list[:4]
-        list_size = struct.unpack('i',temp)
-        result_list=[]
-        for i in range (0, list_size[0]):
-
-            temp = packed_data_list[4+(struct.calcsize('fff'))*i:4+(struct.calcsize('fff'))*(i+1)]
-
-            result_list.append(Pack.unpack_player_data(temp))
-
-        return result_list
 
 

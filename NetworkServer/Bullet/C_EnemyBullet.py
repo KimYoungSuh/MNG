@@ -8,13 +8,11 @@ class EBullet:
     RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
     RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
     RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
-    image = None
     _eBullet = []
     def __init__(self,E_x, E_y, PL_X, PL_Y):
         global font
         self.shooter = 1
         self._Bg = BackGround
-        font = load_font('..\ENCR10B.TTF')
         self.x = E_x
         self.y = E_y
     #    self.sx = self.x - PL_X
@@ -29,8 +27,7 @@ class EBullet:
         self.alive =1
         EBullet._eBullet.append(self)
 
-        if EBullet.image == None:
-            EBullet.image = load_image('..\Bullet\Image_EBullet.png')
+
         self.sx = self.x - self._Bg.window_left
         self.sy = self.y - self._Bg.window_bottom
 

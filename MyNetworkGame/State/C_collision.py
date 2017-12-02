@@ -9,8 +9,7 @@ from Enemy.C_Enemy2 import Enemy2
 from Bullet.C_EnemyBullet import EBullet
 from Bullet.C_PlayerBullet import PBullet
 from Life.C_Life import Life
-from TCP.C_Pack import Pack
-from TCP.C_TcpController import TcpContoller
+from TCP.C_Pack import DataStruct
 
 import State.C_Gameover_state
 from Data.C_BulletData import *
@@ -23,8 +22,9 @@ import struct
 import threading
 #import C_DebugClass
 
+
 from Player.C_Player import Player1
-from Player.C_Another_Player import AnotherPlayer
+
 name = "collision"
 wand = None
 font = None
@@ -32,24 +32,20 @@ _Enemys = None
 _Enemy1 = []
 _PBullet = []
 _EBullet = []
-
-BUFSIZE=10000
+E_NUM=0
 item = []
 potion = []
 Time = 0.0
 GameScore = 0
 SERVER_IP_ADDR ="127.0.0.1"
 SERVER_PORT = 19000
-<<<<<<< HEAD
 SEND_TIME = 0
-=======
-arfter_time=0
->>>>>>> origin/master
 #
 bgm = None
 
 def enter():
     State.C_Game_framework.reset_time()
+
     create_world()
 
 def exit():
@@ -86,36 +82,39 @@ class Timer():
                 PACK_DATA_Enemy(newEnemy)
             self.Whattime = 0
 '''
-
 def create_world():
-<<<<<<< HEAD
-    global _player, _Bg, _Enemy1, timer,GameScore, font, _EBullet, _PBullet, _Life,client_sock,tcp_controller
-    tcp_controller = TcpContoller()
-    client_sock = tcp_controller.tcp_client_init()
-=======
-    global _player, _Bg, _Enemy1, timer,GameScore, font, _EBullet, _PBullet, _Life, client_sock,_another_players, after_time
-    client_sock = GameData.client_socket
-
->>>>>>> origin/master
+    global _player, _Bg, _Enemy1, timer,GameScore, font, _EBullet, _PBullet, _Life,client_sock,tcp_controller,E_NUM, _Enemy_Data
     _Bg = BackGround()
+    E_NUM =0
     _player = Player1(_Bg)
     _Enemy1 = []
     _Life = Life(_player.life)
     #timer = Timer()
+    client_sock = GameData.client_socket
+    #tcp_controller = TcpContoller()
+    readystate = 0
+    #client_sock = tcp_controller.tcp_client_init()
+    t1 = threading.Thread(target=recv_thread, args=(client_sock,))
+    t1.start()
+    readystate = 0
     GameScore =0
     font = load_font('ENCR10B.TTF')
     _EBullet= EBullet.get_list()
     _PBullet = PBullet.get_list()
-    _another_players = []
-    _another_players.append(AnotherPlayer(_Bg))
+def recv_thread(client_sock):
+    pass
+    '''while 1:
+        packed_players_data = client_sock.recv(BUFSIZE)
 
-    after_time=0
-
-
-    print('게임이 시작되었습니다.')
-    t1=threading.Thread(target=recv_thread, args=(client_sock,))
-    t1.start()
-
+        temp_list = Pack.unpack_players_data(packed_players_data)
+        if(GameData.player_number==1):
+            _another_players[0].x = temp_list[1][0]
+            _another_players[0].y = temp_list[1][1]
+        elif(GameData.player_number==2):
+            _another_players[0].x = temp_list[0][0]
+            _another_players[0].y = temp_list[0][1]
+        print(_another_players[0].x,_another_players[0].y)
+'''
 
 def destroy_world():
     global _player, _Bg, _Enemy1, timer,GameScore, font,_EBullet, _PBullet
@@ -159,10 +158,9 @@ def get_time(frame_time):
     return Time
 '''
 def update(frame_time):
-
-
-    for enemy in _Enemy1:
-        enemy.update(frame_time, _player.x, _player.y, _Bg.window_left, _Bg.window_bottom)
+    global E_NUM ,_Enemy_Data
+    #for enemy in _Enemy1:
+    #    enemy.update(frame_time, _player.x, _player.y, _Bg.window_left, _Bg.window_bottom)
     '''
     for enemy in _Enemy1 :
         if collide(enemy, _player):
@@ -195,8 +193,25 @@ def update(frame_time):
             _EBullet.remove(ebullets)
     '''
     _player.update(frame_time)
-<<<<<<< HEAD
-    PACK_DATA_Player(_player)
+    Player_packed = DataStruct.pack_player_data(_player)
+    client_sock.send(Player_packed)
+    recved_E_NUM = client_sock.recv(struct.calcsize('=i'))
+
+
+    E_NUM = struct.unpack('=i', recved_E_NUM)[0]
+    for i in range(0, E_NUM) :
+        _Enemy_packed = client_sock.recv(struct.calcsize('=fffi'))
+        _Enemy_Data = DataStruct.unpack_enemy_data(_Enemy_packed)
+        if _Enemy_Data[2] ==1 :
+            newEnemy = Enemy1(_Enemy_Data[0],_Enemy_Data[1], _Bg.window_left, _Bg.window_bottom)
+        if _Enemy_Data[2] ==2 :
+            newEnemy = Enemy2(_Enemy_Data[0],_Enemy_Data[1],_Bg.window_left, _Bg.window_bottom)
+
+        _Enemy1.append(newEnemy)
+#        if(_Enemy_Data[3] == E_NUM)
+        print('_Enemy_Data : ', _Enemy_Data)
+
+'''
     _Enemy_packed = client_sock.recv(struct.calcsize('=fffffI'))
     if _Enemy_packed != b'EMPTY' :
         _Enemy_Data = DataStruct.unpack_enemy_data(_Enemy_packed)
@@ -206,55 +221,25 @@ def update(frame_time):
         elif _Enemy_Data[5] ==2 :
             newEnemy = Enemy2(_Enemy_Data[0],_Enemy_Data[1],_Enemy_Data[2],_Enemy_Data[3], _Enemy_Data[4], _Bg.window_left, _Bg.window_bottom)
         _Enemy1.append(newEnemy)
-
-    else :
-        pass
+'''
+    #else :
+    #    pass
 
     #print("Enemy Packed : ", _enemylist)
-=======
-
-
-    if (time.time() > after_time):
-        arfter_time = time.time() + 1 / 30
-        PACK_DATA_Player(_player)
->>>>>>> origin/master
 #    timer.update(frame_time)
-
-def recv_thread(client_sock):
-    while 1:
-        packed_players_data = client_sock.recv(BUFSIZE)
-
-        temp_list = Pack.unpack_players_data(packed_players_data)
-        if(GameData.player_number==1):
-            _another_players[0].x = temp_list[1][0]
-            _another_players[0].y = temp_list[1][1]
-        elif(GameData.player_number==2):
-            _another_players[0].x = temp_list[0][0]
-            _another_players[0].y = temp_list[0][1]
-        print(_another_players[0].x,_another_players[0].y)
-
-
-
 
 
 
 def draw(frame_time):
     clear_canvas()
-
     _player.draw()
-<<<<<<< HEAD
-
-=======
-    _another_players[0].draw()
 
 
     '''
->>>>>>> origin/master
     for enemy in _Enemy1:
         enemy.draw()
     for enemy in _Enemy1:
         enemy.draw_bb()
-    '''
 
     for ebullets in _EBullet:
         ebullets.draw()
@@ -272,8 +257,7 @@ def draw(frame_time):
     update_canvas()
 
 def PACK_DATA_Player(objects):
-    Player_packed = Pack.pack_player_data(objects)
-    #print(Pack.unpack_player_data(Player_packed))
+    Player_packed = DataStruct.pack_player_data(objects)
     client_sock.send(Player_packed)
 
     return Player_packed
@@ -281,19 +265,19 @@ def PACK_DATA_Player(objects):
 def PACK_DATA_Enemy(objects):
     #todo: 게임중
     #for objects in object:
-        #Pack.pack_enemy_data(objects)
+        #DataStruct.pack_enemy_data(objects)
         #Enemy_packed =
         #print(Enemy_packed)
         #client_socket.sendall(packed)
-    Enemy_packed = Pack.pack_enemy_data(objects)
-    print(Pack.unpack_enemy_data(Enemy_packed))
+    Enemy_packed = DataStruct.pack_enemy_data(objects)
+    #print(DataStruct.unpack_enemy_data(Enemy_packed))
     #client_sock.sendall(Enemy_packed)
     return Enemy_packed
     #
 
 def PACK_DATA_PBULLET(objects):
-    Bullet_packed = Pack.pack_bullet_data(objects)
-    print(Pack.unpack_bullet_data(Bullet_packed))
+    Bullet_packed = DataStruct.pack_bullet_data(objects)
+    print(DataStruct.unpack_bullet_data(Bullet_packed))
     #client_sock.sendall(Bullet_packed)
     return Bullet_packed
 

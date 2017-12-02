@@ -16,7 +16,7 @@ RoomDataStruct = {'room_number':0,
             'player_name2':'default_name',
             'player_name3':'default_name',
             'player_name4':'default_name',
-            'is_start':False,
+            'is_started':False,
             'ready_player':0b0000}
 
 EnemyDataStruct = {'enemy_pos':PointStruct,

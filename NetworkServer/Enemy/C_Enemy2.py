@@ -78,8 +78,8 @@ class Enemy2:
     #    self.sx = self.x - PL_X
     #    self.sy = self.y - PL_Y
 #
-        self.x += self.x_speed * self.xdir * frame_time
-        self.y += self.y_speed * self.ydir * frame_time
+        self.x += self.speed * self.xdir * frame_time
+        self.y += self.speed * self.ydir * frame_time
 
         self.add(PL_X,PL_Y)
 

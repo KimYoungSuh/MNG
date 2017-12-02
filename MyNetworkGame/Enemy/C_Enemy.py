@@ -5,20 +5,15 @@ from Bullet.C_EnemyBullet import EBullet
 _Bullet = []
 class Enemy1:
     image =None
-    def __init__(self, X, Y, Xdir , Ydir, Speed,  BG_X, BG_Y):
+    def __init__(self, X, Y,BG_X, BG_Y):
         global font
 
         self.x, self.y = X , Y
 
-        self.speed = Speed
 
         self.sx = self.x - BG_X
         self.sy = self.y - BG_Y
 
-        self.Whattime = 0
-        self.alive = 1
-        self.xdir = Xdir
-        self.ydir = Ydir
         if Enemy1.image == None:
             Enemy1.image = load_image('..\Enemy\Image_Enermy.png')
         #Enemy1._enemy.append(self)
@@ -28,27 +23,7 @@ class Enemy1:
         return self.y
 
     def update(self,frame_time, PL_X, PL_Y, _BG_X , _BG_Y):
-        if self.x > 3200:
-            self.x = 3200
-            self.xdir *= -1
-        if self.x < 0:
-            self.x = 0
-            self.xdir *= -1
-        if self.y > 1800:
-            self.y = 1800
-            self.ydir *= -1
-        if self.y < 0:
-            self.y = 0
-            self.ydir *= -1
-        self.Whattime +=frame_time
-
-#
-        self.x += self.speed * self.xdir * frame_time
-        self.y += self.speed * self.ydir * frame_time
-        self.sx = self.x - _BG_X
-        self.sy = self.y - _BG_Y
-        self.ADD_Bullet(PL_X,PL_Y)
-
+       pass
 
 
         #self.delete_object(_Bullet)
@@ -62,9 +37,9 @@ class Enemy1:
 
 
 
-    def draw(self):
+    def draw(self, sx , sy):
 
-        self.image.draw(self.sx, self.sy)
+        self.image.draw(sx, sy)
         #font.draw(self.sx, self.sy+20 , 'X , Y : [%d, %d]' % (self.sx, self.sy))
         #font.draw(self.sx, self.sy, 'X , Y : [%d, %d]' % (self.x, self.y))
 

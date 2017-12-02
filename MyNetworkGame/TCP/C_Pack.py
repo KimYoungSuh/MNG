@@ -2,7 +2,7 @@ import sys
 import struct
 from Data import *
 
-class Pack:
+class DataStruct:
     # Room_data
     def pack_room_data(room_data):
         packed_data = struct.pack('BB 30s B 30s 30s 30s 30s ? B',
@@ -59,6 +59,7 @@ class Pack:
     #    return unpacked_data
 
     # enemy_data
+    '''
     def pack_enemy_data(enemy_data):
         packed = struct.pack('=fffffI',
                              enemy_data.x,
@@ -73,21 +74,35 @@ class Pack:
     def unpack_enemy_data(packed):
         unpacked_data = struct.unpack('=fffffI', packed)
         return unpacked_data
+    '''
+    def pack_enemy_data(enemy_data):
+        packed = struct.pack('=fff',
+                             enemy_data.sx,
+                             enemy_data.sy,
+                             enemy_data.type
+                             )
+        return packed
+
+    def unpack_enemy_data(packed):
+        unpacked_data = struct.unpack('=fff', packed)
+        return unpacked_data
 
     #player_data
     def pack_player_data(p_data):
-        packed = struct.pack('=fff',
+        packed = struct.pack('=fffff',
 #           player_data['player_name'].encode('utf-8'),
 #           player_data['player_number'],
                              p_data.x,
                              p_data.y,
+                             p_data.sx,
+                             p_data.sy,
 #             player_data['direction'],
                              p_data.life)
 #             player_data['is_damaged'],
 #             player_data['player_score'])
         return packed
     def unpack_player_data(packed):
-        unpacked_data = struct.unpack('=fff', packed)
+        unpacked_data = struct.unpack('=fffff', packed)
         return unpacked_data
     #def unpack_player_data(packed):
     ##    unpacked_data = struct.unpack('30s BiiBB?L', packed)
@@ -98,16 +113,5 @@ class Pack:
         return struct.pack('?', is_game_over)
     def unpack_is_game_over(packed):
         return struct.unpack('?', packed)
-
-
-
-    def unpack_players_data(packed_data_list):
-        temp=packed_data_list[:4]
-        list_size = struct.unpack('i',temp)
-        result_list=[]
-        for i in range (0, list_size[0]):
-            temp = packed_data_list[4+(struct.calcsize('fff'))*i:4+(struct.calcsize('fff'))*(i+1)]
-            result_list.append(Pack.unpack_player_data(temp))
-        return result_list
 
 

@@ -3,7 +3,6 @@ from pico2d import *
 from Bullet.C_EnemyBullet import EBullet
 
 _Bullet = []
-Scean_x, Scean_y = 49, 82
 
 class Enemy2:
 
@@ -11,21 +10,16 @@ class Enemy2:
 
     #_enemy2 = []
 
-    def __init__(self, X, Y, Xdir, Ydir, Speed, BG_X, BG_Y):
+    def __init__(self, X, Y,BG_X, BG_Y):
         global font
 
-        self.x, self.y = X, Y
+        self.x, self.y = X , Y
 
-        self.speed = Speed
 
         self.sx = self.x - BG_X
         self.sy = self.y - BG_Y
 
-        self.Whattime = 0
-        self.alive = 1
-        self.xdir = Xdir
-        self.ydir = Ydir
-        if self.xdir > self.ydir:
+'''        if self.xdir > self.ydir:
             if self.xdir > 0:
                 self.state = 1
             else:
@@ -35,6 +29,7 @@ class Enemy2:
                 self.state = 0
             else:
                 self.state = 3
+                '''
         if Enemy2.image == None:
             Enemy2.image = load_image('..\Enemy\Image_Enermy2.png')
        # Enemy2._enemy2.append(self)
@@ -87,8 +82,9 @@ class Enemy2:
             EBullet(self.x, self.y, PL_X,PL_Y)
             self.Whattime = 0
 
-    def draw(self,):
-        self.image.clip_draw(Scean_x* self.state, 0, Scean_x, Scean_y, self.sx, self.sy)
+    def draw(self,sx,sy):
+        Scean_x, Scean_y = 49, 82
+        self.image.clip_draw(Scean_x* self.state, 0, Scean_x, Scean_y, sx, sy)
     #    font.draw(self.sx, self.sy, 'X , Y : [%d, %d]' % (self.sx, self.sy))
     #    self.image.clip_draw(Scean_x* self.state, 0, Scean_x, Scean_y, self.sx, self.sy)
 
