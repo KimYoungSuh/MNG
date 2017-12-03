@@ -58,8 +58,8 @@ class TcpContoller:
         room_data['player_name1'] = player_name
         create_room = data_struct.pack_room_data(room_data)
         client_socket.send(create_room)
-        packed_can_make_room = client_socket.recv(data_struct.boolean_size)
-        return data_struct.unpack_boolean(packed_can_make_room)
+        packed_can_make_room = client_socket.recv(data_struct.integer_size)
+        return data_struct.unpack_integer(packed_can_make_room)
 
 
     def recv_lobby_data(client_socket):
@@ -105,9 +105,18 @@ class TcpContoller:
             return 2
 
     #Wait Room
-    def send_ready_state(self, is_ready):
-        packed_is_ready = data_struct.pack_is_game_over(is_ready)
-        self.client_socket.send(packed_is_ready)
+    def send_in_room_data(client_socket, character_select, is_ready, is_exit):
+        in_room_data = {
+            'character_select': character_select,
+            'is_ready': is_ready,
+            'is_exit': is_exit
+        }
+        packed_in_room_data = data_struct.pack_in_room_data(in_room_data)
+        client_socket.send(packed_in_room_data)
 
+    def receive_in_room_data(client_socket):
+        packed_data = client_socket.recv(data_struct.in_room_data_server_size)
+        in_room_data = data_struct.unpack_in_room_data_server(packed_data)
+        return in_room_data
 
 

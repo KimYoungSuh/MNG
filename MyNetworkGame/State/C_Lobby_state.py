@@ -8,8 +8,6 @@ from Background.C_LobbyBG import C_LobbyBG
 from C_Wand import Wand
 from TCP.C_TcpController import TcpContoller
 from TCP.C_Pack import DataStruct
-import struct
-import threading
 
 name = "Lobby"
 image = None
@@ -18,9 +16,9 @@ _WAND = None
 font = None
 game_data = None
 selection_image = None
-selection = 0
+selection = -1
 rooms_data = []
-delta_time = 0
+delta_time = 2
 
 COLLISION_BOX = [
     (79, 614, 1123, 719),
@@ -66,7 +64,7 @@ def reset_lobby(): #로비 정보 요청
 
 
 def join_room(): # 참가 요청
-    if selection > len(rooms_data) :
+    if selection > len(rooms_data) or selection < 0 :
         return
     result = TcpContoller.send_join_room(game_data.client_socket, rooms_data[selection-1]['room_number'], "Witch2")
 
@@ -80,7 +78,8 @@ def join_room(): # 참가 요청
 
 def create_room(): # 생성 요청
     global game_data
-    if TcpContoller.send_create_room(game_data.client_socket, game_data.player_number, "TEST_ROOM", 3, "Witch"):
+    room_number = TcpContoller.send_create_room(game_data.client_socket, game_data.player_number, "TEST_ROOM", 3, "Witch")
+    if room_number != -1:
         C_Game_framework.push_state(C_CharSellect_State)
     else:
         pass
@@ -133,6 +132,8 @@ def enter():
 
     game_data.player_number = player_number
 
+    reset_lobby()
+
 def exit():
     global _BG, _WAND, font
     del(font)
@@ -167,10 +168,14 @@ def update(frame_time):
     delta_time += frame_time
 
 def draw(frame_time):
+    global rooms_data
     clear_canvas()
     _BG.draw()
     if selection >= 1:
         selection_image.draw(600, (775 - (107 * selection)))
+    for i in range(len(rooms_data)):
+        font.draw(100, (668 - (107 * i)), 'Room name : %s' % (rooms_data[i]['room_name']))
+
     _WAND.draw()
     update_canvas()
 

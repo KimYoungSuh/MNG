@@ -52,17 +52,14 @@ class DataStruct:
         }
         return room_data
 
-        # join_request_data
-
+    # join_request_data
     join_request_data_type = 'B 30s'
     join_request_data_size = struct.calcsize(room_data_type)
-
     def pack_join_request_data(join_request_data):
         packed_data = struct.pack('B 30s',
                                   join_request_data['room_number'],
                                   join_request_data['player_name'].encode('ascii'))
         return packed_data
-
     def unpack_join_request_data(packed_data):
         unpacked_data = struct.unpack('B 30s', packed_data)
         join_request_data = {
@@ -70,6 +67,47 @@ class DataStruct:
             'player_name': unpacked_data[1].decode('ascii').rstrip('\x00')
         }
         return join_request_data
+
+    # in_room_data
+    in_room_data_type = 'B ? ?'
+    in_room_data_size = struct.calcsize(in_room_data_type)
+    def pack_in_room_data(in_room_data):
+        packed_data = struct.pack('B ? ?',
+                                      in_room_data['character_select'],
+                                      in_room_data['is_ready'],
+                                      in_room_data['is_exit'])
+        return packed_data
+    def unpack_in_room_data(packed_data):
+        unpacked_data = struct.unpack('B ? ?', packed_data)
+        in_room_data = {
+                'character_select': unpacked_data[0],
+                'is_ready': unpacked_data[1],
+                'is_exit': unpacked_data[2]}
+        return in_room_data
+
+    # in_room_data_server
+    in_room_data_server_type = 'BBBBBBBi'
+    in_room_data_server_size = struct.calcsize(in_room_data_server_type)
+    def pack_in_room_data_server(in_room_data_server, gamestate):
+            packed_data = struct.pack('BBBBBBBi',
+                                      in_room_data_server['player_count'],
+                                      in_room_data_server['player_witch_select'][0],
+                                      in_room_data_server['player_witch_select'][1],
+                                      in_room_data_server['player_witch_select'][2],
+                                      in_room_data_server['player_ready_state'][0],
+                                      in_room_data_server['player_ready_state'][1],
+                                      in_room_data_server['player_ready_state'][2],
+                                      gamestate)
+            return packed_data
+
+    def unpack_in_room_data_server(packed_data):
+        unpacked_data = struct.unpack('BBBBBBBi', packed_data)
+        in_room_data_server = {
+            'player_count': unpacked_data[0],
+            'player_witch_select': [unpacked_data[1], unpacked_data[2], unpacked_data[3]],
+            'player_ready_state': [unpacked_data[4], unpacked_data[5], unpacked_data[6]]
+        }
+        return in_room_data_server
 
     #room_is_full
     def unpack_room_is_full(packed_data):

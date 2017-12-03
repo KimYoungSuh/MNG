@@ -11,9 +11,10 @@ class GameSysMain:
         self.is_game_over = False
 
         self.players_data = [PlayerData().playerdata for i in range(16)]
-        self.waitting_room_data = WaittingRoomData().waitting_room_data
 
+        self.waitting_room_data = [WaittingRoomData().waitting_room_data for i in range(4)]
         self.rooms_data= [RoomData().room_data for i in range(4)]
+
         self.maxroomcount = 4
         self.player_count = 0
 
@@ -36,8 +37,6 @@ class GameSysMain:
             if empty_number != False:
                 break
         return empty_number
-
-
 
     def init_game_sys(self):
         self.is_game_over = False

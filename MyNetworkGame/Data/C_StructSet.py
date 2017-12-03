@@ -29,12 +29,8 @@ BulletDataStruct ={'start_pos':0,
              'shooter':0}
 
 WaittingRoomData ={'player_count':0,
-                  'player1_witch_selcet':0,
-                  'player2_witch_selcet':0,
-                  'player3_witch_selcet':0,
-                  'player1_ready_state' : 0,
-                  'player2_ready_state':0,
-                  'player3_ready_state' :0
+                  'player_witch_select': [0, 0, 0],
+                  'player_ready_state' : [0, 0, 0]
                   }
 
 
