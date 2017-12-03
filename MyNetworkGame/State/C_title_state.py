@@ -1,7 +1,7 @@
 from pico2d import *
 
 from State import C_Game_framework
-from State import C_CharSellect_State
+from State import C_Lobby_state
 from State import C_collision
 from C_Wand import Wand
 from TCP.C_TcpController import TcpContoller
@@ -48,13 +48,13 @@ def handle_events(frame_time):
                     if _WAND.x < 580:
                         if _WAND.y > 270:
                             if _WAND.y < 405:
-                                C_Game_framework.run(C_collision)
+                                C_Game_framework.push_state(C_collision)
 
                 if _WAND.x > 600:
                     if _WAND.x < 780:
                         if _WAND.y > 270:
                             if _WAND.y < 405:
-                                C_Game_framework.run(C_CharSellect_State)
+                                C_Game_framework.push_state(C_Lobby_state)
 
                 if _WAND.x > 800:
                     if _WAND.x < 980:
@@ -70,8 +70,6 @@ def handle_events(frame_time):
 
 
 def update(frame_time):
-    global _WAND
-    _WAND.update(frame_time)
     pass
 
 
