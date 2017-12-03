@@ -114,7 +114,7 @@ class Pack:
 
     # enemy_data
     def pack_enemy_data(enemy_data):
-        packed = struct.pack('=fff',
+        packed = struct.pack('=fffi',
                              enemy_data.sx,
                              enemy_data.sy,
                              enemy_data.type
@@ -123,7 +123,7 @@ class Pack:
         return packed
 
     def unpack_enemy_data(packed):
-        unpacked_data = struct.unpack('=fff', packed)
+        unpacked_data = struct.unpack('=fffi', packed)
         return unpacked_data
 
     #player_data
