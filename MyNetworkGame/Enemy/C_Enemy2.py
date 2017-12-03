@@ -14,6 +14,7 @@ class Enemy2:
         global font
 
         self.x, self.y = X , Y
+        self.state =0
 
 
         self.sx = self.x - BG_X
@@ -83,9 +84,9 @@ class Enemy2:
             EBullet(self.x, self.y, PL_X,PL_Y)
             self.Whattime = 0
 
-    def draw(self,sx,sy):
+    def draw(self):
         Scean_x, Scean_y = 49, 82
-        self.image.clip_draw(Scean_x* self.state, 0, Scean_x, Scean_y, sx, sy)
+        self.image.clip_draw(Scean_x* self.state, 0, Scean_x, Scean_y, self.sx, self.sy)
     #    font.draw(self.sx, self.sy, 'X , Y : [%d, %d]' % (self.sx, self.sy))
     #    self.image.clip_draw(Scean_x* self.state, 0, Scean_x, Scean_y, self.sx, self.sy)
 

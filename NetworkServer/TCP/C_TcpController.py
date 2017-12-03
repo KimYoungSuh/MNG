@@ -218,7 +218,8 @@ class TcpController:
                     for enemy in _EnemyList:
                         enemy.update(frame_time, _Player_Packed[0], _Player_Packed[1], _Bg.window_left,
                                      _Bg.window_bottom)
-                        Enemy_packed = data_struct.pack_enemy_data(enemy)
+                        Enemy_packed = data_struct.pack_enemy_data(enemy ,k)
+                        k+=1
                         client_socket.send(Enemy_packed)
 
                 # client_thread = threading.Thread(target=TcpController.process_client, args=(client_socket,))

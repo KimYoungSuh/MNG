@@ -37,9 +37,9 @@ class Enemy1:
 
 
 
-    def draw(self, sx , sy):
+    def draw(self):
 
-        self.image.draw(sx, sy)
+        self.image.draw(self.sx, self.sy)
         #font.draw(self.sx, self.sy+20 , 'X , Y : [%d, %d]' % (self.sx, self.sy))
         #font.draw(self.sx, self.sy, 'X , Y : [%d, %d]' % (self.x, self.y))
 

@@ -198,6 +198,8 @@ def update(frame_time):
     recved_E_NUM = client_sock.recv(struct.calcsize('=i'))
 
 
+
+#SEND_ENEMY_DATA is ENEMY _X,_Y, TYPE
     E_NUM = struct.unpack('=i', recved_E_NUM)[0]
     for i in range(0, E_NUM) :
         _Enemy_packed = client_sock.recv(struct.calcsize('=fffi'))
@@ -206,10 +208,11 @@ def update(frame_time):
             newEnemy = Enemy1(_Enemy_Data[0],_Enemy_Data[1], _Bg.window_left, _Bg.window_bottom)
         if _Enemy_Data[2] ==2 :
             newEnemy = Enemy2(_Enemy_Data[0],_Enemy_Data[1],_Bg.window_left, _Bg.window_bottom)
+        _Enemy1.insert(_Enemy_Data[3], newEnemy)
+        print('_Enemy1 : ', _Enemy1)
 
-        _Enemy1.append(newEnemy)
+
 #        if(_Enemy_Data[3] == E_NUM)
-        print('_Enemy_Data : ', _Enemy_Data)
 
 '''
     _Enemy_packed = client_sock.recv(struct.calcsize('=fffffI'))
@@ -233,13 +236,17 @@ def update(frame_time):
 def draw(frame_time):
     clear_canvas()
     _player.draw()
-
+    for enemy in _Enemy1:
+        enemy.draw()
+    for enemy in _Enemy1:
+        enemy.draw_bb()
 
     '''
     for enemy in _Enemy1:
         enemy.draw()
     for enemy in _Enemy1:
         enemy.draw_bb()
+            _Enemy1.clear()
 
     for ebullets in _EBullet:
         ebullets.draw()

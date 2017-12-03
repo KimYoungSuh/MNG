@@ -113,12 +113,12 @@ class Pack:
     '''
 
     # enemy_data
-    def pack_enemy_data(enemy_data):
-        packed = struct.pack('=fff',
+    def pack_enemy_data(enemy_data,k):
+        packed = struct.pack('=fffi',
                              enemy_data.sx,
                              enemy_data.sy,
-                             enemy_data.type
-
+                             enemy_data.type,
+                             k
                              )
         return packed
 
