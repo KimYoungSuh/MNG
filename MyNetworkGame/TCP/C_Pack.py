@@ -32,7 +32,7 @@ class DataStruct:
                                   room_data['player_name2'].encode('ascii'),
                                   room_data['player_name3'].encode('ascii'),
                                   room_data['player_name4'].encode('ascii'),
-                                  room_data['is_start'],
+                                  room_data['is_started'],
                                   room_data['ready_player'])
         return packed_data
 
@@ -47,27 +47,27 @@ class DataStruct:
             'player_name2': unpacked_data[5].decode('ascii').rstrip('\x00'),
             'player_name3': unpacked_data[6].decode('ascii').rstrip('\x00'),
             'player_name4': unpacked_data[7].decode('ascii').rstrip('\x00'),
-            'is_start': unpacked_data[8],
+            'is_started': unpacked_data[8],
             'ready_player': unpacked_data[9]
         }
         return room_data
 
-    #join_request_data
-    join_request_data_type = 'B 30s B'
+        # join_request_data
+
+    join_request_data_type = 'B 30s'
     join_request_data_size = struct.calcsize(room_data_type)
+
     def pack_join_request_data(join_request_data):
-        packed_data = struct.pack('B 30s B',
+        packed_data = struct.pack('B 30s',
                                   join_request_data['room_number'],
-                                  join_request_data['player_name'].encode('ascii'),
-                                  join_request_data['player_number'])
+                                  join_request_data['player_name'].encode('ascii'))
         return packed_data
 
     def unpack_join_request_data(packed_data):
-        unpacked_data = struct.unpack('B 30s B', packed_data)
+        unpacked_data = struct.unpack('B 30s', packed_data)
         join_request_data = {
             'room_number': unpacked_data[0],
-            'player_name': unpacked_data[1].decode('ascii').rstrip('\x00'),
-            'player_number': unpacked_data[2]
+            'player_name': unpacked_data[1].decode('ascii').rstrip('\x00')
         }
         return join_request_data
 

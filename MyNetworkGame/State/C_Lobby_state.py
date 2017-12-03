@@ -7,7 +7,7 @@ from State import C_CharSellect_State
 from Background.C_LobbyBG import C_LobbyBG
 from C_Wand import Wand
 from TCP.C_TcpController import TcpContoller
-from TCP.C_Pack import Pack
+from TCP.C_Pack import DataStruct
 import struct
 import threading
 
@@ -68,8 +68,8 @@ def reset_lobby(): #로비 정보 요청
 def join_room(): # 참가 요청
     if selection > len(rooms_data) :
         return
-    result = TcpContoller.send_join_room(game_data.client_socket, rooms_data[selection-1]['room_number'],
-                                         "Witch2", game_data.player_number)
+    result = TcpContoller.send_join_room(game_data.client_socket, rooms_data[selection-1]['room_number'], "Witch2")
+
     if result == 1:
         C_Game_framework.push_state(C_CharSellect_State)
     elif result == 2:
@@ -128,8 +128,8 @@ def enter():
     client_sock = tcp_controller.tcp_client_init()
     game_data.client_socket = client_sock
 
-    packed_player_number = client_sock.recv(Pack.integer_size)
-    player_number = Pack.unpack_integer(packed_player_number)
+    packed_player_number = client_sock.recv(DataStruct.integer_size)
+    player_number = DataStruct.unpack_integer(packed_player_number)
 
     game_data.player_number = player_number
 

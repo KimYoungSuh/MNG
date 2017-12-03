@@ -22,15 +22,6 @@ class Pack:
     def unpack_integer(integer):
         return struct.unpack('i', integer)[0]
 
-    # count_data
-    def pack_count_data(count_data):
-        packed_data = struct.pack('i', count_data)
-        return packed_data
-
-    def unpack_count_data(count_data):
-        unpacked_data = struct.unpack('i', count_data)
-        return unpacked_data
-
     # Room_data
     room_data_type = 'B B 30s B 30s 30s 30s 30s ? B'
     room_data_size = struct.calcsize(room_data_type)
@@ -66,21 +57,19 @@ class Pack:
             return room_data
 
     # join_request_data
-    join_request_data_type = 'B 30s B'
+    join_request_data_type = 'B 30s'
     join_request_data_size = struct.calcsize(room_data_type)
     def pack_join_request_data(join_request_data):
-        packed_data = struct.pack('B 30s B',
+        packed_data = struct.pack('B 30s',
                                   join_request_data['room_number'],
-                                  join_request_data['player_name'].encode('ascii'),
-                                  join_request_data['player_number'])
+                                  join_request_data['player_name'].encode('ascii'))
         return packed_data
 
     def unpack_join_request_data(packed_data):
-        unpacked_data = struct.unpack('B 30s B', packed_data)
+        unpacked_data = struct.unpack('B 30s', packed_data)
         join_request_data = {
             'room_number': unpacked_data[0],
-            'player_name': unpacked_data[1].decode('ascii').rstrip('\x00'),
-            'player_number': unpacked_data[2]
+            'player_name': unpacked_data[1].decode('ascii').rstrip('\x00')
         }
         return join_request_data
 
@@ -122,6 +111,7 @@ class Pack:
         unpacked_data = struct.unpack('iiBfB', packed)
         return unpacked_data
     '''
+
     # enemy_data
     def pack_enemy_data(enemy_data):
         packed = struct.pack('=fff',
