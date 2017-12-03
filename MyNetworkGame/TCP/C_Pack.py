@@ -121,15 +121,18 @@ class DataStruct:
     enemy_data_type = '=fff'
     enemy_data_size = struct.calcsize(enemy_data_type)
     def pack_enemy_data(enemy_data):
-        packed = struct.pack('=fff',
+        packed = struct.pack('=fffffI',
                              enemy_data.sx,
                              enemy_data.sy,
+                             enemy_data.xdir,
+                             enemy_data.ydir,
+                             enemy_data.speed,
                              enemy_data.type
                              )
         return packed
 
     def unpack_enemy_data(packed):
-        unpacked_data = struct.unpack('=fffi', packed)
+        unpacked_data = struct.unpack('=fffffI', packed)
         return unpacked_data
 
     #player_data
