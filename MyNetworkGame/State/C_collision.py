@@ -101,7 +101,11 @@ def create_world():
     font = load_font('ENCR10B.TTF')
     _EBullet= EBullet.get_list()
     _PBullet = PBullet.get_list()
+
+
 def recv_thread(client_sock):
+
+
     pass
     '''while 1:
         packed_players_data = client_sock.recv(BUFSIZE)
@@ -159,8 +163,8 @@ def get_time(frame_time):
 '''
 def update(frame_time):
     global E_NUM ,_Enemy_Data
-    #for enemy in _Enemy1:
-    #    enemy.update(frame_time, _player.x, _player.y, _Bg.window_left, _Bg.window_bottom)
+    for enemy in _Enemy1:
+        enemy.update(frame_time, _player.x, _player.y, _Bg.window_left, _Bg.window_bottom)
     '''
     for enemy in _Enemy1 :
         if collide(enemy, _player):
@@ -195,23 +199,25 @@ def update(frame_time):
     _player.update(frame_time)
     Player_packed = DataStruct.pack_player_data(_player)
     client_sock.send(Player_packed)
-    recved_E_NUM = client_sock.recv(struct.calcsize('=i'))
 
-
+    '''
+#SEND_ENEMY_DATA is ENEMY _X,_Y, TYPE
     E_NUM = struct.unpack('=i', recved_E_NUM)[0]
-    for i in range(0, E_NUM) :
+    for enemy in range(0, E_NUM) :
         _Enemy_packed = client_sock.recv(struct.calcsize('=fffi'))
         _Enemy_Data = DataStruct.unpack_enemy_data(_Enemy_packed)
         if _Enemy_Data[2] ==1 :
             newEnemy = Enemy1(_Enemy_Data[0],_Enemy_Data[1], _Bg.window_left, _Bg.window_bottom)
         if _Enemy_Data[2] ==2 :
             newEnemy = Enemy2(_Enemy_Data[0],_Enemy_Data[1],_Bg.window_left, _Bg.window_bottom)
+        _Enemy1.insert(_Enemy_Data[3], newEnemy)
 
-        _Enemy1.append(newEnemy)
-#        if(_Enemy_Data[3] == E_NUM)
-        print('_Enemy_Data : ', _Enemy_Data)
+        print('_Enemy1 : ', _Enemy1)
 
+    for enemy in _Enemy1 :
+        enemy.update()
 '''
+#        if(_Enemy_Data[3] == E_NUM)
     _Enemy_packed = client_sock.recv(struct.calcsize('=fffffI'))
     if _Enemy_packed != b'EMPTY' :
         _Enemy_Data = DataStruct.unpack_enemy_data(_Enemy_packed)
@@ -221,9 +227,9 @@ def update(frame_time):
         elif _Enemy_Data[5] ==2 :
             newEnemy = Enemy2(_Enemy_Data[0],_Enemy_Data[1],_Enemy_Data[2],_Enemy_Data[3], _Enemy_Data[4], _Bg.window_left, _Bg.window_bottom)
         _Enemy1.append(newEnemy)
-'''
-    #else :
-    #    pass
+
+    else :
+        pass
 
     #print("Enemy Packed : ", _enemylist)
 #    timer.update(frame_time)
@@ -233,13 +239,17 @@ def update(frame_time):
 def draw(frame_time):
     clear_canvas()
     _player.draw()
-
+    for enemy in _Enemy1:
+        enemy.draw()
+    for enemy in _Enemy1:
+        enemy.draw_bb()
 
     '''
     for enemy in _Enemy1:
         enemy.draw()
     for enemy in _Enemy1:
         enemy.draw_bb()
+            _Enemy1.clear()
 
     for ebullets in _EBullet:
         ebullets.draw()

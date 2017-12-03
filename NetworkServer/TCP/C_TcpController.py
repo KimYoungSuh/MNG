@@ -198,7 +198,18 @@ class TcpController:
                     frame_time = time.clock() - current_time
                     current_time += frame_time
                     _Bg.update(_Player_Packed[0], _Player_Packed[1])
-
+                    SEND_ENEMY = b'EMPTY'
+                    if timer.update(frame_time) == True :
+                        EnemyDirNum = random.randint(0, 8)
+                        if EnemyDirNum <= 3:
+                            newEnemy = Enemy1(_Player_Packed[2], _Player_Packed[3], EnemyDirNum, _Bg.window_left,
+                                              _Bg.window_bottom)
+                        if EnemyDirNum >= 4:
+                            newEnemy = Enemy2(_Player_Packed[2], _Player_Packed[3], EnemyDirNum, _Bg.window_left,
+                                              _Bg.window_bottom)
+                        SEND_ENEMY = PACK_DATA_Enemy(newEnemy)
+                    client_socket.send(SEND_ENEMY)
+                    '''
                     if timer.update(frame_time) == True:
                         EnemyDirNum = random.randint(0, 8)
                         if EnemyDirNum <= 3:
@@ -218,9 +229,10 @@ class TcpController:
                     for enemy in _EnemyList:
                         enemy.update(frame_time, _Player_Packed[0], _Player_Packed[1], _Bg.window_left,
                                      _Bg.window_bottom)
-                        Enemy_packed = data_struct.pack_enemy_data(enemy)
+                        Enemy_packed = data_struct.pack_enemy_data(enemy ,k)
+                        k+=1
                         client_socket.send(Enemy_packed)
-
+                        '''
                 # client_thread = threading.Thread(target=TcpController.process_client, args=(client_socket,))
                 # client_thread.start()
                 pass
@@ -360,10 +372,10 @@ class TcpController:
 
 
 
-    def PACK_DATA_Enemy(client_socket, object):
-        for objects in object :
-            object_struct_packed = data_struct.pack_enemy_data(objects)
-            client_socket.sendall(Enemy_packed)
-        return Enemy_packed
+def PACK_DATA_Enemy(objects):
+    #for objects in object :
+    object_struct_packed = data_struct.pack_enemy_data(objects)
+        #client_socket.sendall(Enemy_packed)
+    return object_struct_packed
 
 

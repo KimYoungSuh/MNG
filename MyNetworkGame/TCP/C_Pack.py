@@ -77,6 +77,8 @@ class DataStruct:
         return unpacked_data
 
     # Bullet_data
+    bullet_data_type = '=ffffff'
+    bullet_data_size = struct.calcsize(bullet_data_type)
     def pack_bullet_data(bullet_data):
         packed = struct.pack('=ffffff',
                              bullet_data.shooter,
@@ -116,19 +118,27 @@ class DataStruct:
         unpacked_data = struct.unpack('=fffffI', packed)
         return unpacked_data
     '''
+    enemy_data_type = '=fff'
+    enemy_data_size = struct.calcsize(enemy_data_type)
     def pack_enemy_data(enemy_data):
-        packed = struct.pack('=fffi',
+        packed = struct.pack('=fffffI',
                              enemy_data.sx,
                              enemy_data.sy,
+                             enemy_data.xdir,
+                             enemy_data.ydir,
+                             enemy_data.speed,
                              enemy_data.type
                              )
         return packed
 
     def unpack_enemy_data(packed):
-        unpacked_data = struct.unpack('=fffi', packed)
+        unpacked_data = struct.unpack('=fffffI', packed)
         return unpacked_data
 
     #player_data
+
+    player_data_type = '=fffff'
+    player_data_size = struct.calcsize(player_data_type)
     def pack_player_data(p_data):
         packed = struct.pack('=fffff',
 #           player_data['player_name'].encode('utf-8'),

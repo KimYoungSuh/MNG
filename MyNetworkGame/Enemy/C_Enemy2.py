@@ -10,14 +10,27 @@ class Enemy2:
 
     #_enemy2 = []
 
-    def __init__(self, X, Y,BG_X, BG_Y):
+    def __init__(self, X, Y, Xdir , Ydir, Speed,  BG_X, BG_Y):
+        global font
         global font
 
-        self.x, self.y = X , Y
-
+        self.x, self.y = X, Y
+        self.speed = Speed
+        self.xdir = Xdir
+        self.ydir = Ydir
 
         self.sx = self.x - BG_X
         self.sy = self.y - BG_Y
+        if self.xdir > self.ydir:
+            if self.xdir > 0:
+                self.state = 1
+            else:
+                self.state = 2
+        else:
+            if self.ydir > 0:
+                self.state = 0
+            else:
+                self.state = 3
 
         '''
             if self.xdir > self.ydir:
@@ -52,7 +65,10 @@ class Enemy2:
         if self.y < 0:
             self.y = 0
             self.ydir *= -1
-        self.Whattime +=frame_time
+        self.x += self.speed * self.xdir * frame_time
+        self.y += self.speed * self.ydir * frame_time
+        self.sx = self.x - _BG_X
+        self.sy = self.y - _BG_Y
         if self.xdir > self.ydir:
             if self.xdir > 0:
                 self.state = 1
@@ -63,15 +79,8 @@ class Enemy2:
                 self.state = 0
             else:
                 self.state = 3
-        self.sx = self.x - _BG_X
-        self.sy = self.y - _BG_Y
-    #    self.sx = self.x - PL_X
-    #    self.sy = self.y - PL_Y
-#
-        self.x += self.speed * self.xdir * frame_time
-        self.y += self.speed * self.ydir * frame_time
 
-        self.add(PL_X,PL_Y)
+        #self.add(PL_X,PL_Y)
 
 
 
@@ -83,9 +92,9 @@ class Enemy2:
             EBullet(self.x, self.y, PL_X,PL_Y)
             self.Whattime = 0
 
-    def draw(self,sx,sy):
+    def draw(self):
         Scean_x, Scean_y = 49, 82
-        self.image.clip_draw(Scean_x* self.state, 0, Scean_x, Scean_y, sx, sy)
+        self.image.clip_draw(Scean_x* self.state, 0, Scean_x, Scean_y, self.sx, self.sy)
     #    font.draw(self.sx, self.sy, 'X , Y : [%d, %d]' % (self.sx, self.sy))
     #    self.image.clip_draw(Scean_x* self.state, 0, Scean_x, Scean_y, self.sx, self.sy)
 
