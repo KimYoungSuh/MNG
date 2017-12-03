@@ -200,9 +200,9 @@ def recv_data(recv_size):
         print('packed_waitting_room_data :' , packed_waitting_room_data)
         recved_data = struct.unpack('=BBBBBBBi', packed_waitting_room_data)
         game_data.waitting_room_data['player_count'] = recved_data[0]
-        game_data.waitting_room_data['player1_witch_selcet'] = recved_data[1]
-        game_data.waitting_room_data['player2_witch_selcet'] = recved_data[2]
-        game_data.waitting_room_data['player3_witch_selcet'] = recved_data[3]
+        game_data.waitting_room_data['player1_witch_seledt'] = recved_data[1]
+        game_data.waitting_room_data['player2_witch_seledt'] = recved_data[2]
+        game_data.waitting_room_data['player3_witch_seledt'] = recved_data[3]
         game_data.waitting_room_data['player1_ready_state'] = recved_data[4]
         game_data.waitting_room_data['player2_ready_state'] = recved_data[5]
         game_data.waitting_room_data['player3_ready_state'] = recved_data[6]
@@ -218,9 +218,9 @@ def recv_data2(recv_size):
         print('packed_waitting_room_data :', packed_waitting_room_data)
         recved_data = struct.unpack('=BBBBBBBi', packed_waitting_room_data)
         game_data.waitting_room_data['player_count'] = recved_data[0]
-        game_data.waitting_room_data['player1_witch_selcet'] = recved_data[1]
-        game_data.waitting_room_data['player2_witch_selcet'] = recved_data[2]
-        game_data.waitting_room_data['player3_witch_selcet'] = recved_data[3]
+        game_data.waitting_room_data['player1_witch_select'] = recved_data[1]
+        game_data.waitting_room_data['player2_witch_seledt'] = recved_data[2]
+        game_data.waitting_room_data['player3_witch_seledt'] = recved_data[3]
         game_data.waitting_room_data['player1_ready_state'] = recved_data[4]
         game_data.waitting_room_data['player2_ready_state'] = recved_data[5]
         game_data.waitting_room_data['player3_ready_state'] = recved_data[6]
@@ -238,19 +238,18 @@ def draw(frame_time):
     #font.draw(160, 430, 'Wand_X = %d' % (_WAND.x))
     #font.draw(160, 460, 'Wand_Y = %d' % (_WAND.y))
 
-
-    #My
-    if select_witch == 1 :
-        select_witchs()
-        image1.clip_draw( Scean_x * 3, 0, Scean_x, Scean_y, 30+(170*game_data.player_number)+(230*(game_data.player_number-1)) , 600)
-    if select_witch ==2 :
-        select_witchs()
-        image2.clip_draw(Scean_x * 3, 0, Scean_x, Scean_y, 30+(170*game_data.player_number)+(230*(game_data.player_number-1)) , 600)
-    if select_witch ==3 :
-        select_witchs()
-        image3.clip_draw(Scean_x * 3, 0, Scean_x, Scean_y, 30+(170*game_data.player_number)+(230*(game_data.player_number-1)) , 600)
+    image_set = [image1, image2, image3]
 
 
+    if game_data.waitting_room_data['player1_witch_select']-1 >= 0:
+        image_set[game_data.waitting_room_data['player1_witch_select']-1].clip_draw(
+        Scean_x * 3, 0, Scean_x, Scean_y, 30 + (230 * (game_data.player_number - 1)), 600)
+    if game_data.waitting_room_data['player2_witch_select']-1 >= 0:
+        image_set[game_data.waitting_room_data['player2_witch_select']-1].clip_draw(
+        Scean_x * 3, 0, Scean_x, Scean_y, 30 + (170 * 1) + (230 * (game_data.player_number - 1)), 600)
+    if game_data.waitting_room_data['player3_witch_select']-1 >= 0:
+        image_set[game_data.waitting_room_data['player3_witch_select']-1].clip_draw(
+        Scean_x * 3, 0, Scean_x, Scean_y, 30 + (170 * 2) + (230 * (game_data.player_number - 1)), 600)
 
 
     for i in range(1, PLAYER_NUM+1):
