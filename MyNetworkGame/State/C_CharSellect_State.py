@@ -243,7 +243,7 @@ def draw(frame_time):
 
     if game_data.waitting_room_data['player1_witch_select']-1 >= 0:
         image_set[game_data.waitting_room_data['player1_witch_select']-1].clip_draw(
-        Scean_x * 3, 0, Scean_x, Scean_y, 30 + + (230 * (game_data.player_number - 1)), 600)
+        Scean_x * 3, 0, Scean_x, Scean_y, 30 + (230 * (game_data.player_number - 1)), 600)
     if game_data.waitting_room_data['player2_witch_select']-1 >= 0:
         image_set[game_data.waitting_room_data['player2_witch_select']-1].clip_draw(
         Scean_x * 3, 0, Scean_x, Scean_y, 30 + (170 * 1) + (230 * (game_data.player_number - 1)), 600)
