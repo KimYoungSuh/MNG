@@ -7,6 +7,7 @@ from Data.C_EnemyData import *
 from Data.C_PlayerData import *
 from Data.C_RoomData import *
 from Data.C_StructSet import *
+from State import C_collision
 data_struct = DataStruct
 
 class TcpContoller:
@@ -45,37 +46,56 @@ class TcpContoller:
         print("SOCKET closed... END")
 
 
-    #Lobby
-    def send_create_room(self, host_number, room_name, full_player, player_name):
-        #방 정보를 모두 불러들이면 서버 내 최대 방 개수 확인할필요없음
-        room_data = {
-            'room_number': 0,
-            'host_number': host_number,
-            'room_name': room_name,
-            'full_player': full_player,
-            'player_name1': player_name,
-            'player_name2': 0,
-            'player_name3': 0,
-            'player_name4': 0,
-            'is_started': False,
-            'ready_player': 0
-        }
+    #Lobby selection 0 = LOBBY_DATA, selection 1 = ROOM_DATA, selection 2 = JOIN, selection 3 = CREATE
+    def send_create_room(client_socket, player_number, room_name, full_player, player_name):
+        selection = 3
+        packed_selection = data_struct.pack_integer(selection)
+        client_socket.send(packed_selection)
+        room_data = RoomData().room_data
+        room_data['host_number'] = player_number
+        room_data['room_name'] = room_name
+        room_data['full_player'] = full_player
+        room_data['player_name1'] = player_name
         create_room = data_struct.pack_room_data(room_data)
-        self.client_socket.send(create_room)
+        client_socket.send(create_room)
+        packed_can_make_room = client_socket.recv(data_struct.boolean_size)
+        return data_struct.unpack_boolean(packed_can_make_room)
 
-    def send_join_room(self, room_number):
+
+    def recv_lobby_data(client_socket):
+        selection = 0
+        packed_selection = data_struct.pack_integer(selection)
+        client_socket.send(packed_selection)
+        packed_room_count = client_socket.recv(data_struct.integer_size)
+        room_count = data_struct.unpack_integer(packed_room_count)
+
+        rooms_data = []
+
+        for i in range(room_count):
+            packed_room_data = client_socket.recv(data_struct.room_data_size)
+            room_data = data_struct.unpack_room_data(packed_room_data)
+            rooms_data.append(room_data)
+
+        for room in rooms_data:
+            print(room["room_name"])
+
+        return rooms_data
+
+    def send_join_room(client_socket, room_number, player_name):
+        selection = 2
+        packed_selection = data_struct.pack_integer(selection)
+        client_socket.send(packed_selection)
         join_request_data = {
             'room_number': room_number,
-            'player_name': player_data['player_name'],
-            'player_number': player_data['player_number']
+            'player_name': player_name
         }
         join_room = data_struct.pack_join_request_data(join_request_data)
-        self.client_socket.send(join_room)
-        #방 정보를 모두 불러들이면 구현할필요 없음 (임시)
-        packed_room_data = self.client_socket.recv(1)
-        room_data = DataStruct.unpack_room_data(packed_room_data)
+        client_socket.send(join_room)
 
-        if room_data['is_started'] == True:
+        packed_room_data = client_socket.recv(data_struct.room_data_size)
+        room_data = data_struct.unpack_room_data(packed_room_data)
+
+        if room_data['is_started'] == True: #3 = 시작 1 = 참가가능, 2 = 풀방
            return 3
         elif (room_data['full_player'] == 4 and room_data['player_name4'] == 'default_name') or\
             (room_data['full_player'] == 3 and room_data['player_name3'] == 'default_name') or\
@@ -86,13 +106,8 @@ class TcpContoller:
 
     #Wait Room
     def send_ready_state(self, is_ready):
-        packed_is_ready = DataStruct.pack_is_game_over(is_ready)
+        packed_is_ready = data_struct.pack_is_game_over(is_ready)
         self.client_socket.send(packed_is_ready)
 
 
 
-
-#tcp_controller = TcpContoller()
-#tcp_controller.tcp_client_init()
-#tcp_controller.loof()
-#tcp_controller.exit()

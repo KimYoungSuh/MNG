@@ -19,7 +19,8 @@ class Enemy2:
         self.sx = self.x - BG_X
         self.sy = self.y - BG_Y
 
-'''        if self.xdir > self.ydir:
+        '''
+            if self.xdir > self.ydir:
             if self.xdir > 0:
                 self.state = 1
             else:
@@ -29,7 +30,7 @@ class Enemy2:
                 self.state = 0
             else:
                 self.state = 3
-                '''
+        '''
         if Enemy2.image == None:
             Enemy2.image = load_image('..\Enemy\Image_Enermy2.png')
        # Enemy2._enemy2.append(self)

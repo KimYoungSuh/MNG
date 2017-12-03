@@ -2,8 +2,6 @@ from pico2d import *
 
 from State import C_Game_framework
 from State import C_title_state
-import State.C_Game_framework
-from State import C_title_state
 
 name = "StartState"
 image = None
@@ -24,8 +22,7 @@ def update(frame_time):
 
     if (logo_time > 1):
         logo_time = 0
-        C_Game_framework.push_state(C_title_state)
-        State.C_Game_framework.push_state(C_title_state)
+        C_Game_framework.change_state(C_title_state)
         #game_framework.quit()
     logo_time += frame_time
 #

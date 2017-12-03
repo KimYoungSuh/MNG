@@ -3,6 +3,7 @@ from pico2d import *
 from C_Wand import Wand
 from State import C_collision
 from State import C_Game_framework
+from State import C_Lobby_state
 from State import C_title_state
 from Background.C_SellectBG import C_SellectBG
 from TCP.C_TcpController import TcpContoller
@@ -41,12 +42,7 @@ def enter():
     _WAND = Wand()
     select_witch = 0
     PLAYER_NUM = 0
-    game_data = C_Game_data.GameData
-    game_data.player_number = 1
-    tcp_controller = TcpContoller()
-    readystate=0
-    client_sock = tcp_controller.tcp_client_init()
-    game_data.client_socket=client_sock
+    game_data = C_Lobby_state.game_data
     game_data.client_socket.send(b'JOIN!')
 
     packed_player_data = game_data.client_socket.recv(100)
@@ -233,7 +229,7 @@ def recv_data2(recv_size):
 
 
 def draw(frame_time):
-    global image1,image2,image3, _WAND
+    global image1,image2,image3,_WAND
     clear_canvas()
     _BG.draw()
     image1.clip_draw(Scean_x * 3, 0, Scean_x, Scean_y, 140, 250)

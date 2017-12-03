@@ -8,6 +8,39 @@ import State.C_title_state
 name = "Game Over"
 image = None
 #
+
+def select_room1():
+    pass
+
+
+def select_room2():
+    pass
+
+
+def select_room3():
+    pass
+
+
+def select_room4():
+    pass
+
+
+def reset_lobby():
+    pass
+
+
+def join_room():
+    pass
+
+
+def create_room():
+    pass
+
+
+def exit_lobby():
+    pass
+
+
 def enter():
     global image
     image = load_image('State\Image_Gameover_state.jpg')
@@ -45,6 +78,7 @@ def draw(frame_time):
     global image
     clear_canvas()
     update_canvas()
+
 
 
 
