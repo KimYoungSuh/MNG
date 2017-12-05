@@ -2,6 +2,7 @@ import socket
 import threading
 import time
 import random
+import string
 from Enemy.C_Enemy import Enemy1
 from Enemy.C_Enemy2 import Enemy2
 from Bullet.C_EnemyBullet import EBullet
@@ -312,6 +313,17 @@ class TcpController:
                 current_time = time.clock()
                 P_Data = client_socket.recv(struct.calcsize('=fffff'))
                 _Player_Packed = data_struct.unpack_player_data(P_Data)
+
+                # Gameover
+                # <--testcode
+                packed_is_game_over = client_socket.recv(struct.calcsize('?'))
+                game_sys_main.is_game_over = (struct.unpack('?', packed_is_game_over))[0]
+                # testcode-->
+                client_socket.send(struct.pack('?', game_sys_main.is_game_over))
+                if (game_sys_main.is_game_over):
+                    break
+
+
                 frame_time = time.clock() - main_time
                 main_time += frame_time
                 _Bg.update(_Player_Packed[0], _Player_Packed[1])
@@ -345,7 +357,63 @@ class TcpController:
                                     _Bg.window_bottom)
                     Ebullet_packed = data_struct.pack_bullet_data(Ebullets)
                     print('en(_EBullet) : ', len(_EBullet))
-                    client_socket.send(Ebullet_packed)
+
+        leader_board = open('LeaderBoard.txt', 'a+t')
+        new_score = ('p1', 'd', 'p2', 'd', 'p3', 'd', 'time', '00.00.00', 'score', '9')
+
+        for temp in new_score:
+            leader_board.write(temp)
+        leader_board.write('\n')
+
+        leader_board.close()
+        leader_board = open('LeaderBoard.txt', 'r+t')
+
+        before_leader_board = leader_board.readlines()
+        leader_list = []
+        for temp in before_leader_board:
+            temp_tuple = ()
+            p1_pos = temp.find('p1')
+            p2_pos = temp.find('p2')
+            p3_pos = temp.find('p3')
+            time_pos = temp.find('time')
+            score_pos = temp.find('score')
+            temp_tuple = ('p1', temp[p1_pos + 2:p2_pos],
+                          'p2', temp[p2_pos + 2:p3_pos],
+                          'p3', temp[p3_pos + 2:time_pos],
+                          'time', temp[time_pos + 4:score_pos],
+                          'score', temp[score_pos + 5: len(temp) - 1])
+
+            leader_list.append(temp_tuple)
+        after_leader_board = sorted(leader_list, key=lambda score: score[9], reverse=True)
+        leader_board.close()
+        leader_board = open('LeaderBoard.txt', 'wt')
+        count = 0
+
+        for leader_list_temp in after_leader_board:
+            count += 1
+            if count > 10: break
+            for leader_tuple_temp in leader_list_temp:
+                leader_board.write(leader_tuple_temp)
+            leader_board.write('\n')
+
+
+        packed_leader_board_count = Pack.pack_integer(len(after_leader_board))
+        client_socket.send(packed_leader_board_count)
+
+        for i in range(0, len(after_leader_board)):
+            print(after_leader_board[i])
+            print(i)
+            packed_leader_board= struct.pack('30s 30s 30s 30s i',
+                                             after_leader_board[i][1].encode('ascii'),
+                                             after_leader_board[i][3].encode('ascii'),
+                                             after_leader_board[i][5].encode('ascii'),
+                                             after_leader_board[i][7].encode('ascii'),
+                                             int(after_leader_board[i][9]))
+
+            client_socket.send(packed_leader_board)
+
+
+
 
 
 def send_is_game_over(socket):

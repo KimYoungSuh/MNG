@@ -145,6 +145,10 @@ def handle_events(frame_time):
             else:
                 _player.handle_event(event)
 
+        if event.type == SDL_KEYDOWN:
+            if event.key == SDLK_g:
+                GameData.is_game_over=True
+
 def collide(a, b):
     left_a, bottom_a,right_a, top_a = a.get_bb()
     left_b, bottom_b,right_b, top_b = b.get_bb()
@@ -216,6 +220,16 @@ def update(frame_time):
     Player_packed = DataStruct.pack_player_data(_player)
     client_sock.send(Player_packed)
 
+    # Gameover
+    # <--testcode
+    client_sock.send(struct.pack('?', GameData.is_game_over))
+    # testcode-->
+    packed_is_game_over = client_sock.recv(struct.calcsize('?'))
+    GameData.is_game_over = (struct.unpack('?', packed_is_game_over))[0]
+    if (GameData.is_game_over):
+        print('game_over')
+        State.C_Game_framework.change_state(State.C_Gameover_state)
+        return
 
 
     recved_NUM = client_sock.recv(struct.calcsize('=ii'))
