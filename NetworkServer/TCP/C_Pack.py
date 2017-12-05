@@ -121,13 +121,11 @@ class Pack:
         return packed_data
 
     def pack_bullet_data(bullet_data):
-        packed = struct.pack('=ffffff',
+        packed = struct.pack('=fff',
                              bullet_data.shooter,
                              bullet_data.x,
-                             bullet_data.y,
-                             bullet_data.xdir,
-                             bullet_data.ydir,
-                             bullet_data.speed)
+                             bullet_data.y
+                             )
         #                             (bullet_data['start_pos'])['pos_x'],
         #                             (bullet_data['start_pos'])['pos_y'],
         #                             bullet_data['direction'],
@@ -137,7 +135,7 @@ class Pack:
         return packed
 
     def unpack_bullet_data(packed):
-        unpaked_data = struct.unpack('=ffffff', packed)
+        unpaked_data = struct.unpack('=fff', packed)
         return unpaked_data
     # Bullet_data
     '''
@@ -155,19 +153,18 @@ class Pack:
     '''
 
     # enemy_data
-    def pack_enemy_data(enemy_data):
-        packed = struct.pack('=fffffI',
-                             enemy_data.sx,
-                             enemy_data.sy,
-                             enemy_data.xdir,
-                             enemy_data.ydir,
-                             enemy_data.speed,
-                             enemy_data.type
+    def pack_enemy_data(enemy_data, k ):
+        packed = struct.pack('=ffffi',
+                             enemy_data.x,
+                             enemy_data.y,
+                             enemy_data.type,
+                             enemy_data.state,
+                             k
                              )
         return packed
 
     def unpack_enemy_data(packed):
-        unpacked_data = struct.unpack('=fffffI', packed)
+        unpacked_data = struct.unpack('=ffffi', packed)
         return unpacked_data
 
     #player_data

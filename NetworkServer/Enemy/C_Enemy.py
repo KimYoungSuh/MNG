@@ -20,7 +20,7 @@ class Enemy1:
     def __init__(self, PL_X, PL_Y, Enemy_dir, BG_X, BG_Y):
         self.rand = Enemy_dir
         self.type = 1
-
+        self.state = 0
         if self.rand == 0:
             self.x, self.y = random.randint(0, 50), random.randint(0, 1800)
         elif self.rand == 1:
@@ -66,7 +66,6 @@ class Enemy1:
         self.y += self.speed * self.ydir * frame_time
         self.sx = self.x - _BG_X
         self.sy = self.y - _BG_Y
-        self.ADD_Bullet(PL_X,PL_Y)
 
 
 
@@ -74,11 +73,11 @@ class Enemy1:
 
     #def get_list():
     #    return (Enemy1._enemy)
-    def ADD_Bullet(self,PL_X, PL_Y):
-        pass
-        #if self.Whattime >= 2.0:
-        #    EBullet(self.x, self.y, PL_X,PL_Y)
-        #    self.Whattime = 0
+    def ADD_Bullet(self):
+        if self.Whattime >= 2.0:
+            self.Whattime = 0
+            return True
+
 
 
 

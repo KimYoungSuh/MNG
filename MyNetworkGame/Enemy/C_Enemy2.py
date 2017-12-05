@@ -10,27 +10,14 @@ class Enemy2:
 
     #_enemy2 = []
 
-    def __init__(self, X, Y, Xdir , Ydir, Speed,  BG_X, BG_Y):
-        global font
-        global font
+    def __init__(self, X, Y,State, BG_X, BG_Y):
 
         self.x, self.y = X, Y
-        self.speed = Speed
-        self.xdir = Xdir
-        self.ydir = Ydir
+
 
         self.sx = self.x - BG_X
         self.sy = self.y - BG_Y
-        if self.xdir > self.ydir:
-            if self.xdir > 0:
-                self.state = 1
-            else:
-                self.state = 2
-        else:
-            if self.ydir > 0:
-                self.state = 0
-            else:
-                self.state = 3
+        self.state = State
 
         '''
             if self.xdir > self.ydir:
@@ -52,33 +39,10 @@ class Enemy2:
     def returnDir(self, x,y):
         pass
 
-    def update(self, frame_time, PL_X, PL_Y, _BG_X, _BG_Y):
-        if self.x > 3200:
-            self.x = 3200
-            self.xdir *= -1
-        if self.x < 0:
-            self.x = 0
-            self.xdir *= -1
-        if self.y > 1800:
-            self.y = 1800
-            self.ydir *= -1
-        if self.y < 0:
-            self.y = 0
-            self.ydir *= -1
-        self.x += self.speed * self.xdir * frame_time
-        self.y += self.speed * self.ydir * frame_time
+    def update(self, frame_time, PL_X, PL_Y, _BG_X, _BG_Y,State):
         self.sx = self.x - _BG_X
         self.sy = self.y - _BG_Y
-        if self.xdir > self.ydir:
-            if self.xdir > 0:
-                self.state = 1
-            else:
-                self.state = 2
-        else:
-            if self.ydir > 0:
-                self.state = 0
-            else:
-                self.state = 3
+        self.state = State
 
         #self.add(PL_X,PL_Y)
 
@@ -94,7 +58,7 @@ class Enemy2:
 
     def draw(self):
         Scean_x, Scean_y = 49, 82
-        self.image.clip_draw(Scean_x* self.state, 0, Scean_x, Scean_y, self.sx, self.sy)
+        self.image.clip_draw(0, 0, Scean_x, Scean_y, self.sx, self.sy)
     #    font.draw(self.sx, self.sy, 'X , Y : [%d, %d]' % (self.sx, self.sy))
     #    self.image.clip_draw(Scean_x* self.state, 0, Scean_x, Scean_y, self.sx, self.sy)
 

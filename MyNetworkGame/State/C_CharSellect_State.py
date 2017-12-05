@@ -38,7 +38,6 @@ def enter():
     image3 = load_image('..\Player\Image_Player3.png')
     GAME_STATE =0
     recv_thread_isRun = 0
-    recv_thread2_isRun =0
     font = load_font('ENCR10B.TTF')
     _BG = C_SellectBG()
     _WAND = Wand()
@@ -47,6 +46,7 @@ def enter():
     game_data = C_Lobby_state.game_data
 
     #recv_thread = threading.Thread(target=recv_data,args=(struct.calcsize('=BBBBBBBi'),))
+    #recv_thread.start()
 
     #game_data.player_number = (struct.unpack('i',packed_player_data))
     #game_data.watting_room_data = WaittingRoomData().waitting_room_data
@@ -132,14 +132,6 @@ def collide_point(point, box):
         return False
     return True
 
-def send_packed_Player_Sellect2(Packed) :
-    global PLAYER_NUM, GAME_STATE
-    print('Packed :', Packed)
-    game_data.client_socket.send(Packed)
-    print('LineEndofSendPackedPlayerSellect2')
-    #recv_thread = threading.Thread(target=recv_data, args=(struct.calcsize('BBBBBBBi'),))
-    #recv_thread.start()
-
 def update(frame_time):
     global _WAND, GAME_STATE, select_witch , readystate, exit_state, delta_time, game_data
 
@@ -162,9 +154,7 @@ def update(frame_time):
 
 def recv_data(recv_size):
     global GAME_STATE,readystate
-
     while GAME_STATE ==0:
-
         packed_waitting_room_data = game_data.client_socket.recv(recv_size)
         print('packed_waitting_room_data :' , packed_waitting_room_data)
         recved_data = struct.unpack('=BBBBBBBi', packed_waitting_room_data)
@@ -177,23 +167,6 @@ def recv_data(recv_size):
         game_data.waitting_room_data['player3_ready_state'] = recved_data[6]
         GAME_STATE = int(recved_data[7])
         print('GAME_STATE :', GAME_STATE )
-
-def recv_data2(recv_size):
-    global readystate, GAME_STATE
-
-    while readystate ==1:
-        print('Hi im recv2 Thread')
-        packed_waitting_room_data = game_data.client_socket.recv(recv_size)
-        print('packed_waitting_room_data :', packed_waitting_room_data)
-        recved_data = struct.unpack('=BBBBBBBi', packed_waitting_room_data)
-        game_data.waitting_room_data['player_count'] = recved_data[0]
-        game_data.waitting_room_data['player1_witch_select'] = recved_data[1]
-        game_data.waitting_room_data['player2_witch_seledt'] = recved_data[2]
-        game_data.waitting_room_data['player3_witch_seledt'] = recved_data[3]
-        game_data.waitting_room_data['player1_ready_state'] = recved_data[4]
-        game_data.waitting_room_data['player2_ready_state'] = recved_data[5]
-        game_data.waitting_room_data['player3_ready_state'] = recved_data[6]
-        GAME_STATE = int(recved_data[7])
 
 def draw(frame_time):
     global image1,image2,image3,_WAND, game_data

@@ -42,7 +42,16 @@ class Enemy2:
         self.alive = 1
         self.xdir = math.cos(math.atan((PL_Y - self.y) / (PL_X - self.x)))
         self.ydir = math.sin(math.atan((PL_Y - self.y) / (PL_X - self.x)))
-
+        if self.xdir > self.ydir:
+            if self.xdir > 0:
+                self.state = 1
+            else:
+                self.state = 2
+        else:
+            if self.ydir > 0:
+                self.state = 0
+            else:
+                self.state = 3
        # Enemy2._enemy2.append(self)
    # def get_list():
    #     return (Enemy2._enemy2)
@@ -81,17 +90,16 @@ class Enemy2:
         self.x += self.speed * self.xdir * frame_time
         self.y += self.speed * self.ydir * frame_time
 
-        self.add(PL_X,PL_Y)
 
 
 
         #self.delete_object(_Bullet)
 
 
-    def add(self,PL_X, PL_Y):
+    def ADD_Bullet(self):
         if self.Whattime >= 2.0:
-            EBullet(self.x, self.y, PL_X,PL_Y)
             self.Whattime = 0
+            return True
 
     def draw(self,):
         self.image.clip_draw(Scean_x* self.state, 0, Scean_x, Scean_y, self.sx, self.sy)
