@@ -60,7 +60,8 @@ class Enemy1:
             self.y = 0
             self.ydir *= -1
         self.Whattime +=frame_time
-
+        if collide(self.x, self.y, self.x+10, self.y+10, PL_X, PL_Y, PL_X+10, PL_Y+10) :
+            self.alive = 0
 #
         self.x += self.speed * self.xdir * frame_time
         self.y += self.speed * self.ydir * frame_time
@@ -88,4 +89,13 @@ class Enemy1:
     def draw_bb(self):
         pass
     def get_bb(self):
-        pass
+        return self.sx - 10, self.sy - 10, self.sx + 10, self.sy + 10
+def collide(left_a, bottom_a,right_a, top_a, left_b, bottom_b,right_b, top_b):
+
+    if left_a > right_b : return False
+    if right_a < left_b : return False
+    if top_a < bottom_b : return False
+    if bottom_a > top_b : return False
+
+    return True
+

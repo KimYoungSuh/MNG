@@ -264,7 +264,6 @@ class TcpController:
                 current_time = time.clock()
                 P_Data = client_socket.recv(struct.calcsize('=ffffiB'))
                 _Player_Packed = data_struct.unpack_player_data(P_Data)
-                print(_Player_Packed)
                 for i in range(3):  # 임시
                     if game_sys_main.all_player_data[room_number]['player_number'][i] == player_number:
                         game_sys_main.all_player_data[room_number]['player_x'][i] =_Player_Packed[0]
@@ -274,9 +273,7 @@ class TcpController:
                         game_sys_main.all_player_data[room_number]['player_life'][i] = _Player_Packed[4]
                         game_sys_main.all_player_data[room_number]['player_isShoot'][i] = _Player_Packed[5]
 
-                packed_all_player_data = data_struct.pack_all_player_data(game_sys_main.all_player_data[room_number])
-                print(data_struct.unpack_all_player_data(packed_all_player_data))
-                client_socket.send(packed_all_player_data)
+
                 '''
                 # Gameover
                 # <--testcode
@@ -309,8 +306,29 @@ class TcpController:
                         _EBullet.append(newBullet)
 
 
-                print('len(_EnemyList),len(_EBullet) : ', len(_EnemyList),len(_EBullet))
-                client_socket.send(struct.pack('=ii', len(_EnemyList),len(_EBullet)))
+
+
+
+
+                for pbullets in _PBullet:
+                    for enemys in _EnemyList:
+                        if collide(pbullets, enemys):
+                            enemy.alive =0
+                            _PBullet.remove(pbullets)
+                            _EnemyList.remove(enemys)
+
+                for enemy in _EnemyList:
+                    if enemy.alive == 0:
+                        _EnemyList.remove(enemy)
+                for pbullets in _PBullet:
+                    if pbullets.alive == 0:
+                        _PBullet.remove(pbullets)
+                for ebullets in _EBullet:
+                    if ebullets.alive == 0:
+                        _EBullet.remove(ebullets)
+                packed_all_player_data = data_struct.pack_all_player_data(game_sys_main.all_player_data[room_number])
+                client_socket.send(packed_all_player_data)
+                client_socket.send(struct.pack('=ii', len(_EnemyList), len(_EBullet)))
                 for enemy in _EnemyList:
                     enemy.update(frame_time, _Player_Packed[0], _Player_Packed[1], _Bg.window_left,
                                  _Bg.window_bottom)
@@ -321,7 +339,6 @@ class TcpController:
                     Ebullets.update(frame_time, _Player_Packed[0], _Player_Packed[1], _Bg.window_left,
                                     _Bg.window_bottom)
                     Ebullet_packed = data_struct.pack_bullet_data(Ebullets)
-                    print('en(_EBullet) : ', len(_EBullet))
                     client_socket.send(Ebullet_packed)
 
 
@@ -398,3 +415,21 @@ def PACK_DATA_Enemy(objects):
     #for objects in object :
         #client_socket.sendall(Enemy_packed)
     pass
+def collide2(a, b_l, b_b, b_r, b_t) :
+    left_a, bottom_a,right_a, top_a = a.get_bb()
+    if left_a > b_r : return False
+    if right_a < b_l : return False
+    if top_a < b_b : return False
+    if bottom_a > b_t : return False
+    return True
+
+
+def collide(a, b):
+    left_a, bottom_a,right_a, top_a = a.get_bb()
+    left_b, bottom_b,right_b, top_b = b.get_bb()
+    if left_a > right_b : return False
+    if right_a < left_b : return False
+    if top_a < bottom_b : return False
+    if bottom_a > top_b : return False
+
+    return True

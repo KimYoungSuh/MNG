@@ -45,8 +45,6 @@ def enter():
     PLAYER_NUM = 0
     game_data = C_Lobby_state.game_data
 
-    #recv_thread = threading.Thread(target=recv_data,args=(struct.calcsize('=BBBBBBBi'),))
-    #recv_thread.start()
 
     #game_data.player_number = (struct.unpack('i',packed_player_data))
     #game_data.watting_room_data = WaittingRoomData().waitting_room_data
@@ -152,21 +150,6 @@ def update(frame_time):
     if ready_count == game_data.waitting_room_data['player_count']:
         C_Game_framework.push_state(C_collision)
 
-def recv_data(recv_size):
-    global GAME_STATE,readystate
-    while GAME_STATE ==0:
-        packed_waitting_room_data = game_data.client_socket.recv(recv_size)
-        print('packed_waitting_room_data :' , packed_waitting_room_data)
-        recved_data = struct.unpack('=BBBBBBBi', packed_waitting_room_data)
-        game_data.waitting_room_data['player_count'] = recved_data[0]
-        game_data.waitting_room_data['player1_witch_seledt'] = recved_data[1]
-        game_data.waitting_room_data['player2_witch_seledt'] = recved_data[2]
-        game_data.waitting_room_data['player3_witch_seledt'] = recved_data[3]
-        game_data.waitting_room_data['player1_ready_state'] = recved_data[4]
-        game_data.waitting_room_data['player2_ready_state'] = recved_data[5]
-        game_data.waitting_room_data['player3_ready_state'] = recved_data[6]
-        GAME_STATE = int(recved_data[7])
-        print('GAME_STATE :', GAME_STATE )
 
 def draw(frame_time):
     global image1,image2,image3,_WAND, game_data
