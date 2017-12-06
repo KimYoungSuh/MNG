@@ -32,6 +32,7 @@ _Enemys = None
 _Enemy1 = []
 _PBullet = []
 _EBullet = []
+AnotherPlayer = []
 E_NUM=0
 item = []
 potion = []
@@ -40,6 +41,7 @@ GameScore = 0
 SERVER_IP_ADDR ="127.0.0.1"
 SERVER_PORT = 19000
 SEND_TIME = 0
+
 #
 bgm = None
 
@@ -84,6 +86,7 @@ class Timer():
 '''
 def create_world():
     global _player, _Bg, _Enemy1, timer,GameScore, font, _EBullet, _PBullet, _Life,client_sock,tcp_controller,E_NUM, _Enemy_Data
+    global MyNumber,AnotherPlayer,unpacked_all_player_data
     _Bg = BackGround()
     E_NUM =0
     _player = Player1(_Bg)
@@ -91,6 +94,7 @@ def create_world():
     _Life = Life(_player.life)
     #timer = Timer()
     client_sock = GameData.client_socket
+    MyNumber = GameData.player_number
     #tcp_controller = TcpContoller()
     readystate = 0
     #client_sock = tcp_controller.tcp_client_init()
@@ -166,7 +170,7 @@ def get_time(frame_time):
     return Time
 '''
 def update(frame_time):
-    global E_NUM ,_Enemy_Data
+    global E_NUM ,_Enemy_Data,unpacked_all_player_data
     #for enemy in _Enemy1:
     #    enemy.update(frame_time, _player.x, _player.y, _Bg.window_left, _Bg.window_bottom,State)
     '''
@@ -220,6 +224,14 @@ def update(frame_time):
     Player_packed = DataStruct.pack_player_data(_player)
     client_sock.send(Player_packed)
 
+    all_player_packed = client_sock.recv(struct.calcsize('=iffffffffffffiiiBBB'))
+    unpacked_all_player_data = DataStruct.unpack_all_player_data(all_player_packed)
+
+    for i in range(unpacked_all_player_data['player_count']) :
+        if i != MyNumber :
+            AnotherPlayer.append(_Bg, unpacked_all_player_data['player_x'][i],unpacked_all_player_data['player_y'][i] )
+
+    '''
     # Gameover
     # <--testcode
     client_sock.send(struct.pack('?', GameData.is_game_over))
@@ -230,7 +242,7 @@ def update(frame_time):
         print('game_over')
         State.C_Game_framework.change_state(State.C_Gameover_state)
         return
-
+    '''
 
     recved_NUM = client_sock.recv(struct.calcsize('=ii'))
     Recved_Number_Data = struct.unpack('=ii',recved_NUM )
@@ -238,7 +250,6 @@ def update(frame_time):
     E_NUM = Recved_Number_Data[0]
     EB_NUM = Recved_Number_Data[1]
     #?
-    print('E_NUM ,EB_NUM : ', E_NUM,EB_NUM)
     for i in range(0, E_NUM) :
         _Enemy_packed = client_sock.recv(struct.calcsize('=ffffi'))
         _Enemy_Data = DataStruct.unpack_enemy_data(_Enemy_packed)
@@ -270,18 +281,23 @@ def update(frame_time):
 
 
 def draw(frame_time):
-    global _Enemy1,_EBullet
+    global _Enemy1,_EBullet , AnotherPlayer,unpacked_all_player_data,MyNumber
     clear_canvas()
-    _player.draw()
+
+    _player.draw(_player.x , _player.y)
+    print('_player.x , _player.y : ' ,_player.x , _player.y)
     for enemy in _Enemy1:
         enemy.draw()
     for enemy in _Enemy1:
         enemy.draw_bb()
-
+    for Another in AnotherPlayer:
+        if Another != MyNumber :
+            Another.draw(unpacked_all_player_data['player_x'][Another],unpacked_all_player_data['player_y'][Another])
     for ebullets in _EBullet:
         ebullets.draw()
     _Enemy1 = []
     _EBullet = []
+    AnotherPlayer= []
     '''
     for enemy in _Enemy1:
         enemy.draw()

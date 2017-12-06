@@ -182,9 +182,51 @@ class Pack:
 #             player_data['player_score'])
         return packed
     def unpack_player_data(packed):
-        unpacked_data = struct.unpack('=fffff', packed)
+        unpacked_data = struct.unpack('=ffffiB', packed)
         return unpacked_data
 
+    def pack_all_player_data(all_player_data):
+        packed_data = struct.pack('=i fff fff fff fff iii BBB',
+                                  all_player_data['player_count'],
+
+                                  all_player_data['player_x'][0],
+                                  all_player_data['player_x'][1],
+                                  all_player_data['player_x'][2],
+
+                                  all_player_data['player_y'][0],
+                                  all_player_data['player_y'][1],
+                                  all_player_data['player_y'][2],
+
+                                  all_player_data['player_sx'][0],
+                                  all_player_data['player_sx'][1],
+                                  all_player_data['player_sx'][2],
+
+                                  all_player_data['player_sy'][0],
+                                  all_player_data['player_sy'][1],
+                                  all_player_data['player_sy'][2],
+
+                                  all_player_data['player_life'][0],
+                                  all_player_data['player_life'][1],
+                                  all_player_data['player_life'][2],
+
+                                  all_player_data['player_isShoot'][0],
+                                  all_player_data['player_isShoot'][1],
+                                  all_player_data['player_isShoot'][2]
+                                  )
+        return packed_data
+
+    def unpack_all_player_data(packed_data):
+        unpacked_data = struct.unpack('=i fff fff fff fff iii BBB', packed_data)
+        all_player_data = {
+            'player_count': unpacked_data[0],
+            'player_x': [unpacked_data[1], unpacked_data[2], unpacked_data[3]],
+            'player_y': [unpacked_data[4], unpacked_data[5], unpacked_data[6]],
+            'player_sx': [unpacked_data[7], unpacked_data[8], unpacked_data[9]],
+            'player_sy': [unpacked_data[10], unpacked_data[11], unpacked_data[12]],
+            'player_life': [unpacked_data[13], unpacked_data[14], unpacked_data[15]],
+            'player_isShoot': [unpacked_data[16], unpacked_data[17], unpacked_data[18]]
+        }
+        return all_player_data
         '''
             def pack_player_data(player_data):
                 packed = struct.pack('30s BiiBB?L',

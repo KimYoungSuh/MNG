@@ -25,11 +25,12 @@ class Player1:
     image = None
 
     UP_RUN, RIGHT_RUN, LEFT_RUN,  DOWN_RUN = 0,1,2,3,
-    def __init__(self, backGround):
+    def __init__(self, backGround ,
+                 _X =random.randint(300, 2900), _Y = random.randint(300, 1500)):
         self.imagenum = State.C_CharSellect_State.select_witchs()
         global _Enemy
         global _Bg
-        self.x, self.y = random.randint(300, 2900), random.randint(300, 1500)
+        self.x, self.y = _X, _Y
         self.life = 3
         _Bg = backGround
         self.xdir = 0
@@ -38,7 +39,7 @@ class Player1:
         self.beforestate = 1
         self.sx = self.x - _Bg.window_left
         self.sy = self.y - _Bg.window_bottom
-        self.iSpace = False
+        self.isshoot = False
         if Player1.image == None:
             if self.imagenum ==1 :
                 Player1.image = load_image('..\Player\Image_Player.png')
@@ -65,10 +66,10 @@ class Player1:
     def draw_bb(self):
         draw_rectangle(*self.get_bb())
 
-    def draw(self):                 ##Size Change
+    def draw(self, _X , _Y):                 ##Size Change
         #
-        self.sx = self.x - _Bg.window_left
-        self.sy = self.y - _Bg.window_bottom
+        self.sx = _X - _Bg.window_left
+        self.sy = _Y - _Bg.window_bottom
 
 
         _Bg.draw()

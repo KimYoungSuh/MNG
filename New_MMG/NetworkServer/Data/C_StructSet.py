@@ -7,8 +7,18 @@ PlayerDataStruct = {'player_name': 'default_player',
               'direction': 0,
               'life': 0,
               'is_damaged': True,
-              'player_score': 0}
+              'player_score': 0
+                    }
 
+AllPlayerDataStruct = {'player_count':0,
+              'player_x': [0, 0, 0],
+              'player_y' : [0, 0, 0],
+              'player_sx': [0, 0, 0],
+              'player_sy' : [0, 0, 0],
+              'player_life': [0, 0, 0],
+              'player_isShoot' : [0, 0, 0],
+              'player_number': [-1, -1, -1]
+              }
 RoomDataStruct = {'room_number':-1,
             'host_number':-1,
             'room_name':'default_name',

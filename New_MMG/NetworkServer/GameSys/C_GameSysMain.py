@@ -1,7 +1,8 @@
 from Data.C_RoomData import RoomData
 from  Data.C_PlayerData import PlayerData
+from Data.C_All_PlayerData import *
 
-from Data.C_WaittingRoomData import WaittingRoomData
+from Data.C_WaittingRoomData import *
 
 
 class GameSysMain:
@@ -14,7 +15,7 @@ class GameSysMain:
 
         self.waitting_room_data = [WaittingRoomData().waitting_room_data for i in range(4)]
         self.rooms_data= [RoomData().room_data for i in range(4)]
-
+        self.all_player_data = [AllPlayerDataStruct().all_playerdata for i in range(3)]
         self.maxroomcount = 4
         self.player_count = 0
 

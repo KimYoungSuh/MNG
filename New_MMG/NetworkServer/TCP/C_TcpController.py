@@ -119,7 +119,6 @@ class TcpController:
         room_number = TcpController.recv_lobby_state(client_socket, player_number) #in Lobby
         print('room_number : ' , room_number)
         TcpController.send_in_room_data(client_socket, room_number, player_number)  # in Room
-        print('endofinrooddata')
         TcpController.send_in_game_data(client_socket, room_number, player_number)
 
     #Lobby
@@ -177,7 +176,6 @@ class TcpController:
 
     def send_room_data(client_socket, player_number):
         global game_sys_main
-        print('is Workkkk?')
         packed_request_data = client_socket.recv(data_struct.join_request_data_size)
         unpack_join_request_data = data_struct.unpack_join_request_data(packed_request_data)
 
@@ -220,7 +218,6 @@ class TcpController:
         in_room = True
         while in_room:
             packed_in_room_data = client_socket.recv(Pack.in_room_data_size)
-            print('packed_in_room_data :' , packed_in_room_data)
             in_room_data = data_struct.unpack_in_room_data(packed_in_room_data)
 
             if in_room_data['is_exit'] == True:
@@ -244,65 +241,19 @@ class TcpController:
                     ready_count += 1
 
             game_sys_main.waitting_room_data[room_number]['player_count'] = player_count
-            print(game_sys_main.waitting_room_data[room_number])
             packed_in_room_data_server = Pack.pack_in_room_data_server(game_sys_main.waitting_room_data[room_number],
                                                                        GAME_STATE)
             client_socket.send(packed_in_room_data_server)
 
             if player_count == ready_count:
-                print('inroom FALSE')
                 in_room = False
         pass
 
 
-    def recv_waitting_room_thread(client_socket, player_number):
-        global game_sys_main
-
-        while 1:
-            if(game_sys_main.is_start):
-                print(player_number,"정상적으로 recv쓰래드 종료")
-                return
-            else :
-                try:
-                    TcpController.recv_waitting_room_data(client_socket, player_number)
-                except socket.error:
-                    print(player_number,game_sys_main.is_start)
-                    print("비정상적 종료로 recv쓰래드가 종료됨")
-                    return
-
-    def recv_thread(client_socket):
-        global GAME_STATE
-        print('GAME_STATE:' , GAME_STATE)
-
-        while GAME_STATE==0:
-            print('GAME_STATE in Thread', GAME_STATE)
-            recv_packed_data = client_socket.recv(struct.calcsize('=BBI'))
-            recv_data = struct.unpack('=BBI', recv_packed_data)
-            temp = 'player' + str(recv_data[0]) + '_witch_selcet'
-            temp2 = 'player' + str(recv_data[0]) + '_ready_state'
-            game_sys_main.waitting_room_data[temp] = recv_data[1]
-            game_sys_main.waitting_room_data[temp2] = recv_data[2]
-            print('recv data :', recv_data)
-            print('game_sys_main.waitting_room_data',game_sys_main.waitting_room_data)
-            numofready = game_sys_main.waitting_room_data['player1_ready_state'] +game_sys_main.waitting_room_data['player2_ready_state']+game_sys_main.waitting_room_data['player3_ready_state']
-            player_count = game_sys_main.waitting_room_data['player_count']
-            if player_count <= numofready:
-                GAME_STATE = 1
-
-
-
-            if(game_sys_main.waitting_room_data['ready_state'] >> (player_number-1)&0b0001==1):
-                temp = ''
-            else:
-                temp = '해제'
-            print(player_number, '번 Player가 준비를',temp,'하였습니다.')
-
-        if(game_sys_main.waitting_room_data['ready_state'] == 0b0011):
-            print(player_number, '번 Player가 게임을 시작하였습니다.')
-            game_sys_main.is_start=True
-
     def send_in_game_data(client_socket, room_number, player_number):
         global main_time,PLAYER_NUM, state, GAME_STATE,timer, E_Data, ready_state, E_NUM
+        game_sys_main.all_player_data[room_number]['player_number'][player_number] = player_number
+
         current_time = time.clock()
         E_NUM = 0
         k = 0
@@ -311,9 +262,22 @@ class TcpController:
         while 1:  # When Game Over
             if current_time +0.02 < time.clock():
                 current_time = time.clock()
-                P_Data = client_socket.recv(struct.calcsize('=fffff'))
+                P_Data = client_socket.recv(struct.calcsize('=ffffiB'))
                 _Player_Packed = data_struct.unpack_player_data(P_Data)
+                print(_Player_Packed)
+                for i in range(3):  # 임시
+                    if game_sys_main.all_player_data[room_number]['player_number'][i] == player_number:
+                        game_sys_main.all_player_data[room_number]['player_x'][i] =_Player_Packed[0]
+                        game_sys_main.all_player_data[room_number]['player_y'][i] = _Player_Packed[1]
+                        game_sys_main.all_player_data[room_number]['player_sx'][i] = _Player_Packed[2]
+                        game_sys_main.all_player_data[room_number]['player_sy'][i] = _Player_Packed[3]
+                        game_sys_main.all_player_data[room_number]['player_life'][i] = _Player_Packed[4]
+                        game_sys_main.all_player_data[room_number]['player_isShoot'][i] = _Player_Packed[5]
 
+                packed_all_player_data = data_struct.pack_all_player_data(game_sys_main.all_player_data[room_number])
+                print(data_struct.unpack_all_player_data(packed_all_player_data))
+                client_socket.send(packed_all_player_data)
+                '''
                 # Gameover
                 # <--testcode
                 packed_is_game_over = client_socket.recv(struct.calcsize('?'))
@@ -322,6 +286,7 @@ class TcpController:
                 client_socket.send(struct.pack('?', game_sys_main.is_game_over))
                 if (game_sys_main.is_game_over):
                     break
+                '''
 
 
                 frame_time = time.clock() - main_time
@@ -357,6 +322,8 @@ class TcpController:
                                     _Bg.window_bottom)
                     Ebullet_packed = data_struct.pack_bullet_data(Ebullets)
                     print('en(_EBullet) : ', len(_EBullet))
+                    client_socket.send(Ebullet_packed)
+
 
         leader_board = open('LeaderBoard.txt', 'a+t')
         new_score = ('p1', 'd', 'p2', 'd', 'p3', 'd', 'time', '00.00.00', 'score', '9')
