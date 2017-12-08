@@ -35,7 +35,6 @@ class BackGround:
         elif BackGround.window_bottom > BackGround.image.h - BackGround.canvas_height:
             BackGround.window_bottom = BackGround.image.h - BackGround.canvas_height
     def draw(self):
-
         BackGround.image.clip_draw_to_origin(BackGround.window_left,BackGround.window_bottom,
                                       BackGround.canvas_width,BackGround.canvas_height,
                                       0,0)

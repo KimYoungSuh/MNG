@@ -233,6 +233,7 @@ class TcpController:
                     game_sys_main.waitting_room_data[room_number]['player_witch_select'][i] = in_room_data[
                         'character_select']
                     game_sys_main.waitting_room_data[room_number]['player_ready_state'][i] = in_room_data['is_ready']
+                    game_sys_main.waitting_room_data[room_number]['emotion'][i] = in_room_data['emotion']
 
             for i in range(3):  # 임시
                 if game_sys_main.waitting_room_data[room_number]['player_number'][i] != -1:

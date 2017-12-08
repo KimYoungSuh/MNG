@@ -105,11 +105,12 @@ class TcpContoller:
             return 2
 
     #Wait Room
-    def send_in_room_data(client_socket, character_select, is_ready, is_exit):
+    def send_in_room_data(client_socket, character_select, is_ready, is_exit, emotion):
         in_room_data = {
             'character_select': character_select,
             'is_ready': is_ready,
-            'is_exit': is_exit
+            'is_exit': is_exit,
+            'emotion': emotion
         }
         packed_in_room_data = data_struct.pack_in_room_data(in_room_data)
         client_socket.send(packed_in_room_data)
