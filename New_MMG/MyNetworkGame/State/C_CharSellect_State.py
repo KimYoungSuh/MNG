@@ -75,7 +75,7 @@ emotion_selected = [0,0,0]
 def enter():
     global GAME_STATE,image1,image2,image3, font, _BG, _WAND, select_witch, game_data, PLAYER_NUM, select_imotion
     global recv_thread, recv_thread_isRun, recv_thread2, recv_thread2_isRun, image_ready, image_select
-    global image_emotion, image_emotion2, image_emotion3, image_emotion4
+    global image_emotion, image_emotion2, image_emotion3, image_emotion4, image_ready_state;
     image1 = load_image('..\Player\Image_Player.png')
     image2 = load_image('..\Player\Image_Player2.png')
     image3 = load_image('..\Player\Image_Player3.png')
@@ -85,6 +85,7 @@ def enter():
     image_emotion2 = load_image('..\BackGround\emotion_smile.png')
     image_emotion3 = load_image('..\BackGround\emotion_wait.png')
     image_emotion4 = load_image('..\BackGround\emotion_go.png')
+    image_ready_state = load_image('..\BackGround\Image_ready_state.png')
     GAME_STATE =0
     recv_thread_isRun = 0
     font = load_font('ENCR10B.TTF')
@@ -198,7 +199,7 @@ def update(frame_time):
 
 def draw(frame_time):
     global image1,image2,image3,_WAND, game_data, readystate, select_box, image_box, emotion_box, emotion_selected
-    global image_emotion, image_emotion2, image_emotion3, image_emotion4
+    global image_emotion, image_emotion2, image_emotion3, image_emotion4, image_ready_state
     clear_canvas()
     _WAND.draw()
     _BG.draw()
@@ -218,14 +219,18 @@ def draw(frame_time):
     image_set = [image1, image2, image3]
     image_set2 = [image_emotion4, image_emotion3, image_emotion2, image_emotion]
 
-    for i in range(3):
-        if emotion_time[i] <= 1.5 and emotion_selected[i] >= 1:
-            image_set2[emotion_selected[i]-1].draw(emotion_box[i][0], emotion_box[i][1])
 
     for i in range(3):#수정
         if game_data.waitting_room_data['player_witch_select'][i] >= 1:
             image_set[game_data.waitting_room_data['player_witch_select'][i]-1].clip_draw(
             Scean_x * 3, 0, Scean_x, Scean_y, selected_box[i][0], selected_box[i][1])
+
+        if emotion_time[i] <= 1.5 and emotion_selected[i] >= 1:
+            image_set2[emotion_selected[i]-1].draw(emotion_box[i][0], emotion_box[i][1])
+
+        if game_data.waitting_room_data['player_ready_state'][i] >= 1:
+            image_ready_state.draw(selected_box[i][0], selected_box[i][1])
+
 
     '''
     for i in range(1, PLAYER_NUM+1):

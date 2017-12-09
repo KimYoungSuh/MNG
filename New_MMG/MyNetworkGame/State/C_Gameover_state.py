@@ -48,7 +48,7 @@ def exit_lobby():
 def enter():
     global image, font, leader_board_list
     leader_board_list=[]
-    image = load_image('..\State\Image_Gameover_state.jpg')
+    image = load_image('..\State\Image_Leaderboard_state.jpg')
     font = load_font('..\ENCR10B.TTF')
     recv_leader_board()
 
@@ -84,9 +84,9 @@ def update(frame_time):
 def draw(frame_time):
     global image, leader_board_list, font
     clear_canvas()
-    image.draw(600, 800)
+    image.draw(600, 450)
     for i in range (0, len(leader_board_list)):
-        font.draw(300, 500-i*40, '%d %s %s %s %s %d' % (i+1, leader_board_list[i][1],leader_board_list[i][3],leader_board_list[i][5],leader_board_list[i][7], leader_board_list[i][9]))
+        font.draw(150, 720-i*65, '%d%8s        %8s        %8s        %8s        %d' % (i+1, leader_board_list[i][1],leader_board_list[i][3],leader_board_list[i][5],leader_board_list[i][7], leader_board_list[i][9]))
 
     update_canvas()
 

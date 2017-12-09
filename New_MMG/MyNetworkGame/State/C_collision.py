@@ -223,16 +223,8 @@ def update(frame_time):
     _player.update(frame_time)
     Player_packed = DataStruct.pack_player_data(_player)
     client_sock.send(Player_packed)
-
-    all_player_packed = client_sock.recv(struct.calcsize('=iffffffffffffiiiBBB'))
-    unpacked_all_player_data = DataStruct.unpack_all_player_data(all_player_packed)
-
-    for i in range(unpacked_all_player_data['player_count']) :
-        if i != MyNumber :
-            AnotherPlayer.append(_Bg, unpacked_all_player_data['player_x'][i],unpacked_all_player_data['player_y'][i] )
-
-    '''
-    # Gameover
+    
+    # Gameover의 위치는 send와 recv 사이
     # <--testcode
     client_sock.send(struct.pack('?', GameData.is_game_over))
     # testcode-->
@@ -242,7 +234,17 @@ def update(frame_time):
         print('game_over')
         State.C_Game_framework.change_state(State.C_Gameover_state)
         return
-    '''
+
+    all_player_packed = client_sock.recv(struct.calcsize('=iffffffffffffiiiBBB'))
+    unpacked_all_player_data = DataStruct.unpack_all_player_data(all_player_packed)
+
+    for i in range(unpacked_all_player_data['player_count']) :
+        if i != MyNumber :
+            AnotherPlayer.append(_Bg, unpacked_all_player_data['player_x'][i],unpacked_all_player_data['player_y'][i] )
+
+
+    
+
 
     recved_NUM = client_sock.recv(struct.calcsize('=ii'))
     Recved_Number_Data = struct.unpack('=ii',recved_NUM )

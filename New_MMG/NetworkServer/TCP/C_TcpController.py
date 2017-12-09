@@ -274,9 +274,7 @@ class TcpController:
                         game_sys_main.all_player_data[room_number]['player_life'][i] = _Player_Packed[4]
                         game_sys_main.all_player_data[room_number]['player_isShoot'][i] = _Player_Packed[5]
 
-
-                '''
-                # Gameover
+                # Gameover의 위치는 recv와 send 사이
                 # <--testcode
                 packed_is_game_over = client_socket.recv(struct.calcsize('?'))
                 game_sys_main.is_game_over = (struct.unpack('?', packed_is_game_over))[0]
@@ -284,8 +282,6 @@ class TcpController:
                 client_socket.send(struct.pack('?', game_sys_main.is_game_over))
                 if (game_sys_main.is_game_over):
                     break
-                '''
-
 
                 frame_time = time.clock() - main_time
                 main_time += frame_time
@@ -370,6 +366,8 @@ class TcpController:
 
             leader_list.append(temp_tuple)
         after_leader_board = sorted(leader_list, key=lambda score: score[9], reverse=True)
+        if(len(after_leader_board)>10):
+            after_leader_board.pop()
         leader_board.close()
         leader_board = open('LeaderBoard.txt', 'wt')
         count = 0
