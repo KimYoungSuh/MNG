@@ -16,6 +16,17 @@ font = None
 def clamp(minimum, x, maximum):
     return max(minimum, min(x, maximum))
 
+'''
+playerdir
+ 0 down
+ 1 up
+ 2 left
+ 3 right
+ 4 down left
+ 5 down right
+ 6 up left
+ 7 up right
+'''
 class Player1:
     PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
     RUN_SPEED_KMPH = 40.0  # Km / Hour
@@ -40,6 +51,7 @@ class Player1:
         self.sx = self.x - _Bg.window_left
         self.sy = self.y - _Bg.window_bottom
         self.isshoot = False
+        self.playerdir = 0
         if Player1.image == None:
             if self.imagenum ==1 :
                 Player1.image = load_image('..\Player\Image_Player.png')
@@ -49,7 +61,6 @@ class Player1:
                 Player1.image = load_image('..\Player\Image_Player3.png')
 
     def update(self, frame_time):
-
         distance = Player1.RUN_SPEED_PPS * frame_time
         self.x += (self.xdir * distance)
         self.y += (self.ydir * distance)
@@ -122,6 +133,7 @@ class Player1:
 
 
         if(input_shoot):
+            self.isshoot = True
             bullet_dir = (0,0)
             if(self.state ==self.UP_RUN):
                 bullet_dir = (0, 1)
@@ -131,24 +143,28 @@ class Player1:
                 bullet_dir = (-1, 0)
             if (self.state == self.RIGHT_RUN):
                 bullet_dir = (1, 0)
-            PBullet(self.x, self.y, bullet_dir[0], bullet_dir[1])
+            #Bullet(self.x, self.y, bullet_dir[0], bullet_dir[1])
 
     def move_up(self):
         self.state = self.UP_RUN
         self.beforestate = self.UP_RUN
         self.ydir = 1
+        self.playerdir = 1
     def move_down(self):
         self.state = self.DOWN_RUN
         self.beforestate = self.DOWN_RUN
         self.ydir = -1
+        self.playerdir = 0
     def move_left(self):
         self.state = self.LEFT_RUN
         self.beforestate = self.LEFT_RUN
         self.xdir = -1
+        self.playerdir = 2
     def move_right(self):
         self.state = self.RIGHT_RUN
         self.beforestate = self.RIGHT_RUN
         self.xdir = 1
+        self.playerdir = 3
 
 
 

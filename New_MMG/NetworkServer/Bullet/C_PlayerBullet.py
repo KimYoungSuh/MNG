@@ -14,21 +14,31 @@ class PBullet:
     image = None
     _pBullet = []
 
-    def __init__(self,Pl_x, Pl_y, Pl_xdir, Pl_ydir):
+    def __init__(self,Pl_x, Pl_y, Pl_Dir):
         self._Bg = BackGround
         self.shooter = 0
 
         self.x = Pl_x
         self.y = Pl_y
-        self.xdir = Pl_xdir
-        self.ydir = Pl_ydir
+        if Pl_Dir == 0 :
+            self.xdir = 0
+            self.ydir = -1
+        elif Pl_Dir == 1 :
+            self.xdir = 0
+            self.ydir = 1
+        elif Pl_Dir == 2 :
+            self.xdir = -1
+            self.ydir = 0
+        elif Pl_Dir == 3 :
+            self.xdir = 1
+            self.ydir = 0
         self.speed = 0
         self.alive =1
         PBullet._pBullet.append(self)
         self.sx = self.x - self._Bg.window_left
         self.sy = self.y - self._Bg.window_bottom
 
-    def update(self,frame_time):
+    def update(self,frame_time, PL_X, PL_Y):
         self.speed = PBullet.RUN_SPEED_PPS * frame_time
         self.x += self.speed * self.xdir
         self.y += self.speed * self.ydir
@@ -54,5 +64,6 @@ class PBullet:
         return self.sx-15 , self.sy-15, self.sx+15, self.sy+15
     def get_list():
         return (PBullet._pBullet)
+
 
 

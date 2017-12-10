@@ -11,14 +11,15 @@ PlayerDataStruct = {'player_name': 'default_player',
                     }
 
 AllPlayerDataStruct = {'player_count':0,
-              'player_x': [0, 0, 0],
-              'player_y' : [0, 0, 0],
-              'player_sx': [0, 0, 0],
-              'player_sy' : [0, 0, 0],
-              'player_life': [0, 0, 0],
-              'player_isShoot' : [0, 0, 0],
-              'player_number': [-1, -1, -1]
-              }
+                       'player_x': [0, 0, 0],
+                       'player_y' : [0, 0, 0],
+                       'player_sx': [0, 0, 0],
+                       'player_sy' : [0, 0, 0],
+                       'player_life': [0, 0, 0],
+                       'player_isShoot' : [0, 0, 0],
+                       'player_number': [-1, -1, -1],
+                       'player_dir': [0, 0, 0]
+                       }
 RoomDataStruct = {'room_number':-1,
             'host_number':-1,
             'room_name':'default_name',

@@ -14,14 +14,13 @@ class PBullet:
     image = None
     _pBullet = []
 
-    def __init__(self,Pl_x, Pl_y, Pl_xdir, Pl_ydir):
+    def __init__(self,Pl_x, Pl_y):
         self._Bg = BackGround
         self.shooter = 0
 
         self.x = Pl_x
         self.y = Pl_y
-        self.xdir = Pl_xdir
-        self.ydir = Pl_ydir
+
         self.speed = 0
         self.alive =1
         PBullet._pBullet.append(self)
@@ -31,10 +30,8 @@ class PBullet:
         if PBullet.image == None:
             PBullet.image = load_image('..\Bullet\Image_PBullet.png')
 
-    def update(self,frame_time):
-        self.speed = PBullet.RUN_SPEED_PPS * frame_time
-        self.x += self.speed * self.xdir
-        self.y += self.speed * self.ydir
+    def update(self):
+
 
         if self.x >3200 :
             self.alive = 0

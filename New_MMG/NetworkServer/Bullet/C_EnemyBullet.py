@@ -31,7 +31,7 @@ class EBullet:
         self.sx = self.x - self._Bg.window_left
         self.sy = self.y - self._Bg.window_bottom
 
-    def update(self,frame_time, PL_X, PL_Y, BG_X, BG_Y):
+    def update(self,frame_time, PL_X, PL_Y):
         self.speed = EBullet.RUN_SPEED_PPS * frame_time
         self.x += self.speed * self.xdir
         self.y += self.speed * self.ydir

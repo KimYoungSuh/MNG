@@ -22,7 +22,7 @@ GAME_STATE =0
 send_time =0
 state = None
 timer = None
-_EBullet = []
+_Bullet = []
 _PBullet = []
 _EnemyList = []
 _Enemy= []
@@ -263,8 +263,9 @@ class TcpController:
         while 1:  # When Game Over
             if current_time +0.02 < time.clock():
                 current_time = time.clock()
-                P_Data = client_socket.recv(struct.calcsize('=ffffiB'))
+                P_Data = client_socket.recv(struct.calcsize('=ffffiBf'))
                 _Player_Packed = data_struct.unpack_player_data(P_Data)
+                print('_Player_Packed : ', _Player_Packed)
                 for i in range(3):  # 임시
                     if game_sys_main.all_player_data[room_number]['player_number'][i] == player_number:
                         game_sys_main.all_player_data[room_number]['player_x'][i] =_Player_Packed[0]
@@ -273,7 +274,7 @@ class TcpController:
                         game_sys_main.all_player_data[room_number]['player_sy'][i] = _Player_Packed[3]
                         game_sys_main.all_player_data[room_number]['player_life'][i] = _Player_Packed[4]
                         game_sys_main.all_player_data[room_number]['player_isShoot'][i] = _Player_Packed[5]
-
+                        game_sys_main.all_player_data[room_number]['player_dir'][i] = _Player_Packed[6]
                 # Gameover의 위치는 recv와 send 사이
                 # <--testcode
                 packed_is_game_over = client_socket.recv(struct.calcsize('?'))
@@ -295,48 +296,48 @@ class TcpController:
                     if EnemyDirNum >= 4:
                         newEnemy = Enemy2(_Player_Packed[2], _Player_Packed[3], EnemyDirNum,_Bg.window_left,_Bg.window_bottom)
                         _EnemyList.append(newEnemy)
-
+                if _Player_Packed[5] == True :
+                    newBullet = PBullet(_Player_Packed[0], _Player_Packed[1], _Player_Packed[6])
+                    print('isShoot!')
+                    _Bullet.append(newBullet)
 
                 for enemy in _EnemyList :
                     if enemy.ADD_Bullet() == True :
                         newBullet = EBullet(enemy.x, enemy.y, _Player_Packed[0], _Player_Packed[1])
-                        _EBullet.append(newBullet)
+                        _Bullet.append(newBullet)
+
+                for pbullets in _Bullet:
+                    if pbullets.shooter == 0 :
+                        for enemys in _EnemyList:
+                            if collide(pbullets, enemys):
+                                pbullets.alive = 0
+                                enemys.alive = 0
 
 
-
-
-
-
-                for pbullets in _PBullet:
-                    for enemys in _EnemyList:
-                        if collide(pbullets, enemys):
-                            enemy.alive =0
-                            _PBullet.remove(pbullets)
-                            _EnemyList.remove(enemys)
 
                 for enemy in _EnemyList:
                     if enemy.alive == 0:
                         _EnemyList.remove(enemy)
-                for pbullets in _PBullet:
+                for pbullets in _Bullet:
                     if pbullets.alive == 0:
-                        _PBullet.remove(pbullets)
-                for ebullets in _EBullet:
+                        _Bullet.remove(pbullets)
+                for ebullets in _Bullet:
                     if ebullets.alive == 0:
-                        _EBullet.remove(ebullets)
+                        _Bullet.remove(ebullets)
                 packed_all_player_data = data_struct.pack_all_player_data(game_sys_main.all_player_data[room_number])
                 client_socket.send(packed_all_player_data)
-                client_socket.send(struct.pack('=ii', len(_EnemyList), len(_EBullet)))
+                client_socket.send(struct.pack('=ii', len(_EnemyList), len(_Bullet)))
                 for enemy in _EnemyList:
                     enemy.update(frame_time, _Player_Packed[0], _Player_Packed[1], _Bg.window_left,
                                  _Bg.window_bottom)
                     Enemy_packed = data_struct.pack_enemy_data(enemy, k)
                     k += 1
                     client_socket.send(Enemy_packed)
-                for Ebullets in _EBullet:
-                    Ebullets.update(frame_time, _Player_Packed[0], _Player_Packed[1], _Bg.window_left,
-                                    _Bg.window_bottom)
-                    Ebullet_packed = data_struct.pack_bullet_data(Ebullets)
-                    client_socket.send(Ebullet_packed)
+                for bullets in _Bullet:
+                    bullets.update(frame_time, _Player_Packed[0], _Player_Packed[1])
+                    bullet_packed = data_struct.pack_bullet_data(bullets)
+                    print(data_struct.unpack_bullet_data(bullet_packed))
+                    client_socket.send(bullet_packed)
 
 
         leader_board = open('LeaderBoard.txt', 'a+t')

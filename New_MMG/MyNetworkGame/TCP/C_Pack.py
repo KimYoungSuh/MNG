@@ -161,7 +161,7 @@ class DataStruct:
     '''
 
     def pack_all_player_data(all_player_data):
-        packed_data = struct.pack('=i fff fff fff fff iii BBB',
+        packed_data = struct.pack('=i fff fff fff fff iii BBB fff',
                                   all_player_data['player_count'],
 
                                   all_player_data['player_x'][0],
@@ -186,12 +186,16 @@ class DataStruct:
 
                                   all_player_data['player_isShoot'][0],
                                   all_player_data['player_isShoot'][1],
-                                  all_player_data['player_isShoot'][2]
+                                  all_player_data['player_isShoot'][2],
+
+                                  all_player_data['player_dir'][0],
+                                  all_player_data['player_dir'][1],
+                                  all_player_data['player_dir'][2]
                                   )
         return packed_data
 
     def unpack_all_player_data(packed_data):
-        unpacked_data = struct.unpack('=i fff fff fff fff iii BBB', packed_data)
+        unpacked_data = struct.unpack('=i fff fff fff fff iii BBB fff', packed_data)
         all_player_data = {
             'player_count': unpacked_data[0],
             'player_x': [unpacked_data[1], unpacked_data[2], unpacked_data[3]],
@@ -199,24 +203,24 @@ class DataStruct:
             'player_sx': [unpacked_data[7], unpacked_data[8], unpacked_data[9]],
             'player_sy': [unpacked_data[10], unpacked_data[11], unpacked_data[12]],
             'player_life': [unpacked_data[13], unpacked_data[14], unpacked_data[15]],
-            'player_isShoot': [unpacked_data[16], unpacked_data[17], unpacked_data[18]]
+            'player_isShoot': [unpacked_data[16], unpacked_data[17], unpacked_data[18]],
+            'player_dir': [unpacked_data[19], unpacked_data[20], unpacked_data[21]]
         }
         return all_player_data
     enemy_data_type = '=fff'
     enemy_data_size = struct.calcsize(enemy_data_type)
 
     def pack_enemy_data(enemy_data, k):
-        packed = struct.pack('=ffffi',
+        packed = struct.pack('=fffi',
                              enemy_data.x,
                              enemy_data.y,
                              enemy_data.type,
-                             enemy_data.state,
                              k
                              )
         return packed
 
     def unpack_enemy_data(packed):
-        unpacked_data = struct.unpack('=ffffi', packed)
+        unpacked_data = struct.unpack('=fffi', packed)
         return unpacked_data
 
     #player_data
@@ -224,7 +228,7 @@ class DataStruct:
     player_data_type = '=fffff'
     player_data_size = struct.calcsize(player_data_type)
     def pack_player_data(p_data):
-        packed = struct.pack('=ffffiB',
+        packed = struct.pack('=ffffiBf',
 #           player_data['player_name'].encode('utf-8'),
 #           player_data['player_number'],
                              p_data.x,
@@ -233,7 +237,8 @@ class DataStruct:
                              p_data.sy,
 #             player_data['direction'],
                              p_data.life,
-                             p_data.isshoot
+                             p_data.isshoot,
+                             p_data.playerdir
                              )
 #             player_data['is_damaged'],
 #             player_data['player_score'])
