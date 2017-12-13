@@ -215,13 +215,35 @@ class TcpController:
 
     def send_in_room_data(client_socket, room_number, player_number):
         global game_sys_main
+        player_name = ['player_name', 'player_name2', 'player_name3', 'player_name4']
         in_room = True
+        data_reset = False
+
         while in_room:
             packed_in_room_data = client_socket.recv(Pack.in_room_data_size)
             in_room_data = data_struct.unpack_in_room_data(packed_in_room_data)
 
             if in_room_data['is_exit'] == True:
                 # 소켓 해제
+                for i in range(3):
+                    if data_reset:
+                        if game_sys_main.rooms_data[room_number]['host_number'] == -1:
+                            game_sys_main.rooms_data[room_number]['host_number'] = player_number
+                        game_sys_main.waitting_room_data[room_number]['player_number'][i - 1] = \
+                            game_sys_main.waitting_room_data[room_number]['player_number'][i]
+                        game_sys_main.waitting_room_data[room_number]['player_witch_select'][i - 1] = \
+                            game_sys_main.waitting_room_data[room_number]['player_witch_select'][i]
+                        game_sys_main.waitting_room_data[room_number]['player_ready_state'][i] = False
+                        game_sys_main.rooms_data[room_number][player_name[i - 1]] = \
+                            game_sys_main.rooms_data[room_number][player_name[i]]
+                    if game_sys_main.waitting_room_data[room_number]['player_number'][i] == player_number:
+                        if game_sys_main.rooms_data[room_number]['host_number'] == player_number:
+                            game_sys_main.rooms_data[room_number]['host_number'] = -1
+                        game_sys_main.waitting_room_data[room_number]['player_witch_select'][i] = 0
+                        game_sys_main.waitting_room_data[room_number]['player_ready_state'][i] = False
+                        data_reset = True
+                    if i == 2:
+                        data_reset = False
                 pass
 
             player_count = 0
