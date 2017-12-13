@@ -108,50 +108,10 @@ def create_world():
 
 
 def recv_thread(client_sock):
-    global _Enemy1, f_time
-    while True:
-        packed_is_game_over = client_sock.recv(struct.calcsize('?'))
-        GameData.is_game_over = (struct.unpack('?', packed_is_game_over))[0]
-        if (GameData.is_game_over):
-            print('game_over')
-            State.C_Game_framework.change_state(State.C_Gameover_state)
-            return
 
-        all_player_packed = client_sock.recv(struct.calcsize('=iffffffffffffiiiBBBfff'))
-        unpacked_all_player_data = DataStruct.unpack_all_player_data(all_player_packed)
 
-        for i in range(unpacked_all_player_data['player_count']):
-            if i != MyNumber:
-                AnotherPlayer.append(_Bg, unpacked_all_player_data['player_x'][i], unpacked_all_player_data['player_y'][i])
-                print('AnotherPlayer : ', AnotherPlayer)
+    pass
 
-        recved_NUM = client_sock.recv(struct.calcsize('=ii'))
-        Recved_Number_Data = struct.unpack('=ii', recved_NUM)
-        # SEND_ENEMY_DATA is ENEMY _X,_Y, TYPE
-        E_NUM = Recved_Number_Data[0]
-        EB_NUM = Recved_Number_Data[1]
-        # ?
-        for i in range(0, E_NUM):
-            _Enemy_packed = client_sock.recv(struct.calcsize('=fffi'))
-            _Enemy_Data = DataStruct.unpack_enemy_data(_Enemy_packed)
-            if _Enemy_Data[2] == 1:
-                newEnemy = Enemy1(_Enemy_Data[0], _Enemy_Data[1], _Enemy_Data[3], _Bg.window_left, _Bg.window_bottom)
-                newEnemy.update(f_time, _player.x, _player.y, _Bg.window_left, _Bg.window_bottom, State)
-            if _Enemy_Data[2] == 2:
-                newEnemy = Enemy2(_Enemy_Data[0], _Enemy_Data[1], _Enemy_Data[3], _Bg.window_left, _Bg.window_bottom)
-                newEnemy.update(f_time, _player.x, _player.y, _Bg.window_left, _Bg.window_bottom, State)
-            _Enemy1.append(newEnemy)
-
-        for i in range(0, EB_NUM):
-            _Bullet_packed = client_sock.recv(struct.calcsize('=fff'))
-            _Bullet_Data = DataStruct.unpack_bullet_data(_Bullet_packed)
-            if _Bullet_Data[0] == 1:  # EnemyBullet
-                newBullet = EBullet(_Bullet_Data[1], _Bullet_Data[2])
-
-            elif _Bullet_Data[0] == 0:  # playerBullet
-                newBullet = PBullet(_Bullet_Data[1], _Bullet_Data[2])
-            newBullet.update()
-            _EBullet.append(newBullet)
 
 
 def destroy_world():
@@ -200,8 +160,7 @@ def get_time(frame_time):
     return Time
 '''
 def update(frame_time):
-    global E_NUM ,_Enemy_Data,unpacked_all_player_data ,f_time
-    f_time=frame_time
+    global E_NUM ,_Enemy_Data,unpacked_all_player_data
     #for enemy in _Enemy1:
     #    enemy.update(frame_time, _player.x, _player.y, _Bg.window_left, _Bg.window_bottom,State)
     '''
@@ -259,6 +218,51 @@ def update(frame_time):
     # <--testcode
     client_sock.send(struct.pack('?', GameData.is_game_over))
     # testcode-->
+    packed_is_game_over = client_sock.recv(struct.calcsize('?'))
+    GameData.is_game_over = (struct.unpack('?', packed_is_game_over))[0]
+    if (GameData.is_game_over):
+        print('game_over')
+        State.C_Game_framework.change_state(State.C_Gameover_state)
+        return
+
+    all_player_packed = client_sock.recv(struct.calcsize('=iffffffffffffiiiBBBfff'))
+    unpacked_all_player_data = DataStruct.unpack_all_player_data(all_player_packed)
+
+    for i in range(unpacked_all_player_data['player_count']) :
+        if i != MyNumber :
+            AnotherPlayer.append(_Bg, unpacked_all_player_data['player_x'][i],unpacked_all_player_data['player_y'][i] )
+            print('AnotherPlayer : ' , AnotherPlayer)
+
+    
+
+
+    recved_NUM = client_sock.recv(struct.calcsize('=ii'))
+    Recved_Number_Data = struct.unpack('=ii',recved_NUM )
+    #SEND_ENEMY_DATA is ENEMY _X,_Y, TYPE
+    E_NUM = Recved_Number_Data[0]
+    EB_NUM = Recved_Number_Data[1]
+    #?
+    for i in range(0, E_NUM) :
+        _Enemy_packed = client_sock.recv(struct.calcsize('=fffi'))
+        _Enemy_Data = DataStruct.unpack_enemy_data(_Enemy_packed)
+        if _Enemy_Data[2] ==1 :
+            newEnemy = Enemy1(_Enemy_Data[0],_Enemy_Data[1],_Enemy_Data[3], _Bg.window_left, _Bg.window_bottom)
+            newEnemy.update(frame_time,_player.x, _player.y, _Bg.window_left, _Bg.window_bottom,State)
+        if _Enemy_Data[2] ==2 :
+            newEnemy = Enemy2(_Enemy_Data[0],_Enemy_Data[1],_Enemy_Data[3],_Bg.window_left, _Bg.window_bottom)
+            newEnemy.update(frame_time,_player.x, _player.y, _Bg.window_left, _Bg.window_bottom,State)
+        _Enemy1.append(newEnemy)
+
+    for i in range(0,EB_NUM) :
+        _Bullet_packed = client_sock.recv(struct.calcsize('=fff'))
+        _Bullet_Data = DataStruct.unpack_bullet_data(_Bullet_packed)
+        if _Bullet_Data[0] == 1:     #EnemyBullet
+            newBullet = EBullet(_Bullet_Data[1],_Bullet_Data[2] )
+
+        elif _Bullet_Data[0] == 0:     # playerBullet
+            newBullet = PBullet(_Bullet_Data[1], _Bullet_Data[2])
+        newBullet.update()
+        _EBullet.append(newBullet)
 
 
 
