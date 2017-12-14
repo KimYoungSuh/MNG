@@ -31,10 +31,6 @@ class Enemy1:
 
     #def get_list():
     #    return (Enemy1._enemy)
-    def ADD_Bullet(self,PL_X, PL_Y):
-        if self.Whattime >= 2.0:
-            EBullet(self.x, self.y, PL_X,PL_Y)
-            self.Whattime = 0
 
 
 
