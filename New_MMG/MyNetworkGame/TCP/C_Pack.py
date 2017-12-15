@@ -207,6 +207,7 @@ class DataStruct:
             'player_dir': [unpacked_data[19], unpacked_data[20], unpacked_data[21]]
         }
         return all_player_data
+
     enemy_data_type = '=fff'
     enemy_data_size = struct.calcsize(enemy_data_type)
 

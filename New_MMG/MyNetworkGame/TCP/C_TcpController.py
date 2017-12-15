@@ -11,8 +11,8 @@ from State import C_collision
 data_struct = DataStruct
 
 class TcpContoller:
-    #    SERVER_IP_ADDR = "192.168.0.6"
-    SERVER_IP_ADDR ="127.0.0.1"
+    SERVER_IP_ADDR = "192.168.0.6"
+    #SERVER_IP_ADDR ="127.0.0.1"
     SERVER_PORT = 19000
 
 

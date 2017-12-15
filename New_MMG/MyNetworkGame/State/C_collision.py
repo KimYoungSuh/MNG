@@ -108,16 +108,16 @@ def create_world():
     _EBullet= EBullet.get_list()
     _PBullet = PBullet.get_list()
 
-
-def recv_thread(client_sock):
+'''
     global unpacked_all_player_data
     current_time = time.clock()
     while 1:
-        if current_time + 0.02 < time.clock():
+        if current_time + 0.03 < time.clock():
             current_time = time.clock()
             Player_packed = DataStruct.pack_player_data(_player)
             client_sock.send(Player_packed)
             _player.isshoot = False
+
             # Gameover의 위치는 send와 recv 사이
             # <--testcode
             client_sock.send(struct.pack('?', GameData.is_game_over))
@@ -131,32 +131,31 @@ def recv_thread(client_sock):
 
             all_player_packed = client_sock.recv(struct.calcsize('=iffffffffffffiiiBBBfff'))
             unpacked_all_player_data = DataStruct.unpack_all_player_data(all_player_packed)
-#            print('unpacked_all_player_data : ',unpacked_all_player_data)
-            if len(AnotherPlayer) > 1 :
-                AnotherPlayer.clear()
+            print('unpacked_all_player_data : ',unpacked_all_player_data)
+
             for i in range(unpacked_all_player_data['player_count']):
                 if( i != MyNumber) :
                     otherPlayer = Player2(unpacked_all_player_data['player_x'][i],
                                           unpacked_all_player_data['player_y'][i],
                                           unpacked_all_player_data['player_dir'][i],
                                           _Bg.window_left, _Bg.window_bottom
-
                                           )
                     AnotherPlayer.append(otherPlayer)
-                    print('otherPlayer : ', otherPlayer)
-
-            print('len anotherP : ' , len(AnotherPlayer))
 
 
             recved_NUM = client_sock.recv(struct.calcsize('=ii'))
             Recved_Number_Data = struct.unpack('=ii', recved_NUM)
+
             # SEND_ENEMY_DATA is ENEMY _X,_Y, TYPE
             E_NUM = Recved_Number_Data[0]
             EB_NUM = Recved_Number_Data[1]
+
             # ?
+
             for i in range(0, E_NUM):
                 _Enemy_packed = client_sock.recv(struct.calcsize('=fffi'))
                 _Enemy_Data = DataStruct.unpack_enemy_data(_Enemy_packed)
+
                 if _Enemy_Data[2] == 1:
                     newEnemy = Enemy1(_Enemy_Data[0], _Enemy_Data[1], _Enemy_Data[3], _Bg.window_left, _Bg.window_bottom)
                 if _Enemy_Data[2] == 2:
@@ -173,6 +172,89 @@ def recv_thread(client_sock):
                     newBullet = PBullet(_Bullet_Data[1], _Bullet_Data[2])
                 newBullet.update()
                 _EBullet.append(newBullet)
+
+'''
+def recv_thread(client_sock):
+    global AnotherPlayer, _Enemy1, _EBullet, _Bg
+    current_time = time.clock()
+
+    _ETEMP = []
+    _BTEMP = []
+    _PTEMP = []
+    while 1:
+        if current_time + 0.03 < time.clock():
+            current_time = time.clock()
+            Player_packed = DataStruct.pack_player_data(_player)
+            client_sock.send(Player_packed)
+            _player.isshoot = False
+
+            '''AllPlayerRECVED START'''
+            all_player_packed = client_sock.recv(struct.calcsize('=iffffffffffffiiiBBBfff'))
+            unpacked_all_player_data = DataStruct.unpack_all_player_data(all_player_packed)
+            for i in range(unpacked_all_player_data['player_count']):
+                if i != MyNumber:
+                    newPlayer = Player2(unpacked_all_player_data['player_x'][i],
+                                  unpacked_all_player_data['player_y'][i],
+                                  unpacked_all_player_data['player_dir'][i],
+                                  _Bg.window_left, _Bg.window_bottom)
+                    _PTEMP.append(newPlayer)
+                    print('AnotherPlayer : ', _PTEMP)
+            AnotherPlayer = _PTEMP
+            if len(_PTEMP) > 0:
+                _PTEMP = []
+            '''ALLPlayerRECVED END'''
+
+            '''GAMEOVER RECVED START'''
+            # Gameover의 위치는 send와 recv 사이
+            # <--testcode
+            client_sock.send(struct.pack('?', GameData.is_game_over))
+            # testcode-->
+            packed_is_game_over = client_sock.recv(struct.calcsize('?'))
+            GameData.is_game_over = (struct.unpack('?', packed_is_game_over))[0]
+            if (GameData.is_game_over):
+                print('game_over')
+                State.C_Game_framework.change_state(State.C_Gameover_state)
+                return
+            '''GAMEOVER RECVED END'''
+
+
+            recved_NUM = client_sock.recv(struct.calcsize('=ii'))
+            Recved_Number_Data = struct.unpack('=ii', recved_NUM)
+
+            recved_IN_Window_NUM = client_sock.recv(struct.calcsize('=ii'))
+            Recved_IN_Window_Number_Data = struct.unpack('=ii', recved_IN_Window_NUM)
+            # SEND_ENEMY_DATA is ENEMY _X,_Y, TYPE
+            E_NUM = Recved_IN_Window_Number_Data[0]
+            EB_NUM = Recved_IN_Window_Number_Data[1]
+            # ?
+            print (' E_NUM : ', E_NUM)
+            for i in range(0, E_NUM):
+                _Enemy_packed = client_sock.recv(struct.calcsize('=fffi'))
+                _Enemy_Data = DataStruct.unpack_enemy_data(_Enemy_packed)
+                if _Enemy_Data[2] == 1:
+                    newEnemy = Enemy1(_Enemy_Data[0], _Enemy_Data[1], _Enemy_Data[3], _Bg.window_left, _Bg.window_bottom)
+                    #newEnemy.update(_player.x, _player.y, _Bg.window_left, _Bg.window_bottom, State)
+                if _Enemy_Data[2] == 2:
+                    newEnemy = Enemy2(_Enemy_Data[0], _Enemy_Data[1], _Enemy_Data[3], _Bg.window_left, _Bg.window_bottom)
+                    #newEnemy.update(_player.x, _player.y, _Bg.window_left, _Bg.window_bottom, State)
+                _ETEMP.append(newEnemy)
+            _Enemy1 = _ETEMP
+            if len(_ETEMP) > 0:
+                _ETEMP = []
+
+            for i in range(0, EB_NUM):
+                _Bullet_packed = client_sock.recv(struct.calcsize('=fff'))
+                _Bullet_Data = DataStruct.unpack_bullet_data(_Bullet_packed)
+                if _Bullet_Data[0] == 1:  # EnemyBullet
+                    newBullet = EBullet(_Bullet_Data[1], _Bullet_Data[2])
+
+                elif _Bullet_Data[0] == 0:  # playerBullet
+                    newBullet = PBullet(_Bullet_Data[1], _Bullet_Data[2])
+                #newBullet.update()
+                _BTEMP.append(newBullet)
+            _EBullet = _BTEMP
+            if len(_BTEMP) > 0:
+                _BTEMP = []
 
 
 pass
@@ -226,55 +308,6 @@ def get_time(frame_time):
 '''
 def update(frame_time):
     global E_NUM ,_Enemy_Data,unpacked_all_player_data
-    #for enemy in _Enemy1:
-    #    enemy.update(frame_time, _player.x, _player.y, _Bg.window_left, _Bg.window_bottom,State)
-    '''
-    for enemy in _Enemy1 :
-        if collide(enemy, _player):
-            _player.life -=1
-            _Enemy1.remove(enemy)
-    for ebullets in _EBullet:
-        ebullets.update(frame_time, _player.x, _player.y, _Bg.window_left, _Bg.window_bottom )
-        PACK_DATA_PBULLET(ebullets)
-
-    for ebullets in _EBullet :
-        if collide(ebullets, _player):
-            _player.life -= 1
-            _EBullet.remove(ebullets)
-    for pbullets in _PBullet:
-        PACK_DATA_PBULLET(pbullets)
-        pbullets.update(frame_time,)
-    for pbullets in _PBullet :
-        for enemys in _Enemy1 :
-            if collide(pbullets, enemys):
-                _PBullet.remove(pbullets)
-                _Enemy1.remove(enemys)
-    for enemy in _Enemy1 :
-        if enemy.alive == 0 :
-            _Enemy1.remove(enemy)
-    for pbullets in _PBullet :
-        if pbullets.alive == 0 :
-            _PBullet.remove(pbullets)
-    for ebullets in _EBullet :
-        if ebullets.alive == 0 :
-            _EBullet.remove(ebullets)
-
-#SEND_ENEMY_DATA is ENEMY _X,_Y, TYPE
-    E_NUM = struct.unpack('=i', recved_E_NUM)[0]
-    for enemy in range(0, E_NUM) :
-        _Enemy_packed = client_sock.recv(struct.calcsize('=fffi'))
-        _Enemy_Data = DataStruct.unpack_enemy_data(_Enemy_packed)
-        if _Enemy_Data[2] ==1 :
-            newEnemy = Enemy1(_Enemy_Data[0],_Enemy_Data[1], _Bg.window_left, _Bg.window_bottom)
-        if _Enemy_Data[2] ==2 :
-            newEnemy = Enemy2(_Enemy_Data[0],_Enemy_Data[1],_Bg.window_left, _Bg.window_bottom)
-        _Enemy1.insert(_Enemy_Data[3], newEnemy)
-
-        print('_Enemy1 : ', _Enemy1)
-
-    for enemy in _Enemy1 :
-        enemy.update()
-'''
 
     _player.update(frame_time)
 
@@ -284,7 +317,7 @@ def update(frame_time):
 
 
 def draw(frame_time):
-    global _Enemy1,_EBullet , AnotherPlayer,unpacked_all_player_data,MyNumber
+    global _Enemy1,_EBullet , AnotherPlayer,unpacked_all_player_data,MyNumber,_player
     clear_canvas()
 
     _player.draw(_player.x , _player.y)
@@ -295,13 +328,10 @@ def draw(frame_time):
     for Another in AnotherPlayer:
         if Another != MyNumber :
             Another.draw()
-    AnotherPlayer= []
 
     for ebullets in _EBullet:
         ebullets.draw()
 
-    _Enemy1 = []
-    _EBullet = []
     '''
     for enemy in _Enemy1:
         enemy.draw()
@@ -322,31 +352,6 @@ def draw(frame_time):
     _Life.draw(_player.life)
     '''
     update_canvas()
-
-def PACK_DATA_Player(objects):
-    Player_packed = DataStruct.pack_player_data(objects)
-    client_sock.send(Player_packed)
-
-    return Player_packed
-
-def PACK_DATA_Enemy(objects):
-    #todo: 게임중
-    #for objects in object:
-        #DataStruct.pack_enemy_data(objects)
-        #Enemy_packed =
-        #print(Enemy_packed)
-        #client_socket.sendall(packed)
-    Enemy_packed = DataStruct.pack_enemy_data(objects)
-    #print(DataStruct.unpack_enemy_data(Enemy_packed))
-    #client_sock.sendall(Enemy_packed)
-    return Enemy_packed
-    #
-
-def PACK_DATA_PBULLET(objects):
-    Bullet_packed = DataStruct.pack_bullet_data(objects)
-    print(DataStruct.unpack_bullet_data(Bullet_packed))
-    #client_sock.sendall(Bullet_packed)
-    return Bullet_packed
 
 def delete_object(objects):
     for object in objects:
