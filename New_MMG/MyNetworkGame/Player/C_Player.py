@@ -54,11 +54,11 @@ class Player1:
         self.playerdir = 0
         if Player1.image == None:
             if self.imagenum ==1 :
-                Player1.image = load_image('..\Player\Image_Player.png')
+                Player1.image = load_image('..\Resource\Image_Player.png')
             elif self.imagenum == 2:
-                Player1.image = load_image('..\Player\Image_Player2.png')
+                Player1.image = load_image('..\Resource\Image_Player2.png')
             else :
-                Player1.image = load_image('..\Player\Image_Player3.png')
+                Player1.image = load_image('..\Resource\Image_Player3.png')
 
     def update(self, frame_time):
         distance = Player1.RUN_SPEED_PPS * frame_time
@@ -195,11 +195,11 @@ class Player2:
         self.playerdir = _PD
         if Player2.image == None:
             if self.imagenum ==1 :
-                Player2.image = load_image('..\Player\Image_Player.png')
+                Player2.image = load_image('..\Resource\Image_Player.png')
             elif self.imagenum == 2:
-                Player2.image = load_image('..\Player\Image_Player2.png')
+                Player2.image = load_image('..\Resource\Image_Player2.png')
             else :
-                Player2.image = load_image('..\Player\Image_Player3.png')
+                Player2.image = load_image('..\Resource\Image_Player3.png')
 
 
     def draw_bb(self):

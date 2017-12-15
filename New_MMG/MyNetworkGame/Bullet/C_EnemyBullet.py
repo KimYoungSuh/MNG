@@ -20,7 +20,7 @@ class EBullet:
         EBullet._eBullet.append(self)
 
         if EBullet.image == None:
-            EBullet.image = load_image('..\Bullet\Image_EBullet.png')
+            EBullet.image = load_image('..\Resource\Image_EBullet.png')
         self.sx = self.x - self._Bg.window_left
         self.sy = self.y - self._Bg.window_bottom
 
