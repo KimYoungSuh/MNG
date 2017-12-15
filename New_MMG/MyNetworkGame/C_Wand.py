@@ -28,7 +28,7 @@ class Wand:
         self.xdir = 0
         self.ydir = 0
         if Wand.image == None:
-            Wand.image = load_image('..\Magic wand.png')
+            Wand.image = load_image('..\Resource\Magic wand.png')
 
     def update(self, frame_time):
         pass

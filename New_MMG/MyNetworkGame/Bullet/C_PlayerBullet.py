@@ -28,7 +28,7 @@ class PBullet:
         self.sy = self.y - self._Bg.window_bottom
 
         if PBullet.image == None:
-            PBullet.image = load_image('..\Bullet\Image_PBullet.png')
+            PBullet.image = load_image('..\Resource\Image_PBullet.png')
 
     def update(self):
 

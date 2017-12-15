@@ -76,19 +76,19 @@ def enter():
     global GAME_STATE,image1,image2,image3, font, _BG, _WAND, select_witch, game_data, PLAYER_NUM, select_imotion
     global recv_thread, recv_thread_isRun, recv_thread2, recv_thread2_isRun, image_ready, image_select
     global image_emotion, image_emotion2, image_emotion3, image_emotion4, image_ready_state;
-    image1 = load_image('..\Player\Image_Player.png')
-    image2 = load_image('..\Player\Image_Player2.png')
-    image3 = load_image('..\Player\Image_Player3.png')
-    image_ready = load_image('..\BackGround\Image_ready.png')
-    image_select = load_image('..\BackGround\Image_select.png')
-    image_emotion = load_image('..\BackGround\emotion_hello.png')
-    image_emotion2 = load_image('..\BackGround\emotion_smile.png')
-    image_emotion3 = load_image('..\BackGround\emotion_wait.png')
-    image_emotion4 = load_image('..\BackGround\emotion_go.png')
-    image_ready_state = load_image('..\BackGround\Image_ready_state.png')
+    image1 = load_image('..\Resource\Image_Player.png')
+    image2 = load_image('..\Resource\Image_Player2.png')
+    image3 = load_image('..\Resource\Image_Player3.png')
+    image_ready = load_image('..\Resource\Image_ready.png')
+    image_select = load_image('..\Resource\Image_select.png')
+    image_emotion = load_image('..\Resource\emotion_hello.png')
+    image_emotion2 = load_image('..\Resource\emotion_smile.png')
+    image_emotion3 = load_image('..\Resource\emotion_wait.png')
+    image_emotion4 = load_image('..\Resource\emotion_go.png')
+    image_ready_state = load_image('..\Resource\Image_ready_state.png')
     GAME_STATE =0
     recv_thread_isRun = 0
-    font = load_font('ENCR10B.TTF')
+    font = load_font('..\Resource\ENCR10B.TTF')
     _BG = C_SellectBG()
     _WAND = Wand()
     select_witch = 0

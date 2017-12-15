@@ -14,7 +14,7 @@ class EBullet:
         global font
         self.shooter = 1
         self._Bg = BackGround
-        font = load_font('..\ENCR10B.TTF')
+        font = load_font('..\Resource\ENCR10B.TTF')
         self.x = _X
         self.y = _Y
     #    self.sx = self.x - PL_X
@@ -23,7 +23,7 @@ class EBullet:
         EBullet._eBullet.append(self)
 
         if EBullet.image == None:
-            EBullet.image = load_image('..\Bullet\Image_EBullet.png')
+            EBullet.image = load_image('..\Resource\Image_EBullet.png')
         self.sx = self.x - self._Bg.window_left
         self.sy = self.y - self._Bg.window_bottom
 

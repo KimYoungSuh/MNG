@@ -14,10 +14,10 @@ _WAND = None
 
 def enter():
     global image, font, _WAND
-    font = load_font('..\ENCR10B.TTF')
+    font = load_font('..\Resource\ENCR10B.TTF')
     _WAND = Wand()
 
-    image = load_image('..\State\Image_GameTitle.png')
+    image = load_image('..\Resource\Image_GameTitle.png')
 #
 def exit():
     global image, _WAND, font
