@@ -214,7 +214,7 @@ class TcpController:
     '''
 
     def send_in_room_data(client_socket, room_number, player_number):
-        global game_sys_main,player_count
+        global game_sys_main
         player_name = ['player_name', 'player_name2', 'player_name3', 'player_name4']
         in_room = True
         data_reset = False
@@ -275,7 +275,6 @@ class TcpController:
 
     def send_in_game_data(client_socket, room_number, player_number):
         global main_time,PLAYER_NUM, state, GAME_STATE,timer, E_Data, ready_state, E_NUM
-        global player_count
         game_sys_main.all_player_data[room_number]['player_number'][player_number] = player_number
 
         current_time = time.clock()
@@ -288,10 +287,9 @@ class TcpController:
                 current_time = time.clock()
                 P_Data = client_socket.recv(struct.calcsize('=ffffiBf'))
                 _Player_Packed = data_struct.unpack_player_data(P_Data)
-                print ('player_count : ' , player_count)
+                print('_Player_Packed : ', _Player_Packed)
                 for i in range(3):  # 임시
                     if game_sys_main.all_player_data[room_number]['player_number'][i] == player_number:
-                        game_sys_main.all_player_data[room_number]['player_count'] = player_count
                         game_sys_main.all_player_data[room_number]['player_x'][i] =_Player_Packed[0]
                         game_sys_main.all_player_data[room_number]['player_y'][i] = _Player_Packed[1]
                         game_sys_main.all_player_data[room_number]['player_sx'][i] = _Player_Packed[2]
@@ -322,6 +320,7 @@ class TcpController:
                         _EnemyList.append(newEnemy)
                 if _Player_Packed[5] == True :
                     newBullet = PBullet(_Player_Packed[0], _Player_Packed[1], _Player_Packed[6])
+                    print('isShoot!')
                     _Bullet.append(newBullet)
 
                 for enemy in _EnemyList :
@@ -348,7 +347,6 @@ class TcpController:
                     if ebullets.alive == 0:
                         _Bullet.remove(ebullets)
                 packed_all_player_data = data_struct.pack_all_player_data(game_sys_main.all_player_data[room_number])
-
                 client_socket.send(packed_all_player_data)
                 client_socket.send(struct.pack('=ii', len(_EnemyList), len(_Bullet)))
                 for enemy in _EnemyList:
@@ -360,6 +358,7 @@ class TcpController:
                 for bullets in _Bullet:
                     bullets.update(frame_time, _Player_Packed[0], _Player_Packed[1])
                     bullet_packed = data_struct.pack_bullet_data(bullets)
+                    print(data_struct.unpack_bullet_data(bullet_packed))
                     client_socket.send(bullet_packed)
 
 
