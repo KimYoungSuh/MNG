@@ -18,19 +18,6 @@ class Enemy2:
         self.sx = self.x - BG_X
         self.sy = self.y - BG_Y
         self.state = State
-
-        '''
-            if self.xdir > self.ydir:
-            if self.xdir > 0:
-                self.state = 1
-            else:
-                self.state = 2
-        else:
-            if self.ydir > 0:
-                self.state = 0
-            else:
-                self.state = 3
-        '''
         if Enemy2.image == None:
             Enemy2.image = load_image('..\Resource\Image_Enermy2.png')
        # Enemy2._enemy2.append(self)
@@ -39,7 +26,7 @@ class Enemy2:
     def returnDir(self, x,y):
         pass
 
-    def update(self, frame_time, PL_X, PL_Y, _BG_X, _BG_Y,State):
+    def update(self, PL_X, PL_Y, _BG_X, _BG_Y,State):
         self.sx = self.x - _BG_X
         self.sy = self.y - _BG_Y
         self.state = State

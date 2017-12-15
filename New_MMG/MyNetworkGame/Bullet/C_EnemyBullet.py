@@ -1,7 +1,6 @@
 import random
 from Background.C_BG import BackGround
 from pico2d import *
-font = None
 class EBullet:
     PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
     RUN_SPEED_KMPH = 15  # Km / Hour
@@ -11,10 +10,8 @@ class EBullet:
     image = None
     _eBullet = []
     def __init__(self,_X, _Y):
-        global font
         self.shooter = 1
         self._Bg = BackGround
-        font = load_font('..\Resource\ENCR10B.TTF')
         self.x = _X
         self.y = _Y
     #    self.sx = self.x - PL_X

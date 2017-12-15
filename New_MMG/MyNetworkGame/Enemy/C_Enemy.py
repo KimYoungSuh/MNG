@@ -22,7 +22,7 @@ class Enemy1:
     def returny(self) :
         return self.y
 
-    def update(self,frame_time, PL_X, PL_Y, _BG_X , _BG_Y,State):
+    def update(self, PL_X, PL_Y, _BG_X , _BG_Y,State):
         self.sx = self.x - _BG_X
         self.sy = self.y - _BG_Y
 
