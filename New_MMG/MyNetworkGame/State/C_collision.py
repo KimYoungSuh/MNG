@@ -53,6 +53,37 @@ def enter():
 def exit():
     destroy_world()
 
+#timer
+'''
+class Timer():
+    def __init__(self):
+        self.Whattime = 0
+        self.itemtime = 0
+        self.potintime =0
+        self.Scoretime = 0
+        self.EnemyNum=0
+    def update(self, frame_time):
+        self.Whattime +=  frame_time
+        self.itemtime += frame_time
+        self.Scoretime += frame_time
+        self.potintime += frame_time
+        self.add()
+        if(self.EnemyNum >100):
+            State.C_Game_framework.change_state(State.C_Gameover_state)
+    def add(self):
+        if self.Whattime >= 0.5:
+            self.EnemyDirNum = random.randint(0, 8)
+            if self.EnemyDirNum <= 3 :
+                newEnemy = Enemy1(_player.sx, _player.sy, self.EnemyDirNum ,_Bg.window_left, _Bg.window_bottom )
+                _Enemy1.append(newEnemy)
+                PACK_DATA_Enemy(newEnemy)
+
+            elif self.EnemyDirNum >= 4 :
+                newEnemy = Enemy2(_player.sx, _player.sy, self.EnemyDirNum,_Bg.window_left, _Bg.window_bottom)
+                _Enemy1.append(newEnemy)
+                PACK_DATA_Enemy(newEnemy)
+            self.Whattime = 0
+'''
 def create_world():
     global _player, _Bg, _Enemy1, timer,GameScore, font, _EBullet, _PBullet, _Life,client_sock,tcp_controller,E_NUM, _Enemy_Data
     global MyNumber,AnotherPlayer,unpacked_all_player_data
@@ -109,7 +140,6 @@ def recv_thread(client_sock):
                 print('AnotherPlayer : ', _PTEMP)
         AnotherPlayer = _PTEMP
         if len(_PTEMP) >0:
-            del (_PTEMP)
             _PTEMP=[]
 
 
@@ -131,7 +161,6 @@ def recv_thread(client_sock):
             _ETEMP.append(newEnemy)
         _Enemy1=_ETEMP
         if len(_ETEMP) >0:
-            del(_ETEMP)
             _ETEMP=[]
 
         for i in range(0, EB_NUM):
@@ -144,10 +173,8 @@ def recv_thread(client_sock):
                 newBullet = PBullet(_Bullet_Data[1], _Bullet_Data[2])
             newBullet.update()
             _BTEMP.append(newBullet)
-
         _EBullet=_BTEMP
         if len(_BTEMP) >0:
-            del (_BTEMP)
             _BTEMP=[]
 
 

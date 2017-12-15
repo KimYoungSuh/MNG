@@ -244,7 +244,7 @@ class DataStruct:
 #             player_data['player_score'])
         return packed
     def unpack_player_data(packed):
-        unpacked_data = struct.unpack('=ffffiBf', packed)
+        unpacked_data = struct.unpack('=fffff', packed)
         return unpacked_data
     #def unpack_player_data(packed):
     ##    unpacked_data = struct.unpack('30s BiiBB?L', packed)
