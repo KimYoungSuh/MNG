@@ -48,8 +48,8 @@ def exit_lobby():
 def enter():
     global image, font, leader_board_list
     leader_board_list=[]
-    image = load_image('..\Resource\Image_Leaderboard_state.jpg')
-    font = load_font('..\Resource\ENCR10B.TTF')
+    image = load_image('..\State\Image_Leaderboard_state.jpg')
+    font = load_font('..\ENCR10B.TTF')
     recv_leader_board()
 
 def exit():

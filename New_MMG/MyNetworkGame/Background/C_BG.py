@@ -6,8 +6,8 @@ class BackGround:
 
     def __init__(self):
         global font
-        font = load_font('..\Resource\ENCR10B.TTF')
-        BackGround.image = load_image('..\Resource\Image_BG.png')
+        font = load_font('..\ENCR10B.TTF')
+        BackGround.image = load_image('..\Background\Image_BG.png')
         BackGround.canvas_width = get_canvas_width()
         BackGround.canvas_height = get_canvas_height()
         BackGround.w = BackGround.image.w

@@ -1,8 +1,13 @@
 from pico2d import *
 
+from Background.C_BG import BackGround
+from Bullet.C_PlayerBullet import PBullet
+#from State.C_CharSellect_State import select_witch
 import State.C_CharSellect_State
 from State.C_Input import InputSys
 import random
+#font = load_font('ENCR10B.TTF')
+#font.draw(self.x - 30, self.y + 20, 'HP : %3.2f' % self.life)
 
 world = None
 Scean_x, Scean_y = 82, 105
@@ -49,11 +54,11 @@ class Player1:
         self.playerdir = 0
         if Player1.image == None:
             if self.imagenum ==1 :
-                Player1.image = load_image('..\Resource\Image_Player.png')
+                Player1.image = load_image('..\Player\Image_Player.png')
             elif self.imagenum == 2:
-                Player1.image = load_image('..\Resource\Image_Player2.png')
+                Player1.image = load_image('..\Player\Image_Player2.png')
             else :
-                Player1.image = load_image('..\Resource\Image_Player3.png')
+                Player1.image = load_image('..\Player\Image_Player3.png')
 
     def update(self, frame_time):
         distance = Player1.RUN_SPEED_PPS * frame_time

@@ -2,7 +2,7 @@ from pico2d import *
 
 class C_LobbyBG:
     def __init__(self):
-        self.image = load_image('..\Resource\Image_LobbyBG.png')
+        self.image = load_image('..\BackGround\Image_LobbyBG.png')
         self.canvas_width = get_canvas_width()
         self.canvas_height = get_canvas_height()
 

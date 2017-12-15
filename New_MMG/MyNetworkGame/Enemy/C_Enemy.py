@@ -15,7 +15,7 @@ class Enemy1:
         self.sy = self.y - BG_Y
         self.state =State
         if Enemy1.image == None:
-            Enemy1.image = load_image('..\Resource\Image_Enermy.png')
+            Enemy1.image = load_image('..\Enemy\Image_Enermy.png')
         #Enemy1._enemy.append(self)
     def returnx(self):
         return self.x
