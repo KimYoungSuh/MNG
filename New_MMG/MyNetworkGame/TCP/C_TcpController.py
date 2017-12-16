@@ -11,16 +11,22 @@ from State import C_collision
 data_struct = DataStruct
 
 class TcpContoller:
-    SERVER_IP_ADDR = "192.168.0.6"
-    #SERVER_IP_ADDR ="127.0.0.1"
-    SERVER_PORT = 19000
+
+    def get_addr(self):
+        addr_file = open('..\ADDR.txt','r')
+        addr=addr_file.readlines()
+        return (addr[0][0:len(addr[0])-1], int(addr[1]))
+
 
 
     client_socket=socket
 
     def tcp_client_init(self):
+        addr=self.get_addr()
+        ip = addr[0]
+        port = addr[1]
         self.client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.client_socket.connect((self.SERVER_IP_ADDR, self.SERVER_PORT))
+        self.client_socket.connect((ip, port))
         return self.client_socket
 
     def loof(self):
