@@ -284,10 +284,13 @@ class TcpController:
         timer = Timer()
         main_time = time.clock()
         while 1:  # When Game Over
+
             if current_time + 0.03 < time.clock():
                 current_time = time.clock()
+
                 P_Data = client_socket.recv(struct.calcsize('=ffffiBf'))
                 _Player_Packed = data_struct.unpack_player_data(P_Data)
+
                 for i in range(3):  # 임시
                     if game_sys_main.all_player_data[room_number]['player_number'][i] == player_number:
                         game_sys_main.all_player_data[room_number]['player_count'] = player_count
@@ -303,10 +306,7 @@ class TcpController:
                 client_socket.send(packed_all_player_data)
 
                 # Gameover의 위치는 recv와 send 사이
-                # <--testcode
-                packed_is_game_over = client_socket.recv(struct.calcsize('?'))
-                game_sys_main.is_game_over = (struct.unpack('?', packed_is_game_over))[0]
-                # testcode-->
+
                 client_socket.send(struct.pack('?', game_sys_main.is_game_over))
                 if (game_sys_main.is_game_over):
                     break
