@@ -91,6 +91,7 @@ class TcpController:
     '''
     def process_client(client_socket):
         global PLAYER_NUM, state, GAME_STATE, E_Data, ready_state
+        exit_ack = True
         room_number = 0
         game_sys_main.player_count += 1
         player_number = game_sys_main.empty_player_number()
@@ -98,9 +99,12 @@ class TcpController:
         packed_player_number = data_struct.pack_integer(player_number)
         client_socket.send(packed_player_number)
         istime = time.clock()
-        room_number = TcpController.recv_lobby_state(client_socket, player_number) #in Lobby
-        print('room_number : ' , room_number)
-        TcpController.send_in_room_data(client_socket, room_number, player_number)  # in Room
+
+        while exit_ack:
+            print('room_number : ', room_number)
+            room_number = TcpController.recv_lobby_state(client_socket, player_number) #in Lobby
+            print('player_number : ', player_number)
+            exit_ack = TcpController.send_in_room_data(client_socket, room_number, player_number)  # in Room
         TcpController.send_in_game_data(client_socket, room_number, player_number)
 
     #Lobby
@@ -128,18 +132,22 @@ class TcpController:
                 if not is_none_room:
                     in_lobby = False
                     for i in range(3):
-                        if game_sys_main.waitting_room_data[room_number]['player_number'][i] == -1:
-                            game_sys_main.waitting_room_data[room_number]['player_number'][i] = player_number
+                        if game_sys_main.waitting_room_data[room_number-1]['player_number'][i] == -1:
+                            game_sys_main.waitting_room_data[room_number-1]['player_number'][i] = player_number
                             break
             elif selection == CREATE:
                 room_number = TcpController.recv_create_room(client_socket, player_number)
                 if room_number != -1:
                     in_lobby = False
+                    print(game_sys_main.waitting_room_data[0])
+                    print(game_sys_main.waitting_room_data[1])
+                    print(game_sys_main.waitting_room_data[2])
                     for i in range(3):  # 추후 수정
-                        if game_sys_main.waitting_room_data[room_number]['player_number'][i] == -1:
-                            game_sys_main.waitting_room_data[room_number]['player_number'][i] = player_number
+                        if game_sys_main.waitting_room_data[room_number-1]['player_number'][i] == -1:
+                            game_sys_main.waitting_room_data[room_number-1]['player_number'][i] = player_number
                             break
-                    print(room_number)
+
+                    print('id', game_sys_main.waitting_room_data[room_number - 1]['player_number'])
 
         return room_number
 
@@ -152,7 +160,7 @@ class TcpController:
         if  rooms_count < game_sys_main.maxroomcount:
             game_sys_main.rooms_data[rooms_count] = create_room_data
             game_sys_main.rooms_data[rooms_count]['room_number'] = game_sys_main.empty_room_number()
-            game_sys_main.players_data[player_number]['player_name'] = create_room_data['player_name1']
+            game_sys_main.players_data[player_number]['player_name1'] = create_room_data['player_name1']
             room_is_not_full = game_sys_main.rooms_data[rooms_count]['room_number']
         else:
             room_is_not_full = -1
@@ -181,16 +189,18 @@ class TcpController:
                 elif(full_plyaer == 4 and game_sys_main.rooms_data[i]['player_name4'] == 'default_name'):
                     game_sys_main.rooms_data[i]['player_name4'] = unpack_join_request_data['player_name']
                     return game_sys_main.rooms_data[i]['room_number']
-        game_sys_main.players_data[player_number]['player_name'] = unpack_join_request_data['player_name']
+        game_sys_main.players_data[player_number]['player_name1'] = unpack_join_request_data['player_name']
         return -1
 
     def send_lobby_data(socket):
         global game_sys_main
 
         room_count = game_sys_main.exist_room_count()
+        print('room_count', room_count)
         packed_room_count = data_struct.pack_integer(room_count)
         socket.send(packed_room_count)
         for i in range(room_count):
+            print(game_sys_main.rooms_data[i])
             packed_room_data = data_struct.pack_room_data(game_sys_main.rooms_data[i])
             socket.send(packed_room_data)
 
@@ -201,8 +211,8 @@ class TcpController:
     '''
 
     def send_in_room_data(client_socket, room_number, player_number):
-        global game_sys_main,player_count
-        player_name = ['player_name', 'player_name2', 'player_name3', 'player_name4']
+        global game_sys_main
+        player_name = ['player_name1', 'player_name2', 'player_name3', 'player_name4']
         in_room = True
         data_reset = False
 
@@ -220,49 +230,64 @@ class TcpController:
             if in_room_data['is_exit'] == True:
                 # 소켓 해제
                 for i in range(3):
-                    if data_reset:
-                        null_host = (game_sys_main.rooms_data[room_number]['host_number'] == -1)
-                        if null_host:
-                            game_sys_main.rooms_data[room_number]['host_number'] = player_number
-                        game_sys_main.waitting_room_data[room_number]['player_number'][i - 1] = game_sys_main.waitting_room_data[room_number]['player_number'][i]
-                        game_sys_main.waitting_room_data[room_number]['player_witch_select'][i - 1] = game_sys_main.waitting_room_data[room_number]['player_witch_select'][i]
-                        game_sys_main.waitting_room_data[room_number]['player_ready_state'][i] = False
-                        game_sys_main.rooms_data[room_number][player_name[i - 1]] = game_sys_main.rooms_data[room_number][player_name[i]]
-                    if game_sys_main.waitting_room_data[room_number]['player_number'][i] == player_number:
-                        if game_sys_main.rooms_data[room_number]['host_number'] == player_number:
-                            game_sys_main.rooms_data[room_number]['host_number'] = -1
-                        game_sys_main.waitting_room_data[room_number]['player_witch_select'][i] = 0
-                        game_sys_main.waitting_room_data[room_number]['player_ready_state'][i] = False
+                    if data_reset and game_sys_main.waitting_room_data[room_number-1]['player_number'][i] != -1:
+                        if game_sys_main.rooms_data[room_number-1]['host_number'] == -1:
+                            game_sys_main.rooms_data[room_number-1]['host_number'] = game_sys_main.waitting_room_data[room_number-1]['player_number'][i]
+                        game_sys_main.waitting_room_data[room_number-1]['player_number'][i - 1] = game_sys_main.waitting_room_data[room_number-1]['player_number'][i]
+                        game_sys_main.waitting_room_data[room_number-1]['player_witch_select'][i - 1] = game_sys_main.waitting_room_data[room_number-1]['player_witch_select'][i]
+                        game_sys_main.rooms_data[room_number-1][player_name[i-1]] = game_sys_main.rooms_data[room_number-1][player_name[i]]
+                        game_sys_main.waitting_room_data[room_number-1]['player_number'][i] = -1
+                        game_sys_main.waitting_room_data[room_number-1]['player_witch_select'][i] = 0
+                        game_sys_main.waitting_room_data[room_number-1]['player_ready_state'][i] = False
+                        game_sys_main.rooms_data[room_number-1][player_name[i - 1]] = game_sys_main.rooms_data[room_number-1][player_name[i]]
+                    elif game_sys_main.waitting_room_data[room_number-1]['player_number'][i] == player_number:
+                        game_sys_main.waitting_room_data[room_number - 1]['player_number'][i] = -1
+                        if game_sys_main.rooms_data[room_number-1]['host_number'] == player_number:
+                            game_sys_main.rooms_data[room_number-1]['host_number'] = -1
+                        game_sys_main.waitting_room_data[room_number-1]['player_witch_select'][i] = 0
+                        game_sys_main.waitting_room_data[room_number-1]['player_ready_state'][i] = False
+                        game_sys_main.rooms_data[room_number-1][player_name[i]] = 'default_name'
                         data_reset = True
-                    if i == 2:
-                        data_reset = False
-                pass
 
-            player_count = 0
+            in_room_player_count = 0
             ready_count = 0
             # 방내 유저 레디상태 업데이트
             # 방내 유저 캐릭터선택 정보 업데이트
             for i in range(3):  # 임시
-                if game_sys_main.waitting_room_data[room_number]['player_number'][i] == player_number:
-                    game_sys_main.waitting_room_data[room_number]['player_witch_select'][i] = in_room_data[
+                if game_sys_main.waitting_room_data[room_number-1]['player_number'][i] == player_number:
+                    game_sys_main.waitting_room_data[room_number-1]['player_witch_select'][i] = in_room_data[
                         'character_select']
-                    game_sys_main.waitting_room_data[room_number]['player_ready_state'][i] = in_room_data['is_ready']
-                    game_sys_main.waitting_room_data[room_number]['emotion'][i] = in_room_data['emotion']
+                    game_sys_main.waitting_room_data[room_number-1]['player_ready_state'][i] = in_room_data['is_ready']
+                    game_sys_main.waitting_room_data[room_number-1]['emotion'][i] = in_room_data['emotion']
 
             for i in range(3):  # 임시
-                if game_sys_main.waitting_room_data[room_number]['player_number'][i] != -1:
-                    player_count += 1
-                if game_sys_main.waitting_room_data[room_number]['player_ready_state'][i]:
+                #print(game_sys_main.waitting_room_data[room_number - 1]['player_number'][i])
+                if game_sys_main.waitting_room_data[room_number-1]['player_number'][i] != -1:
+                    in_room_player_count += 1
+                if game_sys_main.waitting_room_data[room_number-1]['player_ready_state'][i]:
                     ready_count += 1
 
-            game_sys_main.waitting_room_data[room_number]['player_count'] = player_count
-            packed_in_room_data_server = Pack.pack_in_room_data_server(game_sys_main.waitting_room_data[room_number],
-                                                                       GAME_STATE)
-            client_socket.send(packed_in_room_data_server)
+            game_sys_main.waitting_room_data[room_number-1]['player_count'] = in_room_player_count
 
-            if player_count == ready_count:
+            if in_room_player_count <= 0:
+                game_sys_main.rooms_data[room_number-1]['room_number'] = -1
+                game_sys_main.rooms_data[room_number-1]['room_name'] = 'default_name'
+                game_sys_main.rooms_data[room_number-1]['full_player'] = 0
+
+            if data_reset:
+                packed_exit_ack = Pack.pack_boolean(True)
+                client_socket.send(packed_exit_ack)
+                return True
+            else:
+                #print('in room count : ', game_sys_main.waitting_room_data[room_number-1]['player_count'])
+                #print('count : ', in_room_player_count)
+                packed_in_room_data_server = Pack.pack_in_room_data_server(game_sys_main.waitting_room_data[room_number-1],
+                                                                           GAME_STATE)
+                client_socket.send(packed_in_room_data_server)
+
+            if in_room_player_count == ready_count:
                 in_room = False
-        pass
+        return False
 
 
     def send_in_game_data(client_socket, room_number, player_number):

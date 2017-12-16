@@ -128,3 +128,7 @@ class TcpContoller:
         in_room_data = data_struct.unpack_in_room_data_server(packed_data)
         return in_room_data
 
+    def recv_exit_ack(client_socket):
+        packed_data = client_socket.recv(data_struct.boolean_size)
+        exit_ack = data_struct.unpack_boolean(packed_data)
+        return exit_ack
