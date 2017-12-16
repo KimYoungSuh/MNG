@@ -2,17 +2,11 @@ import socket
 import threading
 import time
 import random
-import string
 from Enemy.C_Enemy import Enemy1
 from Enemy.C_Enemy2 import Enemy2
 from Bullet.C_EnemyBullet import EBullet
 from Bullet.C_PlayerBullet import PBullet
 from GameSys.C_GameSysMain import *
-from Data.C_BulletData import *
-from Data.C_EnemyData import *
-from Data.C_PlayerData import *
-from Data.C_RoomData import *
-from Data.C_StructSet import *
 from TCP.C_Pack import *
 from Background.C_BG import BackGround
 
@@ -37,23 +31,11 @@ GAME_STATE
 1 = Playing
 2 = GAMEOVER
 '''
-PLAYER_NUM = 0
-E_NUM = 0
 
-class Timer():
-    def __init__(self):
-        self.Whattime = 0
-        self.EnemyNum = 0
 
-    def update(self, frame_time):
-        self.Whattime += frame_time
-        if self.Whattime >= 0.5:
-            self.Whattime = 0
-            return True
-        else :
-            return False
 
-game_sys_main = GameSysMain()
+
+
 class TcpController:
     global GAME_STATE, player_count, _Bg, Enemy_packed, E_NUM, ready_state,game_sys_main
     GAME_STATE = 0
@@ -130,21 +112,26 @@ class TcpController:
         global game_sys_main
         in_lobby = True
         room_number = 0
+        LOBBY_DATA=0
+        ROOM_DATA=1
+        JOIN=2
+        CREATE=3
         while in_lobby:
             packed_Selection = client_socket.recv(data_struct.integer_size)
             selection = data_struct.unpack_integer(packed_Selection)
 
-            if selection == 0:
+            if selection == LOBBY_DATA:
                 TcpController.send_lobby_data(client_socket)
-            elif selection == 2:
+            elif selection == JOIN:
                 room_number = TcpController.send_room_data(client_socket, player_number)
-                if room_number != -1:
+                is_none_room =(room_number == -1)
+                if not is_none_room:
                     in_lobby = False
                     for i in range(3):
                         if game_sys_main.waitting_room_data[room_number]['player_number'][i] == -1:
                             game_sys_main.waitting_room_data[room_number]['player_number'][i] = player_number
                             break
-            elif selection == 3:
+            elif selection == CREATE:
                 room_number = TcpController.recv_create_room(client_socket, player_number)
                 if room_number != -1:
                     in_lobby = False
@@ -219,6 +206,13 @@ class TcpController:
         in_room = True
         data_reset = False
 
+        #state
+        join = 0
+        select = 1
+        ready = 2
+        out = 3
+        in_game = 4
+
         while in_room:
             packed_in_room_data = client_socket.recv(Pack.in_room_data_size)
             in_room_data = data_struct.unpack_in_room_data(packed_in_room_data)
@@ -227,15 +221,13 @@ class TcpController:
                 # 소켓 해제
                 for i in range(3):
                     if data_reset:
-                        if game_sys_main.rooms_data[room_number]['host_number'] == -1:
+                        null_host = (game_sys_main.rooms_data[room_number]['host_number'] == -1)
+                        if null_host:
                             game_sys_main.rooms_data[room_number]['host_number'] = player_number
-                        game_sys_main.waitting_room_data[room_number]['player_number'][i - 1] = \
-                            game_sys_main.waitting_room_data[room_number]['player_number'][i]
-                        game_sys_main.waitting_room_data[room_number]['player_witch_select'][i - 1] = \
-                            game_sys_main.waitting_room_data[room_number]['player_witch_select'][i]
+                        game_sys_main.waitting_room_data[room_number]['player_number'][i - 1] = game_sys_main.waitting_room_data[room_number]['player_number'][i]
+                        game_sys_main.waitting_room_data[room_number]['player_witch_select'][i - 1] = game_sys_main.waitting_room_data[room_number]['player_witch_select'][i]
                         game_sys_main.waitting_room_data[room_number]['player_ready_state'][i] = False
-                        game_sys_main.rooms_data[room_number][player_name[i - 1]] = \
-                            game_sys_main.rooms_data[room_number][player_name[i]]
+                        game_sys_main.rooms_data[room_number][player_name[i - 1]] = game_sys_main.rooms_data[room_number][player_name[i]]
                     if game_sys_main.waitting_room_data[room_number]['player_number'][i] == player_number:
                         if game_sys_main.rooms_data[room_number]['host_number'] == player_number:
                             game_sys_main.rooms_data[room_number]['host_number'] = -1
@@ -303,13 +295,7 @@ class TcpController:
                         game_sys_main.all_player_data[room_number]['player_dir'][i] = _Player_Packed[6]
                 packed_all_player_data = data_struct.pack_all_player_data(game_sys_main.all_player_data[room_number])
 
-                client_socket.send(packed_all_player_data)
 
-                # Gameover의 위치는 recv와 send 사이
-
-                client_socket.send(struct.pack('?', game_sys_main.is_game_over))
-                if (game_sys_main.is_game_over):
-                    break
 
                 frame_time = time.clock() - main_time
                 main_time += frame_time
@@ -353,7 +339,14 @@ class TcpController:
                     if ebullets.alive == 0:
                         _Bullet.remove(ebullets)
 
+                client_socket.send(packed_all_player_data)
 
+                # Gameover의 위치는 recv와 send 사이
+
+                client_socket.send(struct.pack('?', game_sys_main.is_game_over))
+                if (game_sys_main.is_game_over):
+                    break
+                    
                 client_socket.send(struct.pack('=ii', len(_EnemyList), len(_Bullet)))
                 print ('len(_Bullet) : ', len(_EnemyList))
                 Enemys_IN_Window = []
@@ -459,19 +452,6 @@ def exit(self):
 
 
 
-def PACK_DATA_Enemy(objects):
-    #for objects in object :
-        #client_socket.sendall(Enemy_packed)
-    pass
-def collide2(a, b_l, b_b, b_r, b_t) :
-    left_a, bottom_a,right_a, top_a = a.get_bb()
-    if left_a > b_r : return False
-    if right_a < b_l : return False
-    if top_a < b_b : return False
-    if bottom_a > b_t : return False
-    return True
-
-
 def collide(a, b):
     left_a, bottom_a,right_a, top_a = a.get_bb()
     left_b, bottom_b,right_b, top_b = b.get_bb()
@@ -481,3 +461,16 @@ def collide(a, b):
     if bottom_a > top_b : return False
 
     return True
+
+class Timer():
+    def __init__(self):
+        self.Whattime = 0
+        self.EnemyNum = 0
+
+    def update(self, frame_time):
+        self.Whattime += frame_time
+        if self.Whattime >= 0.5:
+            self.Whattime = 0
+            return True
+        else :
+            return False

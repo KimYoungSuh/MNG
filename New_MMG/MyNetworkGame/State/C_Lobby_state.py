@@ -117,10 +117,10 @@ def collide_point(point, box):
 
 def enter():
     global _BG, _WAND, font, game_data, selection_image
-    font = load_font('..\Resource\ENCR10B.TTF')
+    font = load_font('Resource\ENCR10B.TTF')
     _BG = C_LobbyBG()
     _WAND = Wand()
-    selection_image = load_image('..\Resource\Image_Lobby_Select.png')
+    selection_image = load_image('Resource\Image_Lobby_Select.png')
 
     game_data = C_Game_data.GameData
     tcp_controller = TcpContoller()

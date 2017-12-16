@@ -32,7 +32,7 @@ class Enemy2:
                 self.state = 3
         '''
         if Enemy2.image == None:
-            Enemy2.image = load_image('..\Resource\Image_Enermy2.png')
+            Enemy2.image = load_image('Resource\Image_Enermy2.png')
        # Enemy2._enemy2.append(self)
    # def get_list():
    #     return (Enemy2._enemy2)

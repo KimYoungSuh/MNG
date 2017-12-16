@@ -9,11 +9,12 @@ from Data.C_RoomData import *
 from Data.C_StructSet import *
 from State import C_collision
 data_struct = DataStruct
+import os
 
 class TcpContoller:
 
     def get_addr(self):
-        addr_file = open('..\ADDR.txt','r')
+        addr_file = open('ADDR.txt','r')
         addr=addr_file.readlines()
         return (addr[0][0:len(addr[0])-1], int(addr[1]))
 
