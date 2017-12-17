@@ -346,7 +346,6 @@ class TcpController:
                 client_socket.send(struct.pack('?', game_sys_main.is_game_over))
                 if (game_sys_main.is_game_over):
                     break
-                    
                 client_socket.send(struct.pack('=ii', len(_EnemyList), len(_Bullet)))
                 print ('len(_Bullet) : ', len(_EnemyList))
                 Enemys_IN_Window = []
@@ -387,10 +386,7 @@ class TcpController:
         for temp in new_score:
             leader_board.write(temp)
         leader_board.write('\n')
-
-        leader_board.close()
-        leader_board = open('LeaderBoard.txt', 'r+t')
-
+        leader_board.seek(0)
         before_leader_board = leader_board.readlines()
         leader_list = []
         for temp in before_leader_board:
@@ -436,6 +432,8 @@ class TcpController:
                                              int(after_leader_board[i][9]))
 
             client_socket.send(packed_leader_board)
+        leader_board.close()
+        del (leader_board)
 
 
 
