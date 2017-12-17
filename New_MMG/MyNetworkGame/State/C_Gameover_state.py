@@ -90,7 +90,7 @@ def draw(frame_time):
     clear_canvas()
     image.draw(600, 450)
     for i in range (0, len(leader_board_list)):
-        font.draw(150, 720-i*65, '%d%8s        %8s        %8s        %8s        %d' % (i+1, leader_board_list[i][1],leader_board_list[i][3],leader_board_list[i][5],leader_board_list[i][7], leader_board_list[i][9]))
+        font.draw(150, 720-i*65, '%d p1:%s p2:%s p3:%s time:%s score:%d' % (i+1, leader_board_list[i][1],leader_board_list[i][3],leader_board_list[i][5],leader_board_list[i][7], leader_board_list[i][9]))
 
     update_canvas()
 

@@ -139,7 +139,6 @@ def recv_thread(client_sock):
         GameData.is_game_over = (struct.unpack('?', packed_is_game_over))[0]
         if (GameData.is_game_over):
             print('game_over')
-            State.C_Game_framework.change_state(State.C_Gameover_state)
             return
         #GAMEOVER RECVED END
 
@@ -241,6 +240,8 @@ def update(frame_time):
     global E_NUM ,_Enemy_Data,unpacked_all_player_data
 
     _player.update(frame_time)
+    if (GameData.is_game_over):
+        State.C_Game_framework.change_state(State.C_Gameover_state)
 
         #print("Enemy Packed : ", _enemylist)
 #    timer.update(frame_time)
