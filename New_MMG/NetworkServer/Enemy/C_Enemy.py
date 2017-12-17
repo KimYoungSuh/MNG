@@ -17,7 +17,7 @@ class Enemy1:
 
     #_enemy = []
 
-    def __init__(self, Enemy_dir):
+    def __init__(self, PL_X, PL_Y, Enemy_dir, BG_X, BG_Y):
         self.rand = Enemy_dir
         self.type = 1
         self.state = 0
@@ -29,12 +29,15 @@ class Enemy1:
             self.x, self.y = random.randint(0, 3200), random.randint(0, 50)
         elif self.rand == 3:
             self.x, self.y = random.randint(0, 3200), random.randint(1750, 1800)
+        #self.sx = self.x - PL_X
+        #self.sy = self.y - PL_Y
         self.speed = Enemy1.RUN_SPEED_PPS
 
+        self.sx = self.x - BG_X
+        self.sy = self.y - BG_Y
 
         self.Whattime = 0
         self.alive = 1
-    def set_dir(self,PL_X, PL_Y):
         self.xdir = math.cos(math.atan((PL_Y - self.y) / (PL_X - self.x)))
         self.ydir = math.sin(math.atan((PL_Y - self.y) / (PL_X - self.x)))
         #Enemy1._enemy.append(self)
@@ -42,13 +45,8 @@ class Enemy1:
         return self.x
     def returny(self) :
         return self.y
-    def get_distance(self,PL_X, PL_Y):
-        dx = self.x - PL_X
-        dy = self.y - PL_Y
-        return (dx*dx)+(dy*dy)
 
-
-    def update(self,frame_time):
+    def update(self,frame_time, PL_X, PL_Y, _BG_X , _BG_Y):
         if self.x > 3200:
             self.x = 3200
             self.xdir *= -1
@@ -62,9 +60,13 @@ class Enemy1:
             self.y = 0
             self.ydir *= -1
         self.Whattime +=frame_time
+        if collide(self.x, self.y, self.x+10, self.y+10, PL_X, PL_Y, PL_X+10, PL_Y+10) :
+            self.alive = 0
 #
         self.x += self.speed * self.xdir * frame_time
         self.y += self.speed * self.ydir * frame_time
+        self.sx = self.x - _BG_X
+        self.sy = self.y - _BG_Y
 
 
 
@@ -86,6 +88,8 @@ class Enemy1:
 
     def draw_bb(self):
         pass
+    def get_bb(self):
+        return self.sx - 10, self.sy - 10, self.sx + 10, self.sy + 10
 def collide(left_a, bottom_a,right_a, top_a, left_b, bottom_b,right_b, top_b):
 
     if left_a > right_b : return False

@@ -20,7 +20,7 @@ class Enemy2:
 
     #_enemy2 = []
 
-    def __init__(self, Enemy_dir):
+    def __init__(self, PL_X, PL_Y, Enemy_dir, BG_X, BG_Y):
         self.type = 2
         self.rand = Enemy_dir
 
@@ -32,15 +32,33 @@ class Enemy2:
             self.x, self.y = random.randint(0, 3200), random.randint(0, 50)
         else :
             self.x, self.y = random.randint(0, 3200), random.randint(1750, 1800)
+    #    self.sx = self.x - PL_X
+    #    self.sy = self.y - PL_Y
+        self.sx = self.x - BG_X
+        self.sy = self.y - BG_Y
         self.speed = Enemy2.RUN_SPEED_PPS
 
         self.Whattime = 0
         self.alive = 1
-
+        self.xdir = math.cos(math.atan((PL_Y - self.y) / (PL_X - self.x)))
+        self.ydir = math.sin(math.atan((PL_Y - self.y) / (PL_X - self.x)))
+        if self.xdir > self.ydir:
+            if self.xdir > 0:
+                self.state = 1
+            else:
+                self.state = 2
+        else:
+            if self.ydir > 0:
+                self.state = 0
+            else:
+                self.state = 3
+       # Enemy2._enemy2.append(self)
+   # def get_list():
+   #     return (Enemy2._enemy2)
     def returnDir(self, x,y):
         pass
 
-    def update(self, frame_time):
+    def update(self, frame_time, PL_X, PL_Y, _BG_X, _BG_Y):
         if self.x > 3200:
             self.x = 3200
             self.xdir *= -1
@@ -64,27 +82,19 @@ class Enemy2:
                 self.state = 0
             else:
                 self.state = 3
+        self.sx = self.x - _BG_X
+        self.sy = self.y - _BG_Y
+    #    self.sx = self.x - PL_X
+    #    self.sy = self.y - PL_Y
 #
         self.x += self.speed * self.xdir * frame_time
         self.y += self.speed * self.ydir * frame_time
+        if collide(self.x, self.y, self.x+10, self.y+10, PL_X, PL_Y, PL_X+10, PL_Y+10) :
+            self.alive = 0
 
-    def set_dir(self,PL_X, PL_Y):
-        self.xdir = math.cos(math.atan((PL_Y - self.y) / (PL_X - self.x)))
-        self.ydir = math.sin(math.atan((PL_Y - self.y) / (PL_X - self.x)))
-        if self.xdir > self.ydir:
-            if self.xdir > 0:
-                self.state = 1
-            else:
-                self.state = 2
-        else:
-            if self.ydir > 0:
-                self.state = 0
-            else:
-                self.state = 3
-    def get_distance(self,PL_X, PL_Y):
-        dx = self.x - PL_X
-        dy = self.y - PL_Y
-        return (dx*dx)+(dy*dy)
+
+
+        #self.delete_object(_Bullet)
 
 
     def ADD_Bullet(self):
