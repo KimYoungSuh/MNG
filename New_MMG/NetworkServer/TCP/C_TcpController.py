@@ -109,10 +109,6 @@ class TcpController:
         TcpController.send_in_game_data(client_socket, room_number, player_number)
 
     #Lobby
-    '''
-    selection 0 = LOBBY_DATA, selection 1 = ROOM_DATA, selection 2 = JOIN, selection 3 = CREATE
-    '''
-
     def recv_lobby_state(client_socket, player_number):
         global game_sys_main
         in_lobby = True

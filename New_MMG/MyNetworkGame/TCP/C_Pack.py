@@ -20,10 +20,10 @@ class DataStruct:
         return struct.unpack('i', integer)[0]
 
     # Room_data
-    room_data_type = 'B B 30s B 30s 30s 30s 30s ? B'
+    room_data_type = 'i i 30s i 30s 30s 30s 30s ? i'
     room_data_size = struct.calcsize(room_data_type)
     def pack_room_data(room_data):
-        packed_data = struct.pack('B B 30s B 30s 30s 30s 30s ? B',
+        packed_data = struct.pack(DataStruct.room_data_type,
                                   room_data['room_number'],
                                   room_data['host_number'],
                                   room_data['room_name'].encode('ascii'),
@@ -37,7 +37,7 @@ class DataStruct:
         return packed_data
 
     def unpack_room_data(packed):
-        unpacked_data = struct.unpack('B B 30s B 30s 30s 30s 30s ? B', packed)
+        unpacked_data = struct.unpack(DataStruct.room_data_type, packed)
         room_data = {
             'room_number': unpacked_data[0],
             'host_number': unpacked_data[1],
