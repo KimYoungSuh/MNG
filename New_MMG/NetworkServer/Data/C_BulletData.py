@@ -1,5 +1,5 @@
-from Data import C_StructSet
+from Data.C_StructSet import StructSet
 
 class BulletData:
     def __init__(self):
-        self.bullet_data = C_StructSet.BulletDataStruct
+        self.bullet_data = StructSet().BulletDataStruct

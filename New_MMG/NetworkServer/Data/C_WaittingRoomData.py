@@ -1,4 +1,4 @@
-from Data import C_StructSet
+from Data.C_StructSet import StructSet
 
 '''
 참고하세요
@@ -15,4 +15,4 @@ WattingRoomData ={'player_count':0,
 
 class WaittingRoomData:
     def __init__(self):
-        self.waitting_room_data = C_StructSet.WaittingRoomData
+        self.waitting_room_data = StructSet().WaittingRoomData

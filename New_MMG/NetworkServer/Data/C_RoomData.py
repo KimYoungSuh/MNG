@@ -1,6 +1,6 @@
-from Data import C_StructSet
+from Data.C_StructSet import StructSet
 
 class RoomData:
     def __init__(self):
-        self.room_data = C_StructSet.RoomDataStruct
+        self.room_data = StructSet().RoomDataStruct
 

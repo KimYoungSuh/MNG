@@ -1,7 +1,6 @@
-
-from Data import C_StructSet
+from Data.C_StructSet import StructSet
 
 class AllPlayerDataStruct:
     def __init__(self):
-        self.all_playerdata = C_StructSet.AllPlayerDataStruct
+        self.all_playerdata = StructSet().AllPlayerDataStruct
 
