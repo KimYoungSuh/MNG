@@ -18,10 +18,8 @@ class EBullet:
     #    self.sy = self.y - PL_Y
         self.alive =1
 
-        print('bullet left')
         if EBullet.image == None:
             EBullet.image = load_image('Resource\Image_EBullet.png')
-        print('bullet')
         self.sx = self.x - self._Bg.window_left
         self.sy = self.y - self._Bg.window_bottom
 

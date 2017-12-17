@@ -180,11 +180,11 @@ class Player2:
 
     UP_RUN, RIGHT_RUN, LEFT_RUN,  DOWN_RUN = 0,1,2,3,
     def __init__(self ,
-                 _X , _Y, _PD,  BG_X, BG_Y, image_num):
+                 _X , _Y, _PD,Life,  BG_X, BG_Y, image_num):
         global _Enemy, _Bg
         self.imagenum = image_num
         self.x, self.y = _X, _Y
-        self.life = 3
+        self.life = Life
         self.xdir = 0
         self.ydir =0
         self.state = self.DOWN_RUN

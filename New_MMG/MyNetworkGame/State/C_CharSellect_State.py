@@ -214,8 +214,7 @@ def update(frame_time):
         if game_data.waitting_room_data['player_ready_state'][i]:
             ready_count += 1
         emotion_time[i] += frame_time
-        print('ready count : ', ready_count)
-        P_NUM = print(game_data.waitting_room_data['player_count'])
+
     if ready_count == game_data.waitting_room_data['player_count']:
         C_Game_framework.run(C_collision)
 

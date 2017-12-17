@@ -38,7 +38,7 @@ class TcpContoller:
             while 1:
                 #todo: 게임중
                 data = "Hello world"
-                self.client_socket.sendall(C_collision.DATA_PACK_ENEMY)
+                self.client_socket.send(C_collision.DATA_PACK_ENEMY)
                 print("send data = ", data)
                 self.recv_is_game_over()
 

@@ -117,6 +117,8 @@ class TcpController:
             print('player_number : ', player_number)
             room_exit_ack = TcpController.send_in_room_data(client_socket, room_number, player_number)  # in Room
         TcpController.send_in_game_data(client_socket, room_number, player_number)
+        leader_board(client_socket,room_number)
+        print(room_number,'번 방 게임종료')
 
     #Lobby
     def recv_lobby_state(client_socket, player_number):
@@ -362,25 +364,34 @@ class TcpController:
                 for i in range(3):
                     if (room_player[i] == -1):
                         break
-                    if collide(room_player_data['player_x'][i], room_player_data['player_y'][i], enemy.x, enemy.y):
+                    if collide2(room_player_data['player_x'][i],
+                               room_player_data['player_y'][i],
+                               enemy.x,
+                               enemy.y):
                         enemy.alive = 0
                         room_player_data['player_life'][i] -= 1
+                        print(i + 1, 'player life:', room_player_data['player_life'][i])
 
             player = 0
             for bullets in _Bullet:
                 bullets.update(frame_time)
                 if bullets.shooter == player:
                     for enemys in _EnemyList:
-                        if collide(bullets, enemys):
+                        if collide2(bullets.x, bullets.y, enemys.x, enemys.y):
                             bullets.alive = 0
                             enemys.alive = 0
+
                 else:
                     for i in range(3):
                         if (room_player[i] == -1):
                             break
-                        if collide(room_player_data['player_x'][i], room_player_data['player_y'][i], bullets.x, bullets.y):
+                        if collide2(room_player_data['player_x'][i],
+                                   room_player_data['player_y'][i],
+                                   bullets.x, bullets.y):
                             bullets.alive = 0
                             room_player_data['player_life'][i] -= 1
+                            print(i+1,'player life:',room_player_data['player_life'][i])
+
 
 
             for enemy in _EnemyList:
@@ -393,11 +404,6 @@ class TcpController:
                 if ebullets.alive == 0:
                     _Bullet.remove(ebullets)
 
-
-
-
-
-
             for i in range (3):
                 if(room_player[i]==-1):
                     break
@@ -409,9 +415,11 @@ class TcpController:
 
     def send_in_game_data(client_socket, room_number, player_number):
         global main_time,PLAYER_NUM, state, GAME_STATE,timer, E_Data, ready_state, E_NUM
-        global player_count,Image_size  ,Canvas_size
+        global player_count,Image_size  ,Canvas_size, after_time, before_time
         room_player = game_sys_main.waitting_room_data[room_number - 1]['player_number']
+        room_player_data = game_sys_main.all_player_data[room_number]
         game_sys_main.all_player_data[room_number]['player_number'][player_number] = player_number
+
         in_player=(-1,-1,-1)
         current_time = time.clock()
         E_NUM = 0
@@ -427,6 +435,7 @@ class TcpController:
 
         while 1:  # When Game Over
             if current_time+0.033  < time.clock():
+                before_time=time.clock()
                 current_time = time.clock()
                 P_Data = client_socket.recv(struct.calcsize('=ffffiBf'))
                 _Player_Packed = data_struct.unpack_player_data(P_Data)
@@ -440,15 +449,24 @@ class TcpController:
                         game_sys_main.all_player_data[room_number]['player_life'][i] = _Player_Packed[4]
                         game_sys_main.all_player_data[room_number]['player_isShoot'][i] = _Player_Packed[5]
                         game_sys_main.all_player_data[room_number]['player_dir'][i] = _Player_Packed[6]
-                packed_all_player_data = data_struct.pack_all_player_data(game_sys_main.all_player_data[room_number])
 
                 to_all_event[player_number].set()
                 gc.collect()
                 to_one_event[player_number].wait()
-                to_one_event[player_number].clear()
+
+                dead_count =0
+
+                for i in range(3):
+                    if (room_player[i] == -1):
+                        break
+                    if room_player_data['player_life'][i] <= 0:
+                        dead_count+=1
+                if dead_count==game_sys_main.waitting_room_data[room_number - 1]['player_count']:
+                    game_sys_main.is_game_over=True
+
+                packed_all_player_data = data_struct.pack_all_player_data(game_sys_main.all_player_data[room_number])
                 client_socket.send(packed_all_player_data)
 
-                # Gameover의 위치는 recv와 send 사이
 
                 client_socket.send(struct.pack('?', game_sys_main.is_game_over))
                 if (game_sys_main.is_game_over):
@@ -483,7 +501,6 @@ class TcpController:
                                     if Canvas_size[3] > enemy.y:
                                         Enemy_packed = data_struct.pack_enemy_data(enemy, k)
                                         Enemys_IN_Window.append(Enemy_packed)
-
                     elif _Player_Packed[1] > 1350 :
                         if _Player_Packed[0] + 800 > enemy.x:
                             if _Player_Packed[0] - 800 < enemy.x:
@@ -491,7 +508,6 @@ class TcpController:
                                     if Image_size[3]  > enemy.y:
                                         Enemy_packed = data_struct.pack_enemy_data(enemy, k)
                                         Enemys_IN_Window.append(Enemy_packed)
-
                     else :
                         if _Player_Packed[0] +800 > enemy.x :
                             if _Player_Packed[0] -800 < enemy.x :
@@ -499,7 +515,6 @@ class TcpController:
                                     if _Player_Packed[1] - 600 < enemy.y:
                                         Enemy_packed = data_struct.pack_enemy_data(enemy, k)
                                         Enemys_IN_Window.append(Enemy_packed)
-
 
                 for bullets in _Bullet:
                     if _Player_Packed[0] < 600:
@@ -524,7 +539,6 @@ class TcpController:
                                     if Canvas_size[3] > bullets.y:
                                         bullet_packed = data_struct.pack_bullet_data(bullets)
                                         Bullets_IN_Window.append(bullet_packed)
-
                     elif _Player_Packed[1] > 1350:
                         if _Player_Packed[0] + 800 > bullets.x:
                             if _Player_Packed[0] - 800 < bullets.x:
@@ -532,7 +546,6 @@ class TcpController:
                                     if Image_size[3] > bullets.y:
                                         bullet_packed = data_struct.pack_bullet_data(bullets)
                                         Bullets_IN_Window.append(bullet_packed)
-
                     else:
                         if _Player_Packed[0] + 800 > bullets.x:
                             if _Player_Packed[0] - 800 < bullets.x:
@@ -548,71 +561,74 @@ class TcpController:
 
                 for bullet_packed in Bullets_IN_Window:
                     client_socket.send(bullet_packed)
-
-
+        after_time = time.clock()
         gc.enable()
 
 
 
+def leader_board(client_socket,room_number):
+    room_player = game_sys_main.waitting_room_data[room_number - 1]['player_number']
+    leader_board = open('LeaderBoard.txt', 'a+t')
+    new_score = ('p1', 'None', 'p2', 'None', 'p3', 'None', 'time', '00.00.00', 'score', '9')
+    for i in range(3):
+        if not room_player[i] == -1:
+            new_score = new_score[:i * 2+1] + (
+            game_sys_main.rooms_data[room_number-1]['player_name' + str(i + 1)],) + new_score[2 + i * 2:]
+    new_score = new_score[:7] + (str(after_time - before_time),) + new_score[8:]
+    new_score = new_score[:9] + (str(100),)
 
+    for temp in new_score:
+        leader_board.write(temp)
+    leader_board.write('\n')
+    leader_board.seek(0)
+    before_leader_board = leader_board.readlines()
+    leader_list = []
+    for temp in before_leader_board:
+        temp_tuple = ()
+        p1_pos = temp.find('p1')
+        p2_pos = temp.find('p2')
+        p3_pos = temp.find('p3')
+        time_pos = temp.find('time')
+        score_pos = temp.find('score')
+        temp_tuple = ('p1', temp[p1_pos + 2:p2_pos],
+                      'p2', temp[p2_pos + 2:p3_pos],
+                      'p3', temp[p3_pos + 2:time_pos],
+                      'time', temp[time_pos + 4:score_pos],
+                      'score', temp[score_pos + 5: len(temp) - 1])
 
-        leader_board = open('LeaderBoard.txt', 'a+t')
-        new_score = ('p1', 'd', 'p2', 'd', 'p3', 'd', 'time', '00.00.00', 'score', '9')
+        leader_list.append(temp_tuple)
+    after_leader_board = sorted(leader_list, key=lambda score: int(score[9]), reverse=True)
+    while 1:
+        if (len(after_leader_board) <= 10):
+            break
+        after_leader_board.pop()
+    leader_board.close()
+    leader_board = open('LeaderBoard.txt', 'wt')
+    count = 0
 
-        for temp in new_score:
-            leader_board.write(temp)
+    for leader_list_temp in after_leader_board:
+        count += 1
+        if count > 10: break
+        for leader_tuple_temp in leader_list_temp:
+            leader_board.write(leader_tuple_temp)
         leader_board.write('\n')
-        leader_board.seek(0)
-        before_leader_board = leader_board.readlines()
-        leader_list = []
-        for temp in before_leader_board:
-            temp_tuple = ()
-            p1_pos = temp.find('p1')
-            p2_pos = temp.find('p2')
-            p3_pos = temp.find('p3')
-            time_pos = temp.find('time')
-            score_pos = temp.find('score')
-            temp_tuple = ('p1', temp[p1_pos + 2:p2_pos],
-                          'p2', temp[p2_pos + 2:p3_pos],
-                          'p3', temp[p3_pos + 2:time_pos],
-                          'time', temp[time_pos + 4:score_pos],
-                          'score', temp[score_pos + 5: len(temp) - 1])
 
-            leader_list.append(temp_tuple)
-        after_leader_board = sorted(leader_list, key=lambda score: score[9], reverse=True)
-        if(len(after_leader_board)>10):
-            after_leader_board.pop()
-        leader_board.close()
-        leader_board = open('LeaderBoard.txt', 'wt')
-        count = 0
+    packed_leader_board_count = data_struct.pack_integer(len(after_leader_board))
+    client_socket.send(packed_leader_board_count)
 
-        for leader_list_temp in after_leader_board:
-            count += 1
-            if count > 10: break
-            for leader_tuple_temp in leader_list_temp:
-                leader_board.write(leader_tuple_temp)
-            leader_board.write('\n')
+    for i in range(0, len(after_leader_board)):
+        print(after_leader_board[i])
+        print(i)
+        packed_leader_board = struct.pack('30s 30s 30s 30s i',
+                                          after_leader_board[i][1].encode('ascii'),
+                                          after_leader_board[i][3].encode('ascii'),
+                                          after_leader_board[i][5].encode('ascii'),
+                                          after_leader_board[i][7].encode('ascii'),
+                                          int(after_leader_board[i][9]))
 
-
-        packed_leader_board_count = data_struct.pack_integer(len(after_leader_board))
-        client_socket.send(packed_leader_board_count)
-
-        for i in range(0, len(after_leader_board)):
-            print(after_leader_board[i])
-            print(i)
-            packed_leader_board= struct.pack('30s 30s 30s 30s i',
-                                             after_leader_board[i][1].encode('ascii'),
-                                             after_leader_board[i][3].encode('ascii'),
-                                             after_leader_board[i][5].encode('ascii'),
-                                             after_leader_board[i][7].encode('ascii'),
-                                             int(after_leader_board[i][9]))
-
-            client_socket.send(packed_leader_board)
-        leader_board.close()
-        del (leader_board)
-
-
-
+        client_socket.send(packed_leader_board)
+    leader_board.close()
+    del (leader_board)
 
 
 def send_is_game_over(socket):
@@ -626,17 +642,8 @@ def exit(self):
 
 
 
-def collide(a, b):
-    left_a, bottom_a,right_a, top_a = a.get_bb()
-    left_b, bottom_b,right_b, top_b = b.get_bb()
-    if left_a > right_b : return False
-    if right_a < left_b : return False
-    if top_a < bottom_b : return False
-    if bottom_a > top_b : return False
 
-    return True
-
-def collide(ax, ay, bx, by):
+def collide2(ax, ay, bx, by):
     left_a=ax
     bottom_a=ay
     right_a=ax+10

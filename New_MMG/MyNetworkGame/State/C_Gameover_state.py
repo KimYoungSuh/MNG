@@ -13,37 +13,6 @@ name = "Game Over"
 image = None
 #
 
-def select_room1():
-    pass
-
-
-def select_room2():
-    pass
-
-
-def select_room3():
-    pass
-
-
-def select_room4():
-    pass
-
-
-def reset_lobby():
-    pass
-
-
-def join_room():
-    pass
-
-
-def create_room():
-    pass
-
-
-def exit_lobby():
-    pass
-
 
 def enter():
     global image, font, leader_board_list
@@ -57,13 +26,6 @@ def exit():
     del(image)
 
 
-def pause():
-    pass
-
-def resume():
-    pass
-
-
 def handle_events(frame_time):
     events = get_events()
     for event in events:
@@ -73,7 +35,7 @@ def handle_events(frame_time):
             if (event.type, event.key) == (SDL_KEYDOWN, SDLK_ESCAPE):
                 State.C_Game_framework.quit()
             elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
-                State.C_Game_framework.change_state(State.C_Title_state)
+                State.C_Game_framework.quit()
 
 
 
@@ -86,7 +48,7 @@ def draw(frame_time):
     clear_canvas()
     image.draw(600, 450)
     for i in range (0, len(leader_board_list)):
-        font.draw(150, 720-i*65, '%d%8s        %8s        %8s        %8s        %d' % (i+1, leader_board_list[i][1],leader_board_list[i][3],leader_board_list[i][5],leader_board_list[i][7], leader_board_list[i][9]))
+        font.draw(150, 720-i*65, '%d p1:%s p2:%s p3:%s time:%s score%d' % (i+1, leader_board_list[i][1],leader_board_list[i][3],leader_board_list[i][5],leader_board_list[i][7], leader_board_list[i][9]))
 
     update_canvas()
 

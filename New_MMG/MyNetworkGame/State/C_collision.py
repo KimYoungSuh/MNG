@@ -37,8 +37,10 @@ AnotherPlayer = []
 E_NUM=0
 item = []
 potion = []
+_LifeList = []
 Time = 0.0
 GameScore = 0
+Player_Count = 0
 #SERVER_IP_ADDR ="127.0.0.1"
 #SERVER_PORT = 19000
 #SEND_TIME = 0
@@ -57,13 +59,13 @@ def exit():
 #timer
 def create_world():
     global _player, _Bg, _Enemy1, timer,GameScore, font, _EBullet, _PBullet, _Life,client_sock,tcp_controller,E_NUM, _Enemy_Data
-    global MyNumber,AnotherPlayer,unpacked_all_player_data,game_data,P_NUM
+    global MyNumber,AnotherPlayer,unpacked_all_player_data,game_data,P_NUM,Player_Count,_LifeList
     _Bg = BackGround()
     E_NUM =0
     _player = Player1(_Bg)
+    _LifeList = []
     AnotherPlayer =[]
     _Enemy1 = []
-    _Life = Life(_player.life)
     #timer = Timer()
     client_sock = GameData.client_socket
     MyNumber = GameData.player_number
@@ -73,9 +75,10 @@ def create_world():
     t1 = threading.Thread(target=recv_thread, args=(client_sock,))
     readystate = 0
     GameScore =0
+    Player_Count = 0
     font = load_font('Resource\ENCR10B.TTF')
 
-    Player2(0,0,0,0,0,0)
+    Player2(0,0,0,0,0,0,0)
     Enemy1(0,0,0,0,0)
     Enemy2(0,0,0,0,0)
     EBullet(0,0)
@@ -83,11 +86,12 @@ def create_world():
     t1.start()
 
 def recv_thread(client_sock):
-    global AnotherPlayer, _Enemy1, _EBullet, _Bg
+    global AnotherPlayer, _Enemy1, _EBullet, _Bg,Player_Count,_LifeList
 
     _ETEMP = []
     _BTEMP = []
     _PTEMP = []
+    _LTEMP = []
     current_time = time.clock()
 
     while 1:
@@ -97,18 +101,33 @@ def recv_thread(client_sock):
 
         #AllPlayerRECVED START
         all_player_packed = client_sock.recv(struct.calcsize('=iffffffffffffiiiBBBfff'))
+
         unpacked_all_player_data = DataStruct.unpack_all_player_data(all_player_packed)
+        Player_Count = unpacked_all_player_data['player_count']
         for i in range(unpacked_all_player_data['player_count']):
+            newLIFE = unpacked_all_player_data['player_life'][i]
+            _LTEMP.append(newLIFE)
             if i != MyNumber:
                 newPlayer = Player2(unpacked_all_player_data['player_x'][i],
                                     unpacked_all_player_data['player_y'][i],
                                     unpacked_all_player_data['player_dir'][i],
+                                    unpacked_all_player_data['player_life'][i],
                                     _Bg.window_left, _Bg.window_bottom,
                                     GameData.waitting_room_data['player_witch_select'][i])
+                newPlayer.life=unpacked_all_player_data['player_life'][i]
                 _PTEMP.append(newPlayer)
+
+            else :
+                _player.life=unpacked_all_player_data['player_life'][i]
+
+
+
         AnotherPlayer = _PTEMP
+        _LifeList = _LTEMP
         if len(_PTEMP) > 0:
             _PTEMP = []
+        if len(_LTEMP) > 0:
+            _LTEMP = []
         #ALLPlayerRECVED END
 
         #GAMEOVER RECVED START
@@ -116,7 +135,6 @@ def recv_thread(client_sock):
         GameData.is_game_over = (struct.unpack('?', packed_is_game_over))[0]
         if (GameData.is_game_over):
             print('game_over')
-            State.C_Game_framework.change_state(State.C_Gameover_state)
             return
         #GAMEOVER RECVED END
 
@@ -217,19 +235,24 @@ def update(frame_time):
     global E_NUM ,_Enemy_Data,unpacked_all_player_data
 
     _player.update(frame_time)
-
+    if (GameData.is_game_over):
+        State.C_Game_framework.change_state(State.C_Gameover_state)
         #print("Enemy Packed : ", _enemylist)
 #    timer.update(frame_time)
 
 
 
 def draw(frame_time):
-    global _Enemy1,_EBullet , AnotherPlayer,unpacked_all_player_data,MyNumber,_player
+    global _Enemy1,_EBullet , AnotherPlayer,unpacked_all_player_data,MyNumber,_player,Player_Count,_LifeList
     clear_canvas()
 
     _player.draw(_player.x , _player.y)
     for enemy in _Enemy1:
         enemy.draw()
+    print('Player_Count : ', Player_Count)
+    if Player_Count >0 :
+        for i in range(Player_Count):
+            Life(_LifeList[i], i).draw()
     for Another in AnotherPlayer:
         if Another != MyNumber :
             Another.draw()
