@@ -180,8 +180,8 @@ class Player2:
 
     UP_RUN, RIGHT_RUN, LEFT_RUN,  DOWN_RUN = 0,1,2,3,
     def __init__(self ,
-                 _X , _Y, _PD,  BG_X, BG_Y):
-        self.imagenum = State.C_CharSellect_State.select_witchs()
+                 _X , _Y, _PD,  BG_X, BG_Y, image_num):
+        self.imagenum = image_num
         global _Enemy
         global _Bg
         self.x, self.y = _X, _Y
@@ -195,11 +195,11 @@ class Player2:
         self.playerdir = _PD
         if Player2.image == None:
             if self.imagenum ==1 :
-                Player2.image = load_image('..\Resource\Image_Player.png')
+                Player2.image = load_image('Resource\Image_Player.png')
             elif self.imagenum == 2:
-                Player2.image = load_image('..\Resource\Image_Player2.png')
+                Player2.image = load_image('Resource\Image_Player2.png')
             else :
-                Player2.image = load_image('..\Resource\Image_Player3.png')
+                Player2.image = load_image('Resource\Image_Player3.png')
 
 
     def draw_bb(self):

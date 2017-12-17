@@ -73,7 +73,7 @@ emotion_selected = [0,0,0]
 
 
 def enter():
-    global GAME_STATE,image1,image2,image3, font, _BG, _WAND, select_witch, game_data, PLAYER_NUM, select_imotion
+    global GAME_STATE,image1,image2,image3, font, _BG, _WAND, select_witch, game_data, P_NUM, select_imotion
     global recv_thread, recv_thread_isRun, recv_thread2, recv_thread2_isRun, image_ready, image_select, readystate, exit_state
     global image_emotion, image_emotion2, image_emotion3, image_emotion4, image_ready_state;
     image1 = load_image('Resource\Image_Player.png')
@@ -93,7 +93,7 @@ def enter():
     _WAND = Wand()
     select_witch = 0
     select_imotion = 0
-    PLAYER_NUM = 0
+    P_NUM = 0
     readystate = False
     exit_state = False
     game_data = C_Lobby_state.game_data
@@ -202,7 +202,7 @@ def update(frame_time):
             ready_count += 1
         emotion_time[i] += frame_time
         print('ready count : ', ready_count)
-        print(game_data.waitting_room_data['player_count'])
+        P_NUM = print(game_data.waitting_room_data['player_count'])
     if ready_count == game_data.waitting_room_data['player_count']:
         C_Game_framework.run(C_collision)
 

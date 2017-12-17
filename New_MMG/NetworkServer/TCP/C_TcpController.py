@@ -304,10 +304,9 @@ class TcpController:
 
                 P_Data = client_socket.recv(struct.calcsize('=ffffiBf'))
                 _Player_Packed = data_struct.unpack_player_data(P_Data)
-
                 for i in range(3):  # 임시
                     if game_sys_main.all_player_data[room_number]['player_number'][i] == player_number:
-                        game_sys_main.all_player_data[room_number]['player_count'] = player_count
+                        game_sys_main.all_player_data[room_number]['player_count'] = game_sys_main.waitting_room_data[room_number-1]['player_count']
                         game_sys_main.all_player_data[room_number]['player_x'][i] =_Player_Packed[0]
                         game_sys_main.all_player_data[room_number]['player_y'][i] = _Player_Packed[1]
                         game_sys_main.all_player_data[room_number]['player_sx'][i] = _Player_Packed[2]
@@ -369,7 +368,6 @@ class TcpController:
                 if (game_sys_main.is_game_over):
                     break
                 client_socket.send(struct.pack('=ii', len(_EnemyList), len(_Bullet)))
-                print ('len(_Bullet) : ', len(_EnemyList))
                 Enemys_IN_Window = []
                 Bullets_IN_Window =[]
                 for enemy in _EnemyList:
@@ -398,6 +396,8 @@ class TcpController:
                     client_socket.send(Enemy_packed)
                 for bullet_packed in Bullets_IN_Window:
                     client_socket.send(bullet_packed)
+
+
         gc.enable()
 
 
