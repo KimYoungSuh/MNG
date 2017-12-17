@@ -24,10 +24,10 @@ class PBullet:
             self.xdir = 0
             self.ydir = 1
         elif Pl_Dir == 1 :
-            self.xdir = -1
+            self.xdir = 1
             self.ydir = 0
         elif Pl_Dir == 2 :
-            self.xdir = 1
+            self.xdir = -1
             self.ydir = 0
         elif Pl_Dir == 3 :
             self.xdir = 0

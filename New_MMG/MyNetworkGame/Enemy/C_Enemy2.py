@@ -39,16 +39,17 @@ class Enemy2:
     def returnDir(self, x,y):
         pass
 
-    def update(self, PL_X, PL_Y, _BG_X, _BG_Y, State):
-        self.sx = self.x - _BG_X
-        self.sy = self.y - _BG_Y
-        self.state = State
 
         #self.add(PL_X,PL_Y)
+    def update(self, X, Y, State,BG_X, BG_Y):
+        self.sx = X - BG_X
+        self.sy = Y - BG_Y
+        self.state = State
 
 
 
-        #self.delete_object(_Bullet)
+
+            #self.delete_object(_Bullet)
 
 
     def add(self,PL_X, PL_Y):
