@@ -11,14 +11,17 @@ from State import C_collision
 data_struct = DataStruct
 import os
 
-class TcpContoller:
+SELECT_LOBBY = 0
+SELECT_ROOM_DATA = 1
+SELECT_JOIN = 2
+SELECT_CREATE = 3
+SELECT_EXIT = 4
 
+class TcpContoller:
     def get_addr(self):
         addr_file = open('ADDR.txt','r')
         addr=addr_file.readlines()
         return (addr[0][0:len(addr[0])-1], int(addr[1]))
-
-
 
     client_socket=socket
 
@@ -49,14 +52,23 @@ class TcpContoller:
         time.sleep(1)
 
 
-    def exit(self):
-        self.client_socket.close()
+    def exit(client_socket):
+        client_socket.close()
         print("SOCKET closed... END")
 
 
     #Lobby selection 0 = LOBBY_DATA, selection 1 = ROOM_DATA, selection 2 = JOIN, selection 3 = CREATE
+    def send_exit_server(client_socket):
+        selection = SELECT_EXIT
+        packed_selection = data_struct.pack_integer(selection)
+        client_socket.send(packed_selection)
+
+        packed_data = client_socket.recv(data_struct.boolean_size)
+        exit_ack = data_struct.unpack_boolean(packed_data)
+        return exit_ack
+
     def send_create_room(client_socket, player_number, room_name, full_player, player_name):
-        selection = 3
+        selection = SELECT_CREATE
         packed_selection = data_struct.pack_integer(selection)
         client_socket.send(packed_selection)
         room_data = RoomData().room_data
@@ -69,9 +81,8 @@ class TcpContoller:
         packed_can_make_room = client_socket.recv(data_struct.integer_size)
         return data_struct.unpack_integer(packed_can_make_room)
 
-
     def recv_lobby_data(client_socket):
-        selection = 0
+        selection = SELECT_LOBBY
         packed_selection = data_struct.pack_integer(selection)
         client_socket.send(packed_selection)
         packed_room_count = client_socket.recv(data_struct.integer_size)
@@ -90,7 +101,7 @@ class TcpContoller:
         return rooms_data
 
     def send_join_room(client_socket, room_number, player_name):
-        selection = 2
+        selection = SELECT_JOIN
         packed_selection = data_struct.pack_integer(selection)
         client_socket.send(packed_selection)
         join_request_data = {

@@ -32,6 +32,12 @@ GAME_STATE
 1 = Playing
 2 = GAMEOVER
 '''
+LOBBY_DATA=0
+ROOM_DATA=1
+JOIN=2
+CREATE=3
+EXIT=4
+SOCKET_CLOSE = -2
 
 
 
@@ -70,10 +76,6 @@ class TcpController:
         print("=" * 50)
         player_number = 0
 
-        '''
-        Waitting Room
-        '''
-
         while 1:
             client_socket, address = TcpController.server_socket.accept()
 
@@ -83,8 +85,6 @@ class TcpController:
             client_thread[-1].start()
              # game_sys_main.join_player(PlayerData)
 
-
-
     '''
     클라이언트와 통신하는 스레드입니다.
     로직을 이안에 쓰는것은 지양합니다.
@@ -92,7 +92,7 @@ class TcpController:
     '''
     def process_client(client_socket):
         global PLAYER_NUM, state, GAME_STATE, E_Data, ready_state
-        exit_ack = True
+        room_exit_ack = True
         room_number = 0
         game_sys_main.player_count += 1
         player_number = game_sys_main.empty_player_number()
@@ -101,22 +101,21 @@ class TcpController:
         client_socket.send(packed_player_number)
         istime = time.clock()
 
-        while exit_ack:
+        while room_exit_ack:
             print('room_number : ', room_number)
             room_number = TcpController.recv_lobby_state(client_socket, player_number) #in Lobby
+            if room_number == SOCKET_CLOSE:
+                return
             print('player_number : ', player_number)
-            exit_ack = TcpController.send_in_room_data(client_socket, room_number, player_number)  # in Room
+            room_exit_ack = TcpController.send_in_room_data(client_socket, room_number, player_number)  # in Room
         TcpController.send_in_game_data(client_socket, room_number, player_number)
 
     #Lobby
     def recv_lobby_state(client_socket, player_number):
         global game_sys_main
         in_lobby = True
-        room_number = 0
-        LOBBY_DATA=0
-        ROOM_DATA=1
-        JOIN=2
-        CREATE=3
+        state = 0
+
         while in_lobby:
             packed_Selection = client_socket.recv(data_struct.integer_size)
             selection = data_struct.unpack_integer(packed_Selection)
@@ -124,29 +123,27 @@ class TcpController:
             if selection == LOBBY_DATA:
                 TcpController.send_lobby_data(client_socket)
             elif selection == JOIN:
-                room_number = TcpController.send_room_data(client_socket, player_number)
-                is_none_room =(room_number == -1)
+                state = TcpController.send_room_data(client_socket, player_number)
+                is_none_room =(state == -1)
                 if not is_none_room:
                     in_lobby = False
                     for i in range(3):
-                        if game_sys_main.waitting_room_data[room_number-1]['player_number'][i] == -1:
-                            game_sys_main.waitting_room_data[room_number-1]['player_number'][i] = player_number
+                        if game_sys_main.waitting_room_data[state-1]['player_number'][i] == -1:
+                            game_sys_main.waitting_room_data[state-1]['player_number'][i] = player_number
                             break
             elif selection == CREATE:
-                room_number = TcpController.recv_create_room(client_socket, player_number)
-                if room_number != -1:
+                state = TcpController.recv_create_room(client_socket, player_number)
+                if state != -1:
                     in_lobby = False
-                    print(game_sys_main.waitting_room_data[0])
-                    print(game_sys_main.waitting_room_data[1])
-                    print(game_sys_main.waitting_room_data[2])
                     for i in range(3):  # 추후 수정
-                        if game_sys_main.waitting_room_data[room_number-1]['player_number'][i] == -1:
-                            game_sys_main.waitting_room_data[room_number-1]['player_number'][i] = player_number
+                        if game_sys_main.waitting_room_data[state-1]['player_number'][i] == -1:
+                            game_sys_main.waitting_room_data[state-1]['player_number'][i] = player_number
                             break
+            elif selection == EXIT:
+                state = TcpController.recv_exit_server(client_socket, player_number)
+                break;
 
-                    print('id', game_sys_main.waitting_room_data[room_number - 1]['player_number'])
-
-        return room_number
+        return state
 
     def recv_create_room(client_socket, player_number):
         global game_sys_main
@@ -201,6 +198,14 @@ class TcpController:
             packed_room_data = data_struct.pack_room_data(game_sys_main.rooms_data[i])
             socket.send(packed_room_data)
 
+    def recv_exit_server(socket, player_number):
+        global game_sys_main
+
+        game_sys_main.player_exit(player_number)
+
+        socket.send(data_struct.pack_boolean(True))
+        socket.close()
+        return -2
 
     # ROOM
     '''

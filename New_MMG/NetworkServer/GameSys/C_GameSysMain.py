@@ -21,6 +21,9 @@ class GameSysMain:
 
         self.player_number_table = [False for i in range(16)]
 
+    def player_exit(self, player_number):
+        self.player_number_table[player_number] = False
+
     def empty_player_number(self):
         for i in range(16):
             if not self.player_number_table[i]:

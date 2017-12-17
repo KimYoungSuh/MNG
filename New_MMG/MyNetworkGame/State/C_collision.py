@@ -146,7 +146,7 @@ def recv_thread(client_sock):
             if _Bullet_Data[0] == 1:  # EnemyBullet
                 newBullet = EBullet(_Bullet_Data[1], _Bullet_Data[2])
 
-            elif _Bullet_Datsa[0] == 0:  # playerBullet
+            elif _Bullet_Data[0] == 0:  # playerBullet
                 newBullet = PBullet(_Bullet_Data[1], _Bullet_Data[2])
             #newBullet.update()
             _BTEMP.append(newBullet)

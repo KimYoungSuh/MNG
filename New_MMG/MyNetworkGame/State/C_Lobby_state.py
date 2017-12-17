@@ -19,6 +19,7 @@ selection_image = None
 selection = -1
 rooms_data = []
 delta_time = 2
+can_reset_time = 2
 
 COLLISION_BOX = [
     (79, 614, 1123, 719),
@@ -50,10 +51,8 @@ def select_room4():
 
 def reset_lobby(): #로비 정보 요청
     global rooms_data, delta_time
-    print('r')
-    if delta_time >= 2:
+    if delta_time >= can_reset_time:
         delta_time = 0
-        print("OK")
         rooms_data = TcpContoller.recv_lobby_data(game_data.client_socket)
         for room in rooms_data:
             print(room['room_name'])
@@ -73,7 +72,6 @@ def join_room(): # 참가 요청
     elif result == 3:
         print('is started')
 
-
 def create_room(): # 생성 요청
     global game_data
     room_number = TcpContoller.send_create_room(game_data.client_socket, game_data.player_number, "TEST_ROOM", 3, "Witch")
@@ -84,8 +82,10 @@ def create_room(): # 생성 요청
         #방 생성 실패시
 
 def exit_lobby():
-    C_Game_framework.pop_state()
-
+    send_exit_server = TcpContoller.send_exit_server(game_data.client_socket)
+    if send_exit_server:
+        TcpContoller.exit(game_data.client_socket)
+        C_Game_framework.pop_state()
 
 handle_function = [
     select_room1,
