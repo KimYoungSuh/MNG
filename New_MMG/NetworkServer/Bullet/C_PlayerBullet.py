@@ -22,16 +22,16 @@ class PBullet:
         self.y = Pl_y
         if Pl_Dir == 0 :
             self.xdir = 0
-            self.ydir = -1
-        elif Pl_Dir == 1 :
-            self.xdir = 0
             self.ydir = 1
-        elif Pl_Dir == 2 :
+        elif Pl_Dir == 1 :
             self.xdir = -1
             self.ydir = 0
-        elif Pl_Dir == 3 :
+        elif Pl_Dir == 2 :
             self.xdir = 1
             self.ydir = 0
+        elif Pl_Dir == 3 :
+            self.xdir = 0
+            self.ydir = -1
         self.speed = 0
         self.alive =1
         PBullet._pBullet.append(self)

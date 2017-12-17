@@ -44,8 +44,11 @@ SOCKET_CLOSE = -2
 
 
 class TcpController:
-    global GAME_STATE, player_count, _Bg, Enemy_packed, E_NUM, ready_state,game_sys_main
+    global GAME_STATE, player_count, _Bg, Enemy_packed, E_NUM, ready_state,game_sys_main, Image_size,Canvas_size
     GAME_STATE = 0
+    Image_size=[0,3500,0,1800]
+    Canvas_size=[0,1200,0,900]
+
     player_count =0
     PORT = 19000
     ready_state = 0
@@ -294,7 +297,7 @@ class TcpController:
 
     def send_in_game_data(client_socket, room_number, player_number):
         global main_time,PLAYER_NUM, state, GAME_STATE,timer, E_Data, ready_state, E_NUM
-        global player_count
+        global player_count,Image_size  ,Canvas_size
         game_sys_main.all_player_data[room_number]['player_number'][player_number] = player_number
 
         current_time = time.clock()
@@ -381,12 +384,47 @@ class TcpController:
                     if k == len(_EnemyList) :
                         k = 0
                         k += 1
-                    if _Player_Packed[0] +1200 > enemy.x :
-                        if _Player_Packed[0] -1200 < enemy.x :
-                            if _Player_Packed[1] + 900 > enemy.y:
-                                if _Player_Packed[1] - 900 < enemy.y:
-                                    Enemy_packed = data_struct.pack_enemy_data(enemy, k)
-                                    Enemys_IN_Window.append(Enemy_packed)
+                    #플레이어 x로 계산
+                    if _Player_Packed[0]<600 :
+                        if Canvas_size[1] > enemy.x: #캔버스 사이즈보다 작고
+                            if Image_size[0] < enemy.x: # 0보다 크다
+                                if _Player_Packed[1] + 600 > enemy.y:
+                                    if _Player_Packed[1] - 600 < enemy.y:
+                                        Enemy_packed = data_struct.pack_enemy_data(enemy, k)
+                                        Enemys_IN_Window.append(Enemy_packed)
+                    elif _Player_Packed[0]>2900 :
+                        if Image_size[1] > enemy.x:
+                            if Image_size[1] - Canvas_size[1] < enemy.x:
+                                if _Player_Packed[1] + 600 > enemy.y:
+                                    if _Player_Packed[1] - 600 < enemy.y:
+                                        Enemy_packed = data_struct.pack_enemy_data(enemy, k)
+                                        Enemys_IN_Window.append(Enemy_packed)
+                    #플레이어 y로 계산
+                    if _Player_Packed[1] <450 :
+                        if _Player_Packed[0] + 800 > enemy.x:
+                            if _Player_Packed[0] - 800 < enemy.x:
+                                if Canvas_size[2] > enemy.y:
+                                    if Canvas_size[3] < enemy.y:
+                                        Enemy_packed = data_struct.pack_enemy_data(enemy, k)
+                                        Enemys_IN_Window.append(Enemy_packed)
+
+                    elif _Player_Packed[1] > 1350 :
+                        if _Player_Packed[0] + 800 > enemy.x:
+                            if _Player_Packed[0] - 800 < enemy.x:
+                                if Image_size[3] - Canvas_size[3] > enemy.y:
+                                    if Image_size[3]  < enemy.y:
+                                        Enemy_packed = data_struct.pack_enemy_data(enemy, k)
+                                        Enemys_IN_Window.append(Enemy_packed)
+
+                    else :
+                        if _Player_Packed[0] +800 > enemy.x :
+                            if _Player_Packed[0] -800 < enemy.x :
+                                if _Player_Packed[1] + 600 > enemy.y:
+                                    if _Player_Packed[1] - 600 < enemy.y:
+                                        Enemy_packed = data_struct.pack_enemy_data(enemy, k)
+                                        Enemys_IN_Window.append(Enemy_packed)
+
+
                 for bullets in _Bullet:
                     bullets.update(frame_time, _Player_Packed[0], _Player_Packed[1])
                     if _Player_Packed[0] +1200 > bullets.x :
