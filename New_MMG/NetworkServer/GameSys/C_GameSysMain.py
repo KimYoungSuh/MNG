@@ -7,18 +7,14 @@ from Data.C_WaittingRoomData import WaittingRoomData
 
 class GameSysMain:
 
-
     def __init__(self):
         self.is_game_over = False
-
         self.players_data = [PlayerData().playerdata for i in range(16)]
-
         self.waitting_room_data = [WaittingRoomData().waitting_room_data for i in range(4)]
         self.rooms_data= [RoomData().room_data for i in range(4)]
         self.all_player_data = [AllPlayerDataStruct().all_playerdata for i in range(3)]
         self.maxroomcount = 4
         self.player_count = 0
-
         self.player_number_table = [False for i in range(16)]
 
     def player_exit(self, player_number):
@@ -54,5 +50,5 @@ class GameSysMain:
 
     def join_player(self,player_data):
         self.players_data.append(player_data)
-        (self.waitting_room_data)['player_count']+=1
-        print((self.waitting_room_data)['player_count'])
+        self.waitting_room_data['player_count']+=1
+        print(self.waitting_room_data['player_count'])

@@ -2,9 +2,7 @@ from pico2d import *
 
 from State import C_Game_framework
 from State import C_Lobby_state
-from State import C_collision
 from C_Wand import Wand
-from TCP.C_TcpController import TcpContoller
 
 name = "TitleState"
 image = None
@@ -29,13 +27,11 @@ def exit():
     del(bgm)
 
 
-
 def pause():
     pass
 
 def resume():
     pass
-
 
 def handle_events(frame_time):
     global _WAND
@@ -64,11 +60,8 @@ def handle_events(frame_time):
                 _WAND.handle_event(event)
 
 
-
-
 def update(frame_time):
     pass
-
 
 def draw(frame_time):
     global image

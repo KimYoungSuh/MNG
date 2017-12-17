@@ -76,14 +76,16 @@ def handle_events(frame_time):
         else:
             if (event.type, event.key) == (SDL_KEYDOWN, SDLK_ESCAPE):
                 State.C_Game_framework.quit()
-            elif (event.type, event.key) == (SDL_KEYDOWN, SDLK_SPACE):
-                State.C_Game_framework.change_state(State.C_Title_state)
-
+            elif (event.type) == (SDL_KEYDOWN):
+                packed_data = DataStruct.pack_boolean(True)
+                GameData.client_socket.send(packed_data)
+                packed_data = GameData.client_socket.send(DataStruct.boolean_size)
+                if DataStruct.unpack_boolean(packed_data):
+                    State.C_Game_framework.change_state(State.C_Title_state)
 
 
 def update(frame_time):
     pass
-
 
 def draw(frame_time):
     global image, leader_board_list, font
@@ -95,8 +97,6 @@ def draw(frame_time):
     update_canvas()
 
 def recv_leader_board():
-    client_sock=GameData.client_socket
-
     packed_leader_board_count = GameData.client_socket.recv(DataStruct.integer_size)
     leader_board_count = DataStruct.unpack_integer(packed_leader_board_count)
     for i in range(leader_board_count):

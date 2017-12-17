@@ -1,6 +1,4 @@
-import sys
 import struct
-from Data import *
 
 class DataStruct:
     # Boolean

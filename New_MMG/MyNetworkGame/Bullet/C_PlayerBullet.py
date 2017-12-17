@@ -1,8 +1,5 @@
-import random
-
 from pico2d import *
 from Background.C_BG import BackGround
-
 
 class PBullet:
     PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
@@ -30,8 +27,6 @@ class PBullet:
             PBullet.image = load_image('Resource\Image_PBullet.png')
 
     def update(self):
-
-
         if self.x >3200 :
             self.alive = 0
         if self.x < 0 :
@@ -49,6 +44,7 @@ class PBullet:
 
     def draw_bb(self):
         draw_rectangle(*self.get_bb())
+
     def get_bb(self):
         return self.sx-15 , self.sy-15, self.sx+15, self.sy+15
 

@@ -1,8 +1,6 @@
 import random
 from pico2d import *
-from Bullet.C_EnemyBullet import EBullet
 
-_Bullet = []
 Scean_x, Scean_y = 49, 82
 
 class Enemy2:
@@ -17,8 +15,6 @@ class Enemy2:
     ACTION_PER_TIME = 1.0 / TIME_PER_ACTION
     FRAMES_PER_ACTION = 3
     image = None
-
-    #_enemy2 = []
 
     def __init__(self, Enemy_dir):
         self.type = 2
@@ -36,9 +32,6 @@ class Enemy2:
 
         self.Whattime = 0
         self.alive = 1
-
-    def returnDir(self, x,y):
-        pass
 
     def update(self, frame_time):
         if self.x > 3200:
@@ -81,37 +74,24 @@ class Enemy2:
                 self.state = 0
             else:
                 self.state = 3
+
     def get_distance(self,PL_X, PL_Y):
         dx = self.x - PL_X
         dy = self.y - PL_Y
         return (dx*dx)+(dy*dy)
-
 
     def ADD_Bullet(self):
         if self.Whattime >= 2.0:
             self.Whattime = 0
             return True
 
-    def draw(self,):
-        self.image.clip_draw(Scean_x* self.state, 0, Scean_x, Scean_y, self.sx, self.sy)
-    #    font.draw(self.sx, self.sy, 'X , Y : [%d, %d]' % (self.sx, self.sy))
-    #    self.image.clip_draw(Scean_x* self.state, 0, Scean_x, Scean_y, self.sx, self.sy)
-
-    def draw_bb(self):
-        draw_rectangle(*self.get_bb())
     def get_bb(self):
         return self.x - 10, self.y - 10, self.x + 10, self.y + 10
-
-        #return self.sx-10 , self.sy-10, self.sx+10, self.sy+10
-
-
 
 def delete_object(objects):
     for object in objects:
         if object.alive == 0:
             objects.remove(object)
-
-
 
 def collide(left_a, bottom_a,right_a, top_a, left_b, bottom_b,right_b, top_b):
 

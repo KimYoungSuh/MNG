@@ -44,10 +44,6 @@ CREATE=3
 EXIT=4
 SOCKET_CLOSE = -2
 
-
-
-
-
 class TcpController:
     global GAME_STATE, player_count, _Bg, Enemy_packed, E_NUM, ready_state,game_sys_main, Image_size,Canvas_size
     GAME_STATE = 0
@@ -73,10 +69,6 @@ class TcpController:
         print("=" * 50)
         print("[Thread version] 서버 초기화 완료")
 
-    '''
-    클라이언트의 접속을 accept()합니다.
-    accept()되면 process_client쓰레드에 client소켓을 전달해주고 client소켓을 삭제합니다.
-    '''
     def accept_loof(self):
         global SEND_TIME, _Bg, player_number
 
@@ -93,11 +85,6 @@ class TcpController:
             client_thread[-1].start()
              # game_sys_main.join_player(PlayerData)
 
-    '''
-    클라이언트와 통신하는 스레드입니다.
-    로직을 이안에 쓰는것은 지양합니다.
-    함수를 호출하여 수정을 최소화 하세요.
-    '''
     def process_client(client_socket):
         global PLAYER_NUM, state, GAME_STATE, E_Data, ready_state
         room_exit_ack = True
@@ -107,7 +94,6 @@ class TcpController:
 
         packed_player_number = data_struct.pack_integer(player_number)
         client_socket.send(packed_player_number)
-        istime = time.clock()
 
         while room_exit_ack:
             print('room_number : ', room_number)
@@ -118,7 +104,7 @@ class TcpController:
             room_exit_ack = TcpController.send_in_room_data(client_socket, room_number, player_number)  # in Room
         TcpController.send_in_game_data(client_socket, room_number, player_number)
         leader_board(client_socket, room_number)
-        print(room_number, '번 방 게임종료')
+
 
     #Lobby
     def recv_lobby_state(client_socket, player_number):
@@ -202,11 +188,9 @@ class TcpController:
         global game_sys_main
 
         room_count = game_sys_main.exist_room_count()
-        print('room_count', room_count)
         packed_room_count = data_struct.pack_integer(room_count)
         socket.send(packed_room_count)
         for i in range(room_count):
-            print(game_sys_main.rooms_data[i])
             packed_room_data = data_struct.pack_room_data(game_sys_main.rooms_data[i])
             socket.send(packed_room_data)
 
@@ -220,29 +204,17 @@ class TcpController:
         return -2
 
     # ROOM
-    '''
-    state 0 = join, 1 = select, 2 = ready, 3 = out, 4 = in game
-    '''
-
     def send_in_room_data(client_socket, room_number, player_number):
         global game_sys_main
         player_name = ['player_name1', 'player_name2', 'player_name3', 'player_name4']
         in_room = True
         data_reset = False
 
-        #state
-        join = 0
-        select = 1
-        ready = 2
-        out = 3
-        in_game = 4
-
         while in_room:
             packed_in_room_data = client_socket.recv(data_struct.in_room_data_size)
             in_room_data = data_struct.unpack_in_room_data(packed_in_room_data)
 
             if in_room_data['is_exit'] == True:
-                # 소켓 해제
                 for i in range(3):
                     if data_reset and game_sys_main.waitting_room_data[room_number-1]['player_number'][i] != -1:
                         if game_sys_main.rooms_data[room_number-1]['host_number'] == -1:
@@ -265,17 +237,14 @@ class TcpController:
 
             in_room_player_count = 0
             ready_count = 0
-            # 방내 유저 레디상태 업데이트
-            # 방내 유저 캐릭터선택 정보 업데이트
-            for i in range(3):  # 임시
+            for i in range(3):
                 if game_sys_main.waitting_room_data[room_number-1]['player_number'][i] == player_number:
                     game_sys_main.waitting_room_data[room_number-1]['player_witch_select'][i] = in_room_data[
                         'character_select']
                     game_sys_main.waitting_room_data[room_number-1]['player_ready_state'][i] = in_room_data['is_ready']
                     game_sys_main.waitting_room_data[room_number-1]['emotion'][i] = in_room_data['emotion']
 
-            for i in range(3):  # 임시
-                #print(game_sys_main.waitting_room_data[room_number - 1]['player_number'][i])
+            for i in range(3):
                 if game_sys_main.waitting_room_data[room_number-1]['player_number'][i] != -1:
                     in_room_player_count += 1
                 if game_sys_main.waitting_room_data[room_number-1]['player_ready_state'][i]:
@@ -293,8 +262,6 @@ class TcpController:
                 client_socket.send(packed_exit_ack)
                 return True
             else:
-                #print('in room count : ', game_sys_main.waitting_room_data[room_number-1]['player_count'])
-                #print('count : ', in_room_player_count)
                 packed_in_room_data_server = data_struct.pack_in_room_data_server(game_sys_main.waitting_room_data[room_number-1],
                                                                            GAME_STATE)
                 client_socket.send(packed_in_room_data_server)
@@ -381,7 +348,6 @@ class TcpController:
                             enemys.alive = 0
                             room_player_data['Score'] += 300
 
-
                 else:
                     for i in range(3):
                         if (room_player[i] == -1):
@@ -391,10 +357,6 @@ class TcpController:
                                    bullets.x, bullets.y):
                             bullets.alive = 0
                             room_player_data['player_life'][i] -= 1
-                            print('score :  ',  room_player_data['Score'])
-                            print('room_player_data life : ',room_player_data['player_life'][i])
-
-
 
             for enemy in _EnemyList:
                 if enemy.alive == 0:
@@ -406,11 +368,6 @@ class TcpController:
                 if ebullets.alive == 0:
                     _Bullet.remove(ebullets)
 
-
-
-
-
-
             for i in range (3):
                 if(room_player[i]==-1):
                     break
@@ -418,20 +375,16 @@ class TcpController:
             gc.collect()
 
 
-
-
     def send_in_game_data(client_socket, room_number, player_number):
         global main_time,PLAYER_NUM, state, GAME_STATE,timer, E_Data, ready_state, E_NUM,after_time, before_time
         global player_count,Image_size  ,Canvas_size
         room_player = game_sys_main.waitting_room_data[room_number - 1]['player_number']
         game_sys_main.all_player_data[room_number]['player_number'][player_number] = player_number
-        in_player=(-1,-1,-1)
         current_time = time.clock()
         E_NUM = 0
         timer = Timer()
         k = 0
         main_time = time.clock()
-
 
         if player_number==game_sys_main.rooms_data[room_number-1]['host_number']:
             t1 = threading.Thread(target=TcpController.game_thread, args=(client_socket, room_number))
@@ -473,8 +426,6 @@ class TcpController:
                 packed_all_player_data = data_struct.pack_all_player_data(game_sys_main.all_player_data[room_number])
                 client_socket.send(packed_all_player_data)
 
-                # Gameover의 위치는 recv와 send 사이
-
                 client_socket.send(struct.pack('?', game_sys_main.is_game_over))
                 if (game_sys_main.is_game_over):
                     break
@@ -485,10 +436,9 @@ class TcpController:
                     if k == len(_EnemyList):
                         k = 0
                         k += 1
-                    #플레이어 x로 계산
                     if _Player_Packed[0]<600 :
-                        if Canvas_size[1] > enemy.x: #캔버스 사이즈보다 작고
-                            if Image_size[0] < enemy.x: # 0보다 크다
+                        if Canvas_size[1] > enemy.x:
+                            if Image_size[0] < enemy.x:
                                 if _Player_Packed[1] + 600 > enemy.y:
                                     if _Player_Packed[1] - 600 < enemy.y:
                                         Enemy_packed = data_struct.pack_enemy_data(enemy, k)
@@ -500,7 +450,6 @@ class TcpController:
                                     if _Player_Packed[1] - 600 < enemy.y:
                                         Enemy_packed = data_struct.pack_enemy_data(enemy, k)
                                         Enemys_IN_Window.append(Enemy_packed)
-                    #플레이어 y로 계산
                     if _Player_Packed[1] <450 :
                         if _Player_Packed[0] + 800 > enemy.x:
                             if _Player_Packed[0] - 800 < enemy.x:
@@ -525,8 +474,8 @@ class TcpController:
 
                 for bullets in _Bullet:
                     if _Player_Packed[0] < 600:
-                        if Canvas_size[1] > bullets.x:  # 캔버스 사이즈보다 작고
-                            if Image_size[0] < bullets.x:  # 0보다 크다
+                        if Canvas_size[1] > bullets.x:
+                            if Image_size[0] < bullets.x:
                                 if _Player_Packed[1] + 600 > bullets.y:
                                     if _Player_Packed[1] - 600 < bullets.y:
                                         bullet_packed = data_struct.pack_bullet_data(bullets)
@@ -624,8 +573,6 @@ def leader_board(client_socket, room_number):
     client_socket.send(packed_leader_board_count)
 
     for i in range(0, len(after_leader_board)):
-        print(after_leader_board[i])
-        print(i)
         packed_leader_board = struct.pack('30s 30s 30s 30s i',
                                           after_leader_board[i][1].encode('ascii'),
                                           after_leader_board[i][3].encode('ascii'),
@@ -637,9 +584,34 @@ def leader_board(client_socket, room_number):
     leader_board.close()
     del (leader_board)
 
+    game_sys_main.waitting_room_data[room_number - 1] = {'player_count':0,
+                          'player_witch_select': [0, 0, 0],
+                          'player_ready_state' : [0, 0, 0],
+                           'player_number': [-1, -1, -1],
+                           'emotion': [0, 0, 0]
+                          }
+    game_sys_main.rooms_data[room_number - 1] = {'room_number':-1,
+                    'host_number':-1,
+                    'room_name':'default_name',
+                    'full_player':0,
+                    'player_name1':'default_name',
+                    'player_name2':'default_name',
+                    'player_name3':'default_name',
+                    'player_name4':'default_name',
+                    'is_started':False,
+                    'ready_player':0b0000}
+
+    packed_exit_request = client_socket.recv(DataStruct.boolean_size)
+    exit_request = data_struct.unpack_boolean(packed_exit_request)
+
+    if exit_request:
+        packed_exit_ack = data_struct.pack_boolean(True)
+        client_socket.send(packed_exit_ack)
+        client_socket.close()
+
+
 
 def send_is_game_over(socket):
-         # 게임결과를 보냅니다
          packed_is_game_over = data_struct.pack_is_game_over(game_sys_main.is_game_over)
          socket.send(packed_is_game_over)
 

@@ -1,7 +1,5 @@
-import random
-
 from pico2d import *
-#
+
 class BackGround:
 
     def __init__(self):
@@ -14,13 +12,6 @@ class BackGround:
         BackGround.h = BackGround.image.h
         BackGround.window_left = 0
         BackGround.window_bottom = 0
-        #self.list = [(150,200), (200,300)]
-        #self.alist = {
-        #    'monster' : {'pointXY' : (200,300), 'size' : (100,100) },
-        #    'bullet' : {'pointXY' : (200,300)}
-        #}
-        #alist['monster']['pointXY']
-
 
     def update(self,frame_time, player):
         BackGround.window_left = int(player[0]) - BackGround.canvas_width//2

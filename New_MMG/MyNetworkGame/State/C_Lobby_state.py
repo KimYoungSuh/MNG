@@ -1,6 +1,5 @@
 from pico2d import *
 
-
 from State import C_Game_framework
 from State import C_Game_data
 from State import C_CharSellect_State
@@ -42,7 +41,7 @@ COLLISION_BOX = [
     (1005, 719, 1123, 823)
 ]
 
-def select_room1(): #방 누를 시 정보 출력
+def select_room1():
     global selection
     selection = 1
 
@@ -58,13 +57,13 @@ def select_room4():
     global selection
     selection = 4
 
-def reset_lobby(): #로비 정보 요청
+def reset_lobby():
     global rooms_data, reset_cooltime
     if reset_cooltime >= can_reset_time:
         reset_cooltime = 0
         rooms_data = TcpContoller.recv_lobby_data(game_data.client_socket)
 
-def join_room(): # 참가 요청
+def join_room():
     global room_image_state, image_time
     if selection > len(rooms_data) or selection < 0 :
         return
@@ -79,14 +78,11 @@ def join_room(): # 참가 요청
         room_image_state = GAME_IS_STARTED
         image_time = 0
 
-def create_room(): # 생성 요청
+def create_room():
     global game_data
     room_number = TcpContoller.send_create_room(game_data.client_socket, game_data.player_number, "TEST_ROOM", 3, "Witch")
     if room_number != -1:
         C_Game_framework.push_state(C_CharSellect_State)
-    else:
-        pass
-        #방 생성 실패시
 
 def exit_lobby():
     send_exit_server = TcpContoller.send_exit_server(game_data.client_socket)

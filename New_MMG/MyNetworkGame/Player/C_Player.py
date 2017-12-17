@@ -1,18 +1,13 @@
 from pico2d import *
-
-from Background.C_BG import BackGround
-from Bullet.C_PlayerBullet import PBullet
-#from State.C_CharSellect_State import select_witch
 import State.C_CharSellect_State
 from State.C_Input import InputSys
 import random
-#font = load_font('ENCR10B.TTF')
-#font.draw(self.x - 30, self.y + 20, 'HP : %3.2f' % self.life)
 
 world = None
 Scean_x, Scean_y = 82, 105
 Select_W = None
 font = None
+
 def clamp(minimum, x, maximum):
     return max(minimum, min(x, maximum))
 
@@ -27,6 +22,7 @@ playerdir
  6 up left
  7 up right
 '''
+
 class Player1:
     PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
     RUN_SPEED_KMPH = 40.0  # Km / Hour
@@ -77,8 +73,7 @@ class Player1:
     def draw_bb(self):
         draw_rectangle(*self.get_bb())
 
-    def draw(self, _X , _Y):                 ##Size Change
-        #
+    def draw(self, _X , _Y):
         self.sx = _X - _Bg.window_left
         self.sy = _Y - _Bg.window_bottom
 
@@ -94,13 +89,11 @@ class Player1:
         return self.sx-5, self.sy-5, self.sx+5, self.sy+5
 
     def handle_event(self, event):
-        #C_input 으로 부터 InputSys 가져옴
         input_move = InputSys().Get_move(event)
         input_shoot = InputSys().Get_shoot_key(event)
         input_last_vertical = InputSys().Get_last_vertical()
         input_last_horizon = InputSys().Get_last_horizon()
 
-        #조건판별
         is_up = (input_move & 0b1000) == 0b1000
         is_down = (input_move & 0b0100) == 0b0100
         is_left = (input_move & 0b0010) == 0b0010
@@ -131,7 +124,6 @@ class Player1:
             if (is_left & (input_last_horizon == -1)):
                 self.move_left()
 
-
         if(input_shoot):
             self.isshoot = True
             bullet_dir = (0,0)
@@ -143,7 +135,6 @@ class Player1:
                 bullet_dir = (-1, 0)
             if (self.state == self.RIGHT_RUN):
                 bullet_dir = (1, 0)
-            #Bullet(self.x, self.y, bullet_dir[0], bullet_dir[1])
 
     def move_up(self):
         self.state = self.UP_RUN
@@ -171,16 +162,10 @@ class Player1:
         
 
 class Player2:
-    PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
-    RUN_SPEED_KMPH = 40.0  # Km / Hour
-    RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
-    RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
-    RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
     image = []
+    UP_RUN, RIGHT_RUN, LEFT_RUN,  DOWN_RUN = 0,1,2,3
 
-    UP_RUN, RIGHT_RUN, LEFT_RUN,  DOWN_RUN = 0,1,2,3,
-    def __init__(self ,
-                 _X , _Y, _PD,Life,  BG_X, BG_Y, image_num):
+    def __init__(self, _X, _Y, _PD,Life,  BG_X, BG_Y, image_num):
         global _Enemy, _Bg
         self.imagenum = image_num
         self.x, self.y = _X, _Y
@@ -196,7 +181,6 @@ class Player2:
             Player2.image.append(load_image('Resource\Image_Player.png'))
             Player2.image.append(load_image('Resource\Image_Player2.png'))
             Player2.image.append(load_image('Resource\Image_Player3.png'))
-
 
     def draw_bb(self):
         draw_rectangle(*self.get_bb())

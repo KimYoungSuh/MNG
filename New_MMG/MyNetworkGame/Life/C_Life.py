@@ -1,9 +1,7 @@
-import random
 from pico2d import *
-from Background.C_BG import BackGround
 
 class Life:
-#
+
     image = None
     def __init__(self, LIFE, P_NUM):
         self.life = LIFE
@@ -13,7 +11,6 @@ class Life:
 
     def update(self,frame_time, PL_X, PL_Y):
         pass
-        #self.delete_object(_Bullet)
 
     def draw(self):
         for i in range(0,self.life) :

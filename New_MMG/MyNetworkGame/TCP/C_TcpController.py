@@ -2,20 +2,19 @@ import socket
 import time
 
 from TCP.C_Pack import DataStruct
-from Data.C_BulletData import *
-from Data.C_EnemyData import *
-from Data.C_PlayerData import *
 from Data.C_RoomData import *
-from Data.C_StructSet import *
 from State import C_collision
 data_struct = DataStruct
-import os
 
 SELECT_LOBBY = 0
 SELECT_ROOM_DATA = 1
 SELECT_JOIN = 2
 SELECT_CREATE = 3
 SELECT_EXIT = 4
+
+IS_STARTED = 3
+IS_FULL = 2
+CAN_JOIN = 1
 
 class TcpContoller:
     def get_addr(self):
@@ -36,13 +35,10 @@ class TcpContoller:
     def loof(self):
         while 1:
             while 1:
-                #todo: 게임중
                 data = "Hello world"
                 self.client_socket.sendall(C_collision.DATA_PACK_ENEMY)
                 print("send data = ", data)
                 self.recv_is_game_over()
-
-            #todo: 리더보드
 
     def recv_is_game_over(self):
         # recv is_game_over
@@ -115,13 +111,13 @@ class TcpContoller:
         room_data = data_struct.unpack_room_data(packed_room_data)
 
         if room_data['is_started'] == True: #3 = 시작 1 = 참가가능, 2 = 풀방
-           return 3
+           return IS_STARTED
         elif (room_data['full_player'] == 4 and room_data['player_name4'] == 'default_name') or\
             (room_data['full_player'] == 3 and room_data['player_name3'] == 'default_name') or\
             (room_data['full_player'] == 2 and room_data['player_name2'] == 'default_name'):
-            return 1
+            return CAN_JOIN
         else:
-            return 2
+            return IS_FULL
 
     #Wait Room
     def send_in_room_data(client_socket, character_select, is_ready, is_exit, emotion):

@@ -4,14 +4,9 @@ from C_Wand import Wand
 from State import C_collision
 from State import C_Game_framework
 from State import C_Lobby_state
-from State import C_title_state
 from Background.C_SellectBG import C_SellectBG
 from TCP.C_TcpController import TcpContoller
-from State import C_Game_data
-from Data.C_WaittingRoomData import WaittingRoomData
-import struct
-import threading
-import socket
+
 name = "Char_sellect"
 image1 = None
 image2= None
@@ -72,6 +67,11 @@ emotion_box = [
 
 emotion_selected = [0,0,0]
 
+SELECT_WITCH = 2
+SELECT_IMOTION = 6
+SELECT_EXIT = 7
+SELECT_READY = 8
+
 def enter():
     global GAME_STATE,image1,image2,image3, font, _BG, _WAND, select_witch, game_data, P_NUM, select_imotion
     global recv_thread, recv_thread_isRun, recv_thread2, recv_thread2_isRun, image_ready, image_select, readystate, exit_state
@@ -98,10 +98,6 @@ def enter():
     readystate = False
     exit_state = False
     game_data = C_Lobby_state.game_data
-
-    #game_data.player_number = (struct.unpack('i',packed_player_data))
-    #game_data.watting_room_data = WaittingRoomData().waitting_room_data
-    #game_data.watting_room_data['player_count']=game_data.player_number
 
 def exit():
     global GAME_STATE, image1, image2, image3, font, _BG, _WAND, select_witch, game_data, P_NUM, select_imotion
@@ -152,20 +148,20 @@ def handle_events(frame_time):
                 point = (_WAND.x, _WAND.y)
                 for i in range(9):
                     if (collide_point(point, select_box[i])):
-                        if i<= 2:
+                        if i<= SELECT_WITCH:
                             select_witch = i+1
                             readystate = False
                             break
-                        elif i<= 6:
+                        elif i<= SELECT_IMOTION:
                             select_imotion = i-2
-                        elif i == 8:
+                        elif i == SELECT_READY:
                                 if readystate == False:
                                     if select_witch != 0:
                                         readystate = True
 
                                 elif readystate == True:
                                     readystate = False
-                        elif i == 7:
+                        elif i == SELECT_EXIT:
                             exit_state = True
             else:
                 _WAND.handle_event(event)
@@ -210,8 +206,6 @@ def update(frame_time):
             emotion_selected[i] = game_data.waitting_room_data['emotion'][i]
             emotion_time[i] = 0
 
-    #if GAME_STATE ==1:
-
     ready_count = 0
     for i in range(3):
         if game_data.waitting_room_data['player_ready_state'][i]:
@@ -238,14 +232,11 @@ def draw(frame_time):
     image1.clip_draw(Scean_x * 3, 0, Scean_x, Scean_y, image_box[0][0], image_box[0][1])
     image2.clip_draw(Scean_x * 3, 0, Scean_x, Scean_y, image_box[1][0], image_box[1][1])
     image3.clip_draw(Scean_x * 3, 0, Scean_x, Scean_y, image_box[2][0], image_box[2][1])
-    #font.draw(160, 430, 'Wand_X = %d' % (_WAND.x))
-    #font.draw(160, 460, 'Wand_Y = %d' % (_WAND.y))
 
     image_set = [image1, image2, image3]
     image_set2 = [image_emotion4, image_emotion3, image_emotion2, image_emotion]
 
-
-    for i in range(3):#수정
+    for i in range(3):
         if game_data.waitting_room_data['player_witch_select'][i] >= 1:
             image_set[game_data.waitting_room_data['player_witch_select'][i]-1].clip_draw(
             Scean_x * 3, 0, Scean_x, Scean_y, selected_box[i][0], selected_box[i][1])
@@ -255,26 +246,6 @@ def draw(frame_time):
 
         if game_data.waitting_room_data['player_ready_state'][i] >= 1:
             image_ready_state.draw(selected_box[i][0], selected_box[i][1])
-
-
-    '''
-    for i in range(1, PLAYER_NUM+1):
-        if(i != game_data.player_number):
-            temp = 'player' + str(i) + '_witch_selcet'
-            temp_select_witch = game_data.waitting_room_data[temp]
-            if temp_select_witch == 1:
-                select_witchs()
-                image1.clip_draw(Scean_x * 3, 0, Scean_x, Scean_y,
-                                 30 + (170 * i) + (230 * (i - 1)), 600)
-            if temp_select_witch == 2:
-                select_witchs()
-                image2.clip_draw(Scean_x * 3, 0, Scean_x, Scean_y,
-                                 30 + (170 * i) + (230 * (i - 1)), 600)
-            if temp_select_witch == 3:
-                select_witchs()
-                image3.clip_draw(Scean_x * 3, 0, Scean_x, Scean_y,
-                                 30 + (170 * i) + (230 * (i - 1)), 600)
-    '''
 
     _WAND.draw()
     update_canvas()

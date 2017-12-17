@@ -1,9 +1,5 @@
 from pico2d import *
 
-'''
-moveState는 비트 연산자로 0b0000 각각 상하좌우순
-'''
-
 class InputSys:
     move_state = 0
     last_vertical = 0

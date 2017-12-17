@@ -1,6 +1,4 @@
-import sys
 import struct
-from Data import *
 
 class DataStruct:
     # Boolean
@@ -232,31 +230,22 @@ class DataStruct:
         return unpacked_data
 
     #player_data
-
     player_data_type = '=fffff'
     player_data_size = struct.calcsize(player_data_type)
     def pack_player_data(p_data):
         packed = struct.pack('=ffffiBf',
-#           player_data['player_name'].encode('utf-8'),
-#           player_data['player_number'],
                              p_data.x,
                              p_data.y,
                              p_data.sx,
                              p_data.sy,
-#             player_data['direction'],
                              p_data.life,
                              p_data.isshoot,
                              p_data.playerdir
                              )
-#             player_data['is_damaged'],
-#             player_data['player_score'])
         return packed
     def unpack_player_data(packed):
         unpacked_data = struct.unpack('=ffffiBf', packed)
         return unpacked_data
-    #def unpack_player_data(packed):
-    ##    unpacked_data = struct.unpack('30s BiiBB?L', packed)
-    #    return unpacked_data
 
     #is_game_over
     def pack_is_game_over(is_game_over):

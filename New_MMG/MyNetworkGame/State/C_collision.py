@@ -1,6 +1,4 @@
-import random
 from pico2d import *
-import socket
 import time
 import State.C_Game_framework
 from Background.C_BG import BackGround
@@ -11,17 +9,10 @@ from Bullet.C_PlayerBullet import PBullet
 from Life.C_Life import Life
 from TCP.C_Pack import DataStruct
 from Score.C_Score import CScore
-from State import C_Lobby_state
 import State.C_Gameover_state
-from Data.C_BulletData import *
-from Data.C_EnemyData import *
-from Data.C_PlayerData import *
-from Data.C_RoomData import *
-from Data.C_StructSet import *
 from State.C_Game_data import GameData
 import struct
 import threading
-#import C_DebugClass
 
 
 from Player.C_Player import Player1
@@ -43,22 +34,16 @@ Time = 0.0
 Score =0
 GameScore = 0
 Player_Count = 0
-#SERVER_IP_ADDR ="127.0.0.1"
-#SERVER_PORT = 19000
-#SEND_TIME = 0
 
-#
 bgm = None
 
 def enter():
     State.C_Game_framework.reset_time()
     create_world()
 
-
 def exit():
     destroy_world()
 
-#timer
 def create_world():
     global _player, _Bg, _Enemy1, timer,GameScore, font, _EBullet, _PBullet, _Life,client_sock,tcp_controller,E_NUM, _Enemy_Data
     global MyNumber,AnotherPlayer,unpacked_all_player_data,game_data,P_NUM,Player_Count,_LifeList,iScore, bgm
@@ -74,14 +59,9 @@ def create_world():
     iScore = 0
     AnotherPlayer =[]
     _Enemy1 = []
-    #timer = Timer()
     client_sock = GameData.client_socket
     MyNumber = GameData.player_number
-    #tcp_controller = TcpContoller()
-    readystate = 0
-    #client_sock = tcp_controller.tcp_client_init()
     t1 = threading.Thread(target=recv_thread, args=(client_sock,))
-    readystate = 0
     GameScore =0
     Player_Count = 0
     font = load_font('Resource\ENCR10B.TTF')
@@ -100,7 +80,6 @@ def recv_thread(client_sock):
     _BTEMP = []
     _PTEMP = []
     _LTEMP = []
-    current_time = time.clock()
 
     while 1:
         Player_packed = DataStruct.pack_player_data(_player)
@@ -186,10 +165,6 @@ def recv_thread(client_sock):
 
 
 
-pass
-
-
-
 def destroy_world():
     global _player, _Bg, _Enemy1, timer,GameScore, font,_EBullet, _PBullet,bgm
     del(_player)
@@ -265,26 +240,6 @@ def draw(frame_time):
     for ebullets in _EBullet:
         ebullets.draw()
     miScore.draw(iScore)
-
-    '''
-    for enemy in _Enemy1:
-        enemy.draw()
-    for enemy in _Enemy1:
-        enemy.draw_bb()
-            _Enemy1.clear()
-
-
-    for pbullets in _PBullet:
-        pbullets.draw()
- #   grass.draw_bb()
-    _player.draw_bb()
-
-    for ebullets in _EBullet:
-        ebullets.draw_bb()
-    for pbullets in _PBullet:
-        pbullets.draw_bb()
-    _Life.draw(_player.life)
-    '''
     update_canvas()
 
 def delete_object(objects):

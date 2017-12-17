@@ -1,7 +1,3 @@
-import random
-
-from pico2d import *
-#
 class BackGround:
 
     def __init__(self):
@@ -12,7 +8,6 @@ class BackGround:
         BackGround.h =1800
         BackGround.window_left = 0
         BackGround.window_bottom = 0
-
 
     def update(self, PX , PY):
         BackGround.window_left = int(PX) - BackGround.canvas_width//2

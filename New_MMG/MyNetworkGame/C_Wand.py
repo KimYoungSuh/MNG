@@ -1,12 +1,5 @@
 from pico2d import *
 
-from State.C_Input import InputSys
-from Background.C_SellectBG import C_SellectBG
-#import char_sellect
-#font = load_font('ENCR10B.TTF')
-#font.draw(self.x - 30, self.y + 20, 'HP : %3.2f' % self.life)
-
-
 class Wand:
     PIXEL_PER_METER = (10.0 / 0.3)  # 10 pixel 30 cm
     RUN_SPEED_KMPH = 40.0  # Km / Hour

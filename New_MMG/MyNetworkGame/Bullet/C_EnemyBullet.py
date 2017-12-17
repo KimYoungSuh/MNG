@@ -14,8 +14,6 @@ class EBullet:
         self._Bg = BackGround
         self.x = _X
         self.y = _Y
-    #    self.sx = self.x - PL_X
-    #    self.sy = self.y - PL_Y
         self.alive =1
 
         if EBullet.image == None:
@@ -26,22 +24,13 @@ class EBullet:
     def update(self):
         self.sx = self.x - self._Bg.window_left
         self.sy = self.y - self._Bg.window_bottom
-    #    self.sx = self.x - PL_X
-    #    self.sy = self.y - PL_Y
-#
-    #    if collide(self.x, self.y, self.x+10, self.y+10, PL_X, PL_Y, PL_X+10, PL_Y+10) :
-    #        self.alive = 0
-
-        #need collsion check
 
     def draw(self):
         self.image.draw(self.sx, self.sy)
-#        self.image.draw(self.sx, self.sy)
     def draw_bb(self):
         draw_rectangle(*self.get_bb())
     def get_bb(self):
         return self.sx - 10, self.sy - 10, self.sx + 10, self.sy + 10
-        #return self.sx-10 , self.sy-10, self.sx+10, self.sy+10
 
 def collide(left_a, bottom_a,right_a, top_a, left_b, bottom_b,right_b, top_b):
 

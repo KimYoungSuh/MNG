@@ -1,7 +1,5 @@
-import random
-
 from pico2d import *
-#
+
 class C_SellectBG:
     def __init__(self):
         self.image = load_image('Resource\Image_SelectBG.png')
