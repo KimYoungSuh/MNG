@@ -88,10 +88,10 @@ class DataStruct:
         return in_room_data
 
     # in_room_data_server
-    in_room_data_server_type = 'BBBBBBBiBBB'
+    in_room_data_server_type = 'BBBBBBBiBBBiii'
     in_room_data_server_size = struct.calcsize(in_room_data_server_type)
     def pack_in_room_data_server(in_room_data_server, gamestate):
-            packed_data = struct.pack('BBBBBBBiBBB',
+            packed_data = struct.pack('BBBBBBBiBBBiii',
                                       in_room_data_server['player_count'],
                                       in_room_data_server['player_witch_select'][0],
                                       in_room_data_server['player_witch_select'][1],
@@ -102,16 +102,20 @@ class DataStruct:
                                       gamestate,
                                       in_room_data_server['emotion'][0],
                                       in_room_data_server['emotion'][1],
-                                      in_room_data_server['emotion'][2])
+                                      in_room_data_server['emotion'][2],
+                                      in_room_data_server['player_number'][0],
+                                      in_room_data_server['player_number'][1],
+                                      in_room_data_server['player_number'][2])
             return packed_data
 
     def unpack_in_room_data_server(packed_data):
-        unpacked_data = struct.unpack('BBBBBBBiBBB', packed_data)
+        unpacked_data = struct.unpack('BBBBBBBiBBBiii', packed_data)
         in_room_data_server = {
             'player_count': unpacked_data[0],
             'player_witch_select': [unpacked_data[1], unpacked_data[2], unpacked_data[3]],
             'player_ready_state': [unpacked_data[4], unpacked_data[5], unpacked_data[6]],
-            'emotion': [unpacked_data[8], unpacked_data[9], unpacked_data[10]]
+            'emotion': [unpacked_data[8], unpacked_data[9], unpacked_data[10]],
+            'player_number': [unpacked_data[11], unpacked_data[12], unpacked_data[13]]
         }
         return in_room_data_server
 

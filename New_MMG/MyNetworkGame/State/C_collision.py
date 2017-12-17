@@ -71,15 +71,16 @@ def create_world():
     readystate = 0
     #client_sock = tcp_controller.tcp_client_init()
     t1 = threading.Thread(target=recv_thread, args=(client_sock,))
-    t1.start()
     readystate = 0
     GameScore =0
     font = load_font('Resource\ENCR10B.TTF')
 
+    Player2(0,0,0,0,0,0)
     Enemy1(0,0,0,0,0)
     Enemy2(0,0,0,0,0)
     EBullet(0,0)
     PBullet(0,0)
+    t1.start()
 
 def recv_thread(client_sock):
     global AnotherPlayer, _Enemy1, _EBullet, _Bg

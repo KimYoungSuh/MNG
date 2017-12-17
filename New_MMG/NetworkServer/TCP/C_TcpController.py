@@ -12,7 +12,7 @@ from Background.C_BG import BackGround
 import gc
 
 _Bg = None
-data_struct = Pack
+data_struct = DataStruct
 GAME_STATE =0
 send_time =0
 state = None
@@ -111,6 +111,7 @@ class TcpController:
                 return
             print('player_number : ', player_number)
             room_exit_ack = TcpController.send_in_room_data(client_socket, room_number, player_number)  # in Room
+        time.sleep(1)
         TcpController.send_in_game_data(client_socket, room_number, player_number)
 
     #Lobby
@@ -229,7 +230,7 @@ class TcpController:
         in_game = 4
 
         while in_room:
-            packed_in_room_data = client_socket.recv(Pack.in_room_data_size)
+            packed_in_room_data = client_socket.recv(data_struct.in_room_data_size)
             in_room_data = data_struct.unpack_in_room_data(packed_in_room_data)
 
             if in_room_data['is_exit'] == True:
@@ -280,13 +281,13 @@ class TcpController:
                 game_sys_main.rooms_data[room_number-1]['full_player'] = 0
 
             if data_reset:
-                packed_exit_ack = Pack.pack_boolean(True)
+                packed_exit_ack = data_struct.pack_boolean(True)
                 client_socket.send(packed_exit_ack)
                 return True
             else:
                 #print('in room count : ', game_sys_main.waitting_room_data[room_number-1]['player_count'])
                 #print('count : ', in_room_player_count)
-                packed_in_room_data_server = Pack.pack_in_room_data_server(game_sys_main.waitting_room_data[room_number-1],
+                packed_in_room_data_server = data_struct.pack_in_room_data_server(game_sys_main.waitting_room_data[room_number-1],
                                                                            GAME_STATE)
                 client_socket.send(packed_in_room_data_server)
 
@@ -517,7 +518,7 @@ class TcpController:
             leader_board.write('\n')
 
 
-        packed_leader_board_count = Pack.pack_integer(len(after_leader_board))
+        packed_leader_board_count = data_struct.pack_integer(len(after_leader_board))
         client_socket.send(packed_leader_board_count)
 
         for i in range(0, len(after_leader_board)):

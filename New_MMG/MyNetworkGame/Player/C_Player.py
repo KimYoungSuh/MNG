@@ -176,14 +176,13 @@ class Player2:
     RUN_SPEED_MPM = (RUN_SPEED_KMPH * 1000.0 / 60.0)
     RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
     RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
-    image = None
+    image = []
 
     UP_RUN, RIGHT_RUN, LEFT_RUN,  DOWN_RUN = 0,1,2,3,
     def __init__(self ,
                  _X , _Y, _PD,  BG_X, BG_Y, image_num):
+        global _Enemy, _Bg
         self.imagenum = image_num
-        global _Enemy
-        global _Bg
         self.x, self.y = _X, _Y
         self.life = 3
         self.xdir = 0
@@ -193,22 +192,17 @@ class Player2:
         self.sx = self.x - BG_X
         self.sy = self.y - BG_Y
         self.playerdir = _PD
-        if Player2.image == None:
-            if self.imagenum ==1 :
-                Player2.image = load_image('Resource\Image_Player.png')
-            elif self.imagenum == 2:
-                Player2.image = load_image('Resource\Image_Player2.png')
-            else :
-                Player2.image = load_image('Resource\Image_Player3.png')
+        if len(Player2.image) == 0:
+            Player2.image.append(load_image('Resource\Image_Player.png'))
+            Player2.image.append(load_image('Resource\Image_Player2.png'))
+            Player2.image.append(load_image('Resource\Image_Player3.png'))
 
 
     def draw_bb(self):
         draw_rectangle(*self.get_bb())
 
     def draw(self):                 ##Size Change
-        #
-
-        self.image.clip_draw(Scean_x * int(self.playerdir), 0, Scean_x, Scean_y, int(self.sx), int(self.sy))
+        self.image[self.imagenum-1].clip_draw(Scean_x * int(self.playerdir), 0, Scean_x, Scean_y, int(self.sx), int(self.sy))
 
     def get_bb(self):
         return self.sx-5, self.sy-5, self.sx+5, self.sy+5
