@@ -120,6 +120,8 @@ def enter():
     _WAND = Wand()
     selection_image = load_image('Resource\Image_Lobby_Select.png')
 
+    print("enter!")
+
     game_data = C_Game_data.GameData
     tcp_controller = TcpContoller()
     client_sock = tcp_controller.tcp_client_init()

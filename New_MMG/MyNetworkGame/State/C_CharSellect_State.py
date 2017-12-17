@@ -105,7 +105,9 @@ def enter():
 
 
 def exit():
-    global image1,image2,image3, font, _BG, _WAND, select_witch,state
+    global GAME_STATE, image1, image2, image3, font, _BG, _WAND, select_witch, game_data, P_NUM, select_imotion
+    global recv_thread, recv_thread_isRun, recv_thread2, recv_thread2_isRun, image_ready, image_select, readystate, exit_state
+    global image_emotion, image_emotion2, image_emotion3, image_emotion4, image_ready_state;
     del(image1)
     del(image2)
     del(image3)
@@ -113,6 +115,20 @@ def exit():
     del(_BG)
     del(_WAND)
     del(select_witch)
+    del(image_ready)
+    del(image_select)
+    del(image_emotion)
+    del(image_emotion2)
+    del(image_emotion3)
+    del(image_emotion4)
+    del(image_ready_state)
+    del(GAME_STATE)
+    del(select_imotion)
+    del(P_NUM)
+    del(readystate)
+    del(exit_state)
+    del(game_data)
+    del(recv_thread_isRun)
 
 def pause():
     pass

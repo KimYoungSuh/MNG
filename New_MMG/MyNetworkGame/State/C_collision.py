@@ -76,6 +76,11 @@ def create_world():
     GameScore =0
     font = load_font('Resource\ENCR10B.TTF')
 
+    Enemy1(0,0,0,0,0)
+    Enemy2(0,0,0,0,0)
+    EBullet(0,0)
+    PBullet(0,0)
+
 def recv_thread(client_sock):
     global AnotherPlayer, _Enemy1, _EBullet, _Bg
 
