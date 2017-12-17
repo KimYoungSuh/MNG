@@ -27,13 +27,13 @@ select_witch =0
 select_imotion = 0
 _WAND = None
 state =0
-readystate= False
+readystate= None
+exit_state = None
 recv_thread_isRun=0
 recv_thread2_isRun =0
 PLAYER_NUM = 0
 GAME_STATE = 0
 delta_time = 0.3
-exit_state = False
 image_ready = None
 image_select = None
 emotion_time = [0, 0, 0]
@@ -74,7 +74,7 @@ emotion_selected = [0,0,0]
 
 def enter():
     global GAME_STATE,image1,image2,image3, font, _BG, _WAND, select_witch, game_data, PLAYER_NUM, select_imotion
-    global recv_thread, recv_thread_isRun, recv_thread2, recv_thread2_isRun, image_ready, image_select
+    global recv_thread, recv_thread_isRun, recv_thread2, recv_thread2_isRun, image_ready, image_select, readystate, exit_state
     global image_emotion, image_emotion2, image_emotion3, image_emotion4, image_ready_state;
     image1 = load_image('Resource\Image_Player.png')
     image2 = load_image('Resource\Image_Player2.png')
@@ -94,6 +94,8 @@ def enter():
     select_witch = 0
     select_imotion = 0
     PLAYER_NUM = 0
+    readystate = False
+    exit_state = False
     game_data = C_Lobby_state.game_data
 
 
@@ -104,14 +106,12 @@ def enter():
 
 def exit():
     global image1,image2,image3, font, _BG, _WAND, select_witch,state
-    game_data.client_socket.send(b'Out')
     del(image1)
     del(image2)
     del(image3)
     del(font)
     del(_BG)
     del(_WAND)
-
     del(select_witch)
 
 def pause():
@@ -172,15 +172,23 @@ def update(frame_time):
     global _WAND, GAME_STATE, select_witch , readystate, exit_state, delta_time, \
         game_data, emotion_selected, emotion_time, select_imotion
 
+    exit_ack = False
     _WAND.update(frame_time)
     delta_time += frame_time
     if delta_time >= 0.3:
         TcpContoller.send_in_room_data(game_data.client_socket, select_witch, readystate, exit_state, select_imotion)
         select_imotion = 0
-        room_data = TcpContoller.receive_in_room_data(game_data.client_socket)
-        game_data.waitting_room_data = room_data
+        if exit_state:
+            exit_ack = TcpContoller.recv_exit_ack(game_data.client_socket)
+            if exit_ack:
+                game_data.waitting_room_data = None
+                C_Game_framework.pop_state()
+                return
+        else:
+            room_data = TcpContoller.receive_in_room_data(game_data.client_socket)
+            game_data.waitting_room_data = room_data
         delta_time = 0
-        print(room_data['emotion'])
+
     for i in range(0,3):
         if game_data.waitting_room_data['emotion'][i] != 0:
             emotion_selected[i] = game_data.waitting_room_data['emotion'][i]
@@ -193,6 +201,8 @@ def update(frame_time):
         if game_data.waitting_room_data['player_ready_state'][i]:
             ready_count += 1
         emotion_time[i] += frame_time
+        print('ready count : ', ready_count)
+        print(game_data.waitting_room_data['player_count'])
     if ready_count == game_data.waitting_room_data['player_count']:
         C_Game_framework.run(C_collision)
 

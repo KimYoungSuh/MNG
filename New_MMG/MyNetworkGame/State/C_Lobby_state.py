@@ -40,16 +40,13 @@ def select_room2():
     global selection
     selection = 2
 
-
 def select_room3():
     global selection
     selection = 3
 
-
 def select_room4():
     global selection
     selection = 4
-
 
 def reset_lobby(): #로비 정보 요청
     global rooms_data, delta_time
@@ -60,7 +57,8 @@ def reset_lobby(): #로비 정보 요청
         rooms_data = TcpContoller.recv_lobby_data(game_data.client_socket)
         for room in rooms_data:
             print(room['room_name'])
-        print(rooms_data)
+        for i in rooms_data:
+            print(i)
 
 
 def join_room(): # 참가 요청

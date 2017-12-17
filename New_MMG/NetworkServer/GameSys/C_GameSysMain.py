@@ -2,7 +2,7 @@ from Data.C_RoomData import RoomData
 from  Data.C_PlayerData import PlayerData
 from Data.C_All_PlayerData import *
 
-from Data.C_WaittingRoomData import *
+from Data.C_WaittingRoomData import WaittingRoomData
 
 
 class GameSysMain:
