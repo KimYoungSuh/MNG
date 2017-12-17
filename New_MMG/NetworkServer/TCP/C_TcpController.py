@@ -345,13 +345,6 @@ class TcpController:
                     newBullet = PBullet(room_player_data['player_x'][i], room_player_data['player_y'][i], room_player_data['player_dir'][i])
                     _Bullet.append(newBullet)
 
-            for pbullets in _Bullet:
-                if pbullets.shooter == 0:
-                    for enemys in _EnemyList:
-                        if collide(pbullets, enemys):
-                            pbullets.alive = 0
-                            enemys.alive = 0
-
             for enemy in _EnemyList:
                 if enemy.ADD_Bullet() == True:
                     newBullet = EBullet(enemy.x, enemy.y)
@@ -366,9 +359,29 @@ class TcpController:
 
             for enemy in _EnemyList:
                 enemy.update(frame_time)
+                for i in range(3):
+                    if (room_player[i] == -1):
+                        break
+                    if collide(room_player_data['player_x'][i], room_player_data['player_y'][i], enemy.x, enemy.y):
+                        enemy.alive = 0
+                        room_player_data['player_life'][i] -= 1
 
+            player = 0
             for bullets in _Bullet:
                 bullets.update(frame_time)
+                if bullets.shooter == player:
+                    for enemys in _EnemyList:
+                        if collide(bullets, enemys):
+                            bullets.alive = 0
+                            enemys.alive = 0
+                else:
+                    for i in range(3):
+                        if (room_player[i] == -1):
+                            break
+                        if collide(room_player_data['player_x'][i], room_player_data['player_y'][i], bullets.x, bullets.y):
+                            bullets.alive = 0
+                            room_player_data['player_life'][i] -= 1
+
 
             for enemy in _EnemyList:
                 if enemy.alive == 0:
@@ -430,6 +443,7 @@ class TcpController:
                 packed_all_player_data = data_struct.pack_all_player_data(game_sys_main.all_player_data[room_number])
 
                 to_all_event[player_number].set()
+                gc.collect()
                 to_one_event[player_number].wait()
                 to_one_event[player_number].clear()
                 client_socket.send(packed_all_player_data)
@@ -535,7 +549,7 @@ class TcpController:
                 for bullet_packed in Bullets_IN_Window:
                     client_socket.send(bullet_packed)
 
-                gc.collect()
+
         gc.enable()
 
 
@@ -615,6 +629,22 @@ def exit(self):
 def collide(a, b):
     left_a, bottom_a,right_a, top_a = a.get_bb()
     left_b, bottom_b,right_b, top_b = b.get_bb()
+    if left_a > right_b : return False
+    if right_a < left_b : return False
+    if top_a < bottom_b : return False
+    if bottom_a > top_b : return False
+
+    return True
+
+def collide(ax, ay, bx, by):
+    left_a=ax
+    bottom_a=ay
+    right_a=ax+10
+    top_a=ay+10
+    left_b = bx
+    bottom_b = by
+    right_b = bx + 10
+    top_b = by + 10
     if left_a > right_b : return False
     if right_a < left_b : return False
     if top_a < bottom_b : return False
