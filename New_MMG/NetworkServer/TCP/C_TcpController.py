@@ -177,6 +177,8 @@ class TcpController:
             if game_sys_main.rooms_data[i]['room_number'] == unpack_join_request_data['room_number']:
                 packed_room_data = data_struct.pack_room_data(game_sys_main.rooms_data[i])
                 client_socket.send(packed_room_data)
+                if game_sys_main.rooms_data[i]['is_started']:
+                    break
                 full_plyaer = game_sys_main.rooms_data[i]['full_player']
                 if(full_plyaer >= 2 and game_sys_main.rooms_data[i]['player_name2'] == 'default_name'):
                     game_sys_main.rooms_data[i]['player_name2'] = unpack_join_request_data['player_name']
@@ -293,6 +295,7 @@ class TcpController:
 
             if in_room_player_count == ready_count:
                 in_room = False
+                game_sys_main.rooms_data[room_number-1]['is_started'] = True
         return False
 
 

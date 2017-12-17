@@ -71,7 +71,6 @@ emotion_box = [
 
 emotion_selected = [0,0,0]
 
-
 def enter():
     global GAME_STATE,image1,image2,image3, font, _BG, _WAND, select_witch, game_data, P_NUM, select_imotion
     global recv_thread, recv_thread_isRun, recv_thread2, recv_thread2_isRun, image_ready, image_select, readystate, exit_state
@@ -98,11 +97,9 @@ def enter():
     exit_state = False
     game_data = C_Lobby_state.game_data
 
-
     #game_data.player_number = (struct.unpack('i',packed_player_data))
     #game_data.watting_room_data = WaittingRoomData().waitting_room_data
     #game_data.watting_room_data['player_count']=game_data.player_number
-
 
 def exit():
     global GAME_STATE, image1, image2, image3, font, _BG, _WAND, select_witch, game_data, P_NUM, select_imotion
