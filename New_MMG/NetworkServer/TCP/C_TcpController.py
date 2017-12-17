@@ -23,7 +23,11 @@ _EnemyList = []
 _Enemy= []
 E_NUM = 0
 game_sys_main = None
-
+to_all_event=list(range(16))
+to_one_event=list(range(16))
+for i in range(16):
+    to_all_event[i] = threading.Event()
+    to_one_event[i] = threading.Event()
 player_number = 0
 Enemy_packed = None
 '''
@@ -298,20 +302,116 @@ class TcpController:
                 game_sys_main.rooms_data[room_number-1]['is_started'] = True
         return False
 
+    def game_thread(client_socket, room_number):
+        global main_time
+        room_player = game_sys_main.waitting_room_data[room_number-1]['player_number']
+        room_player_data = game_sys_main.all_player_data[room_number]
+        while 1:
+            #for i in range (3):
+             #   if(room_player[i]==-1):
+              #      break
+               # to_all_event[room_player[i]].wait()
+            frame_time = time.clock() - main_time
+            main_time += frame_time
+            if timer.update(frame_time) == True:  # 적 만드는 부분
+                EnemyDirNum = random.randint(0, 8)
+                if EnemyDirNum <= 3:
+                    newEnemy = Enemy1( EnemyDirNum)
+                    dis=[]
+                    for i in range(3):
+                        if (room_player[i] == -1):
+                            break
+                        dis.append(newEnemy.get_distance(room_player_data['player_x'][i], room_player_data['player_y'][i]))
+                    near=dis.index(min(dis))
+                    newEnemy.set_dir(room_player_data['player_x'][near],room_player_data['player_y'][near])
+                    _EnemyList.append(newEnemy)
 
+                if EnemyDirNum >= 4:
+                    newEnemy = Enemy2(EnemyDirNum)
+                    dis = []
+                    for i in range(3):
+                        if (room_player[i] == -1):
+                            break
+                        dis.append(
+                            newEnemy.get_distance(room_player_data['player_x'][i], room_player_data['player_y'][i]))
+                    near = dis.index(min(dis))
+                    newEnemy.set_dir(room_player_data['player_x'][near], room_player_data['player_y'][near])
+                    _EnemyList.append(newEnemy)
+            for i in range(3):
+                if (room_player[i] == -1):
+                    break
+                if room_player_data['player_isShoot'][i]==True:
+                    newBullet = PBullet(room_player_data['player_x'][i], room_player_data['player_y'][i], room_player_data['player_dir'][i])
+                    _Bullet.append(newBullet)
+
+            for pbullets in _Bullet:
+                if pbullets.shooter == 0:
+                    for enemys in _EnemyList:
+                        if collide(pbullets, enemys):
+                            pbullets.alive = 0
+                            enemys.alive = 0
+
+            for enemy in _EnemyList:
+                if enemy.ADD_Bullet() == True:
+                    newBullet = EBullet(enemy.x, enemy.y)
+                    dis = []
+                    for i in range(3):
+                        if (room_player[i] == -1):
+                            break
+                        dis.append(newBullet.get_distance(room_player_data['player_x'][i], room_player_data['player_y'][i]))
+                    near = dis.index(min(dis))
+                    newBullet.set_dir(room_player_data['player_x'][near], room_player_data['player_y'][near])
+                    _Bullet.append(newBullet)
+
+            for enemy in _EnemyList:
+                if enemy.alive == 0:
+                    _EnemyList.remove(enemy)
+            for pbullets in _Bullet:
+                if pbullets.alive == 0:
+                    _Bullet.remove(pbullets)
+            for ebullets in _Bullet:
+                if ebullets.alive == 0:
+                    _Bullet.remove(ebullets)
+
+            for enemy in _EnemyList:
+                enemy.update(frame_time)
+
+
+            for bullets in _Bullet:
+                bullets.update(frame_time)
+
+
+
+
+            #for i in range (3):
+                #if(room_player[i]==-1):
+                 #   break
+                #to_one_event[room_player[i]].set()
+
+
+
+        pass
     def send_in_game_data(client_socket, room_number, player_number):
         global main_time,PLAYER_NUM, state, GAME_STATE,timer, E_Data, ready_state, E_NUM
         global player_count,Image_size  ,Canvas_size
+        room_player = game_sys_main.waitting_room_data[room_number - 1]['player_number']
         game_sys_main.all_player_data[room_number]['player_number'][player_number] = player_number
-
+        in_player=(-1,-1,-1)
         current_time = time.clock()
         E_NUM = 0
         k = 0
         timer = Timer()
         main_time = time.clock()
-        gc.disable()
+
+
+        if player_number==game_sys_main.rooms_data[room_number-1]['host_number']:
+            t1 = threading.Thread(target=TcpController.game_thread, args=(client_socket, room_number))
+            t1.start()
+
         while 1:  # When Game Over
-            if current_time + 0.025 < time.clock():
+            if current_time  < time.clock():
+
+                before = time.clock()
                 current_time = time.clock()
                 P_Data = client_socket.recv(struct.calcsize('=ffffiBf'))
                 _Player_Packed = data_struct.unpack_player_data(P_Data)
@@ -327,49 +427,10 @@ class TcpController:
                         game_sys_main.all_player_data[room_number]['player_dir'][i] = _Player_Packed[6]
                 packed_all_player_data = data_struct.pack_all_player_data(game_sys_main.all_player_data[room_number])
 
+                #to_all_event[player_number].set()
+                #to_one_event[player_number].wait()
 
 
-                frame_time = time.clock() - main_time
-                main_time += frame_time
-                _Bg.update(_Player_Packed[0], _Player_Packed[1])
-                if timer.update(frame_time) == True: #적 만드는 부분
-                    EnemyDirNum = random.randint(0, 8)
-                    if EnemyDirNum <= 3:
-                        newEnemy = Enemy1(_Player_Packed[2], _Player_Packed[3], EnemyDirNum, _Bg.window_left,_Bg.window_bottom)
-                        _EnemyList.append(newEnemy)
-
-                    if EnemyDirNum >= 4:
-                        newEnemy = Enemy2(_Player_Packed[2], _Player_Packed[3], EnemyDirNum,_Bg.window_left,_Bg.window_bottom)
-                        _EnemyList.append(newEnemy)
-                if _Player_Packed[5] == True :  #플레이어가 탄환을 발사하면
-                    newBullet = PBullet(_Player_Packed[0], _Player_Packed[1], _Player_Packed[6])
-                    _Bullet.append(newBullet)
-
-
-                for pbullets in _Bullet:
-                    if pbullets.shooter == 0 :
-                        for enemys in _EnemyList:
-                            if collide(pbullets, enemys):
-                                pbullets.alive = 0
-                                enemys.alive = 0
-
-                for enemy in _EnemyList :
-                    if enemy.ADD_Bullet() == True :
-                        newBullet = EBullet(enemy.x, enemy.y, _Player_Packed[0], _Player_Packed[1])
-                        _Bullet.append(newBullet)
-
-
-
-
-                for enemy in _EnemyList:
-                    if enemy.alive == 0:
-                        _EnemyList.remove(enemy)
-                for pbullets in _Bullet:
-                    if pbullets.alive == 0:
-                        _Bullet.remove(pbullets)
-                for ebullets in _Bullet:
-                    if ebullets.alive == 0:
-                        _Bullet.remove(ebullets)
 
                 client_socket.send(packed_all_player_data)
 
@@ -382,11 +443,6 @@ class TcpController:
                 Enemys_IN_Window = []
                 Bullets_IN_Window =[]
                 for enemy in _EnemyList:
-                    enemy.update(frame_time, _Player_Packed[0], _Player_Packed[1], _Bg.window_left,
-                                 _Bg.window_bottom)
-                    if k == len(_EnemyList) :
-                        k = 0
-                        k += 1
                     #플레이어 x로 계산
                     if _Player_Packed[0]<600 :
                         if Canvas_size[1] > enemy.x: #캔버스 사이즈보다 작고
@@ -429,8 +485,6 @@ class TcpController:
 
 
                 for bullets in _Bullet:
-                    bullets.update(frame_time, _Player_Packed[0], _Player_Packed[1])
-
                     if _Player_Packed[0] < 600:
                         if Canvas_size[1] > bullets.x:  # 캔버스 사이즈보다 작고
                             if Image_size[0] < bullets.x:  # 0보다 크다
@@ -478,9 +532,11 @@ class TcpController:
                 for bullet_packed in Bullets_IN_Window:
                     client_socket.send(bullet_packed)
 
+                after = time.clock()
+                print(str(after - before))
 
 
-        gc.enable()
+
 
 
         leader_board = open('LeaderBoard.txt', 'a+t')
