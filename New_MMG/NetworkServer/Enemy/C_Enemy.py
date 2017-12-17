@@ -77,7 +77,8 @@ class Enemy1:
             self.Whattime = 0
             return True
 
-
+    def get_bb(self):
+        return self.x - 10, self.y - 10, self.x + 10, self.y + 10
 
 
     def draw(self):

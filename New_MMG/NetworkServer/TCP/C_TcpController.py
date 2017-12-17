@@ -303,10 +303,11 @@ class TcpController:
         room_player = game_sys_main.waitting_room_data[room_number-1]['player_number']
         room_player_data = game_sys_main.all_player_data[room_number]
         while 1:
-            #for i in range (3):
-             #   if(room_player[i]==-1):
-              #      break
-               # to_all_event[room_player[i]].wait()
+            for i in range (3):
+                if(room_player[i]==-1):
+                    break
+                to_all_event[room_player[i]].wait()
+                to_all_event[room_player[i]].clear()
             frame_time = time.clock() - main_time
             main_time += frame_time
             if timer.update(frame_time) == True:  # 적 만드는 부분
@@ -360,6 +361,12 @@ class TcpController:
                     _Bullet.append(newBullet)
 
             for enemy in _EnemyList:
+                enemy.update(frame_time)
+
+            for bullets in _Bullet:
+                bullets.update(frame_time)
+
+            for enemy in _EnemyList:
                 if enemy.alive == 0:
                     _EnemyList.remove(enemy)
             for pbullets in _Bullet:
@@ -369,20 +376,16 @@ class TcpController:
                 if ebullets.alive == 0:
                     _Bullet.remove(ebullets)
 
-            for enemy in _EnemyList:
-                enemy.update(frame_time)
-
-
-            for bullets in _Bullet:
-                bullets.update(frame_time)
 
 
 
 
-            #for i in range (3):
-                #if(room_player[i]==-1):
-                 #   break
-                #to_one_event[room_player[i]].set()
+
+            for i in range (3):
+                if(room_player[i]==-1):
+                    break
+                to_one_event[room_player[i]].set()
+            gc.collect()
 
 
 
@@ -395,7 +398,6 @@ class TcpController:
         in_player=(-1,-1,-1)
         current_time = time.clock()
         E_NUM = 0
-        k = 0
         timer = Timer()
         main_time = time.clock()
 
@@ -403,11 +405,10 @@ class TcpController:
         if player_number==game_sys_main.rooms_data[room_number-1]['host_number']:
             t1 = threading.Thread(target=TcpController.game_thread, args=(client_socket, room_number))
             t1.start()
+        gc.disable()
 
         while 1:  # When Game Over
-            if current_time  < time.clock():
-
-                before = time.clock()
+            if current_time+0.033  < time.clock():
                 current_time = time.clock()
                 P_Data = client_socket.recv(struct.calcsize('=ffffiBf'))
                 _Player_Packed = data_struct.unpack_player_data(P_Data)
@@ -423,11 +424,9 @@ class TcpController:
                         game_sys_main.all_player_data[room_number]['player_dir'][i] = _Player_Packed[6]
                 packed_all_player_data = data_struct.pack_all_player_data(game_sys_main.all_player_data[room_number])
 
-                #to_all_event[player_number].set()
-                #to_one_event[player_number].wait()
-
-
-
+                to_all_event[player_number].set()
+                to_one_event[player_number].wait()
+                to_one_event[player_number].clear()
                 client_socket.send(packed_all_player_data)
 
                 # Gameover의 위치는 recv와 send 사이
@@ -528,8 +527,8 @@ class TcpController:
                 for bullet_packed in Bullets_IN_Window:
                     client_socket.send(bullet_packed)
 
-                after = time.clock()
-                print(str(after - before))
+                gc.collect()
+        gc.enable()
 
 
 

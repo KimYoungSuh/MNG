@@ -21,6 +21,7 @@ from State.C_Game_data import GameData
 import struct
 import threading
 #import C_DebugClass
+import gc
 
 
 from Player.C_Player import Player1
@@ -88,7 +89,7 @@ def recv_thread(client_sock):
     _BTEMP = []
     _PTEMP = []
     current_time = time.clock()
-
+    gc.disable()
     while 1:
         Player_packed = DataStruct.pack_player_data(_player)
         client_sock.send(Player_packed)
@@ -115,6 +116,7 @@ def recv_thread(client_sock):
         GameData.is_game_over = (struct.unpack('?', packed_is_game_over))[0]
         if (GameData.is_game_over):
             print('game_over')
+            gc.enable()
             State.C_Game_framework.change_state(State.C_Gameover_state)
             return
         #GAMEOVER RECVED END
@@ -160,6 +162,8 @@ def recv_thread(client_sock):
         _EBullet = _BTEMP
         if len(_BTEMP) > 0:
             _BTEMP = []
+        gc.collect()
+
 
 
 
