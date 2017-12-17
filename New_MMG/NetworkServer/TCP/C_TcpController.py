@@ -573,64 +573,46 @@ class TcpController:
 
 
 
-        leader_board = open('LeaderBoard.txt', 'a+t')
-        new_score = ('p1', 'd', 'p2', 'd', 'p3', 'd', 'time', '00.00.00', 'score', '9')
-
-        for temp in new_score:
-            leader_board.write(temp)
-        leader_board.write('\n')
-        leader_board.seek(0)
-        before_leader_board = leader_board.readlines()
-        leader_list = []
-        for temp in before_leader_board:
-            temp_tuple = ()
-            p1_pos = temp.find('p1')
-            p2_pos = temp.find('p2')
-            p3_pos = temp.find('p3')
-            time_pos = temp.find('time')
-            score_pos = temp.find('score')
-            temp_tuple = ('p1', temp[p1_pos + 2:p2_pos],
-                          'p2', temp[p2_pos + 2:p3_pos],
-                          'p3', temp[p3_pos + 2:time_pos],
-                          'time', temp[time_pos + 4:score_pos],
-                          'score', temp[score_pos + 5: len(temp) - 1])
-
-            leader_list.append(temp_tuple)
-        after_leader_board = sorted(leader_list, key=lambda score: score[9], reverse=True)
-        if(len(after_leader_board)>10):
-            after_leader_board.pop()
-        leader_board.close()
-        leader_board = open('LeaderBoard.txt', 'wt')
-        count = 0
-
-        for leader_list_temp in after_leader_board:
-            count += 1
-            if count > 10: break
-            for leader_tuple_temp in leader_list_temp:
-                leader_board.write(leader_tuple_temp)
-            leader_board.write('\n')
-
-
-        packed_leader_board_count = data_struct.pack_integer(len(after_leader_board))
-        client_socket.send(packed_leader_board_count)
-
-        for i in range(0, len(after_leader_board)):
-            print(after_leader_board[i])
-            print(i)
-            packed_leader_board= struct.pack('30s 30s 30s 30s i',
-                                             after_leader_board[i][1].encode('ascii'),
-                                             after_leader_board[i][3].encode('ascii'),
-                                             after_leader_board[i][5].encode('ascii'),
-                                             after_leader_board[i][7].encode('ascii'),
-                                             int(after_leader_board[i][9]))
-
-            client_socket.send(packed_leader_board)
-        leader_board.close()
-        del (leader_board)
 
 
 
 
++def leader_board(client_socket,room_number):
+    room_player = game_sys_main.waitting_room_data[room_number - 1]['player_number']
+    leader_board = open('LeaderBoard.txt', 'a+t')
+    new_score = ('p1', 'None', 'p2', 'None', 'p3', 'None', 'time', '00.00.00', 'score', '9')
+    for i in range(3):
+        if not room_player[i] == -1:
+            new_score = new_score[:i * 2+1] + (
+            game_sys_main.rooms_data[room_number-1]['player_name' + str(i + 1)],) + new_score[2 + i * 2:]
+    new_score = new_score[:7] + (str(after_time - before_time),) + new_score[8:]
+    new_score = new_score[:9] + (str(100),)
+
+    for temp in new_score:
+        leader_board.write(temp)
+    leader_board.write('\n')
+    leader_board.seek(0)
+    before_leader_board = leader_board.readlines()
+    leader_list = []
+    for temp in before_leader_board:
+        temp_tuple = ()
+        p1_pos = temp.find('p1')
+        p2_pos = temp.find('p2')
+        p3_pos = temp.find('p3')
+        time_pos = temp.find('time')
+        score_pos = temp.find('score')
+        temp_tuple = ('p1', temp[p1_pos + 2:p2_pos],
+                      'p2', temp[p2_pos + 2:p3_pos],
+                      'p3', temp[p3_pos + 2:time_pos],
+                      'time', temp[time_pos + 4:score_pos],
+                      'score', temp[score_pos + 5: len(temp) - 1])
+
+        leader_list.append(temp_tuple)
+    after_leader_board = sorted(leader_list, key=lambda score: int(score[9]), reverse=True)
+    while 1:
+        if (len(after_leader_board) <= 10):
+            break
+        after_leader_board.pop()
 
 def send_is_game_over(socket):
          # 게임결과를 보냅니다
