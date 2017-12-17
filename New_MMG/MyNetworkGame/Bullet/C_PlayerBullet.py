@@ -23,12 +23,11 @@ class PBullet:
 
         self.speed = 0
         self.alive =1
-        PBullet._pBullet.append(self)
         self.sx = self.x - self._Bg.window_left
         self.sy = self.y - self._Bg.window_bottom
 
         if PBullet.image == None:
-            PBullet.image = load_image('..\Resource\Image_PBullet.png')
+            PBullet.image = load_image('Resource\Image_PBullet.png')
 
     def update(self):
 
@@ -52,7 +51,4 @@ class PBullet:
         draw_rectangle(*self.get_bb())
     def get_bb(self):
         return self.sx-15 , self.sy-15, self.sx+15, self.sy+15
-    def get_list():
-        return (PBullet._pBullet)
-
 

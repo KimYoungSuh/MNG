@@ -105,8 +105,6 @@ def create_world():
     readystate = 0
     GameScore =0
     font = load_font('Resource\ENCR10B.TTF')
-    _EBullet= EBullet.get_list()
-    _PBullet = PBullet.get_list()
 
 '''
     global unpacked_all_player_data

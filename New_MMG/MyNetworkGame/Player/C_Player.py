@@ -149,12 +149,12 @@ class Player1:
         self.state = self.UP_RUN
         self.beforestate = self.UP_RUN
         self.ydir = 1
-        self.playerdir = 0
+        self.playerdir = 1
     def move_down(self):
         self.state = self.DOWN_RUN
         self.beforestate = self.DOWN_RUN
         self.ydir = -1
-        self.playerdir = 3
+        self.playerdir = 0
     def move_left(self):
         self.state = self.LEFT_RUN
         self.beforestate = self.LEFT_RUN
@@ -164,7 +164,7 @@ class Player1:
         self.state = self.RIGHT_RUN
         self.beforestate = self.RIGHT_RUN
         self.xdir = 1
-        self.playerdir = 1
+        self.playerdir = 3
 
 
 

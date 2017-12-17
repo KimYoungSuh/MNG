@@ -9,6 +9,7 @@ from Bullet.C_PlayerBullet import PBullet
 from GameSys.C_GameSysMain import *
 from TCP.C_Pack import *
 from Background.C_BG import BackGround
+import gc
 
 _Bg = None
 data_struct = Pack
@@ -300,9 +301,9 @@ class TcpController:
         k = 0
         timer = Timer()
         main_time = time.clock()
+        gc.disable()
         while 1:  # When Game Over
-
-            if current_time + 0.03 < time.clock():
+            if current_time + 0.025 < time.clock():
                 current_time = time.clock()
 
                 P_Data = client_socket.recv(struct.calcsize('=ffffiBf'))
@@ -394,7 +395,6 @@ class TcpController:
                             if _Player_Packed[1] + 900 > bullets.y:
                                 if _Player_Packed[1] - 900 < bullets.y:
                                     bullet_packed = data_struct.pack_bullet_data(bullets)
-                                    print('bullet_packed :', data_struct.unpack_bullet_data(bullet_packed ))
                                     Bullets_IN_Window.append(bullet_packed)
                 client_socket.send(struct.pack('=ii', len(Enemys_IN_Window), len(Bullets_IN_Window)))
 
@@ -402,7 +402,7 @@ class TcpController:
                     client_socket.send(Enemy_packed)
                 for bullet_packed in Bullets_IN_Window:
                     client_socket.send(bullet_packed)
-
+        gc.enable()
 
 
         leader_board = open('LeaderBoard.txt', 'a+t')

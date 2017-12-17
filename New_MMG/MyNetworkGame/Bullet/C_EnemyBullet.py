@@ -17,7 +17,6 @@ class EBullet:
     #    self.sx = self.x - PL_X
     #    self.sy = self.y - PL_Y
         self.alive =1
-        EBullet._eBullet.append(self)
 
         if EBullet.image == None:
             EBullet.image = load_image('Resource\Image_EBullet.png')
@@ -43,8 +42,6 @@ class EBullet:
     def get_bb(self):
         return self.sx - 10, self.sy - 10, self.sx + 10, self.sy + 10
         #return self.sx-10 , self.sy-10, self.sx+10, self.sy+10
-    def get_list():
-        return (EBullet._eBullet)
 
 def collide(left_a, bottom_a,right_a, top_a, left_b, bottom_b,right_b, top_b):
 

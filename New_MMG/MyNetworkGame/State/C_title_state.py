@@ -48,12 +48,6 @@ def handle_events(frame_time):
                     if _WAND.x < 580:
                         if _WAND.y > 270:
                             if _WAND.y < 405:
-                                C_Game_framework.push_state(C_collision)
-
-                if _WAND.x > 600:
-                    if _WAND.x < 780:
-                        if _WAND.y > 270:
-                            if _WAND.y < 405:
                                 C_Game_framework.push_state(C_Lobby_state)
 
                 if _WAND.x > 800:
@@ -77,8 +71,7 @@ def draw(frame_time):
     global image
 
     clear_canvas()
-    image.draw(640, 480)
-    font.draw(300, 280, 'X , Y : [%d, %d]' % (_WAND.x, _WAND.y))
+    image.draw(600, 450)
     _WAND.draw()
 
     update_canvas()
