@@ -456,6 +456,17 @@ class TcpController:
                 gc.collect()
                 to_one_event[player_number].wait()
                 to_one_event[player_number].clear()
+
+                dead_count = 0
+
+                for i in range(3):
+                    if (room_player[i] == -1):
+                        break
+                    if game_sys_main.all_player_data[room_number]['player_life'][i] <= 0:
+                        dead_count += 1
+                if dead_count == game_sys_main.waitting_room_data[room_number - 1]['player_count']:
+                    game_sys_main.is_game_over = True
+
                 packed_all_player_data = data_struct.pack_all_player_data(game_sys_main.all_player_data[room_number])
                 client_socket.send(packed_all_player_data)
 
