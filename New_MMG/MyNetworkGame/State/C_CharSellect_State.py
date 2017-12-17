@@ -36,6 +36,7 @@ GAME_STATE = 0
 delta_time = 0.3
 image_ready = None
 image_select = None
+bgm = None
 emotion_time = [0, 0, 0]
 selected_box = [
     (198, 557),
@@ -74,7 +75,7 @@ emotion_selected = [0,0,0]
 def enter():
     global GAME_STATE,image1,image2,image3, font, _BG, _WAND, select_witch, game_data, P_NUM, select_imotion
     global recv_thread, recv_thread_isRun, recv_thread2, recv_thread2_isRun, image_ready, image_select, readystate, exit_state
-    global image_emotion, image_emotion2, image_emotion3, image_emotion4, image_ready_state;
+    global image_emotion, image_emotion2, image_emotion3, image_emotion4, image_ready_state, bgm
     image1 = load_image('Resource\Image_Player.png')
     image2 = load_image('Resource\Image_Player2.png')
     image3 = load_image('Resource\Image_Player3.png')
@@ -85,6 +86,7 @@ def enter():
     image_emotion3 = load_image('Resource\emotion_wait.png')
     image_emotion4 = load_image('Resource\emotion_go.png')
     image_ready_state = load_image('Resource\Image_ready_state.png')
+
     GAME_STATE =0
     recv_thread_isRun = 0
     font = load_font('Resource\ENCR10B.TTF')
@@ -104,7 +106,7 @@ def enter():
 def exit():
     global GAME_STATE, image1, image2, image3, font, _BG, _WAND, select_witch, game_data, P_NUM, select_imotion
     global recv_thread, recv_thread_isRun, recv_thread2, recv_thread2_isRun, image_ready, image_select, readystate, exit_state
-    global image_emotion, image_emotion2, image_emotion3, image_emotion4, image_ready_state;
+    global image_emotion, image_emotion2, image_emotion3, image_emotion4, image_ready_state, bgm
     del(image1)
     del(image2)
     del(image3)
@@ -126,6 +128,7 @@ def exit():
     del(exit_state)
     del(game_data)
     del(recv_thread_isRun)
+    del(bgm)
 
 def pause():
     pass

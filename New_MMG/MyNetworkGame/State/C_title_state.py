@@ -10,20 +10,23 @@ name = "TitleState"
 image = None
 font = None
 _WAND = None
-
+bgm = None
 
 def enter():
-    global image, font, _WAND
+    global image, font, _WAND, bgm
     font = load_font('Resource\ENCR10B.TTF')
     _WAND = Wand()
-
+    bgm = load_music('Resource\openning.mp3')
+    bgm.set_volume(64)
+    bgm.play(1)
     image = load_image('Resource\Image_GameTitle.png')
 #
 def exit():
-    global image, _WAND, font
+    global image, _WAND, font, bgm
     del(image)
     del(_WAND)
     del(font)
+    del(bgm)
 
 
 

@@ -20,7 +20,8 @@ class StructSet:
                                'player_life': [0, 0, 0],
                                'player_isShoot' : [0, 0, 0],
                                'player_number': [-1, -1, -1],
-                               'player_dir': [0, 0, 0]
+                               'player_dir': [0, 0, 0],
+                                    'Score' : 0
                                }
         self.RoomDataStruct = {'room_number':-1,
                     'host_number':-1,

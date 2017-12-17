@@ -165,7 +165,7 @@ class DataStruct:
     '''
 
     def pack_all_player_data(all_player_data):
-        packed_data = struct.pack('=i fff fff fff fff iii BBB fff',
+        packed_data = struct.pack('=i fff fff fff fff iii BBB fff i',
                                   all_player_data['player_count'],
 
                                   all_player_data['player_x'][0],
@@ -194,12 +194,14 @@ class DataStruct:
 
                                   all_player_data['player_dir'][0],
                                   all_player_data['player_dir'][1],
-                                  all_player_data['player_dir'][2]
+                                  all_player_data['player_dir'][2],
+
+                                  all_player_data['Score']
                                   )
         return packed_data
 
     def unpack_all_player_data(packed_data):
-        unpacked_data = struct.unpack('=i fff fff fff fff iii BBB fff', packed_data)
+        unpacked_data = struct.unpack('=i fff fff fff fff iii BBB fff i ', packed_data)
         all_player_data = {
             'player_count': unpacked_data[0],
             'player_x': [unpacked_data[1], unpacked_data[2], unpacked_data[3]],
@@ -208,7 +210,8 @@ class DataStruct:
             'player_sy': [unpacked_data[10], unpacked_data[11], unpacked_data[12]],
             'player_life': [unpacked_data[13], unpacked_data[14], unpacked_data[15]],
             'player_isShoot': [unpacked_data[16], unpacked_data[17], unpacked_data[18]],
-            'player_dir': [unpacked_data[19], unpacked_data[20], unpacked_data[21]]
+            'player_dir': [unpacked_data[19], unpacked_data[20], unpacked_data[21]],
+            'Score': unpacked_data[22]
         }
         return all_player_data
 

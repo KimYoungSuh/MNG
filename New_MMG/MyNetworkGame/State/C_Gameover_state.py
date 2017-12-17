@@ -12,7 +12,7 @@ from TCP.C_Pack import DataStruct
 name = "Game Over"
 image = None
 #
-
+bgm = None
 def select_room1():
     pass
 
@@ -46,15 +46,19 @@ def exit_lobby():
 
 
 def enter():
-    global image, font, leader_board_list
+    global image, font, leader_board_list, bgm
     leader_board_list=[]
     image = load_image('Resource\Image_Leaderboard_state.jpg')
     font = load_font('Resource\ENCR10B.TTF')
     recv_leader_board()
+    bgm = load_music('Resource\GameOverBGM.mp3')
+    bgm.set_volume(64)
+    bgm.play(1)
 
 def exit():
-    global image
+    global image, bgm
     del(image)
+    del(bgm)
 
 
 def pause():

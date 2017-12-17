@@ -10,6 +10,7 @@ from Bullet.C_EnemyBullet import EBullet
 from Bullet.C_PlayerBullet import PBullet
 from Life.C_Life import Life
 from TCP.C_Pack import DataStruct
+from Score.C_Score import CScore
 from State import C_Lobby_state
 import State.C_Gameover_state
 from Data.C_BulletData import *
@@ -39,6 +40,7 @@ item = []
 potion = []
 _LifeList = []
 Time = 0.0
+Score =0
 GameScore = 0
 Player_Count = 0
 #SERVER_IP_ADDR ="127.0.0.1"
@@ -59,11 +61,17 @@ def exit():
 #timer
 def create_world():
     global _player, _Bg, _Enemy1, timer,GameScore, font, _EBullet, _PBullet, _Life,client_sock,tcp_controller,E_NUM, _Enemy_Data
-    global MyNumber,AnotherPlayer,unpacked_all_player_data,game_data,P_NUM,Player_Count,_LifeList
+    global MyNumber,AnotherPlayer,unpacked_all_player_data,game_data,P_NUM,Player_Count,_LifeList,iScore, bgm
+    global miScore
     _Bg = BackGround()
     E_NUM =0
+    bgm = load_music('Resource\BGM_B.mp3')
+    bgm.set_volume(64)
+    bgm.repeat_play()
     _player = Player1(_Bg)
     _LifeList = []
+    miScore = CScore()
+    iScore = 0
     AnotherPlayer =[]
     _Enemy1 = []
     #timer = Timer()
@@ -86,7 +94,7 @@ def create_world():
     t1.start()
 
 def recv_thread(client_sock):
-    global AnotherPlayer, _Enemy1, _EBullet, _Bg,Player_Count,_LifeList
+    global AnotherPlayer, _Enemy1, _EBullet, _Bg,Player_Count,_LifeList,iScore
 
     _ETEMP = []
     _BTEMP = []
@@ -100,10 +108,11 @@ def recv_thread(client_sock):
         _player.isshoot = False
 
         #AllPlayerRECVED START
-        all_player_packed = client_sock.recv(struct.calcsize('=iffffffffffffiiiBBBfff'))
+        all_player_packed = client_sock.recv(struct.calcsize('=iffffffffffffiiiBBBfffi'))
 
         unpacked_all_player_data = DataStruct.unpack_all_player_data(all_player_packed)
         Player_Count = unpacked_all_player_data['player_count']
+        iScore = unpacked_all_player_data['Score']
         for i in range(unpacked_all_player_data['player_count']):
             newLIFE = unpacked_all_player_data['player_life'][i]
             _LTEMP.append(newLIFE)
@@ -183,11 +192,12 @@ pass
 
 
 def destroy_world():
-    global _player, _Bg, _Enemy1, timer,GameScore, font,_EBullet, _PBullet
+    global _player, _Bg, _Enemy1, timer,GameScore, font,_EBullet, _PBullet,bgm
     del(_player)
     del(_Bg)
     del(_EBullet)
     del(_PBullet)
+    del(bgm)
 
 def pause():
     pass
@@ -238,9 +248,8 @@ def update(frame_time):
 
 
 def draw(frame_time):
-    global _Enemy1,_EBullet , AnotherPlayer,unpacked_all_player_data,MyNumber,_player,Player_Count,_LifeList
+    global miScore,_Enemy1,_EBullet , AnotherPlayer,unpacked_all_player_data,MyNumber,_player,Player_Count,_LifeList,iScore
     clear_canvas()
-
     _player.draw(_player.x , _player.y)
     for enemy in _Enemy1:
         enemy.draw()
@@ -254,6 +263,7 @@ def draw(frame_time):
 
     for ebullets in _EBullet:
         ebullets.draw()
+    miScore.draw(iScore)
 
     '''
     for enemy in _Enemy1:

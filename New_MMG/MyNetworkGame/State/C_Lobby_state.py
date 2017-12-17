@@ -18,6 +18,7 @@ game_data = None
 selection_image = None
 room_is_full_image = None
 game_is_started_image = None
+bgm = None
 room_image_state = 0
 selection = -1
 rooms_data = []
@@ -120,14 +121,16 @@ def collide_point(point, box):
     return True
 
 def enter():
-    global _BG, _WAND, font, game_data, selection_image, room_is_full_image, game_is_started_image
+    global _BG, _WAND, font, game_data, selection_image, room_is_full_image, game_is_started_image, bgm
     font = load_font('Resource\ENCR10B.TTF')
     _BG = C_LobbyBG()
     _WAND = Wand()
     selection_image = load_image('Resource\Image_Lobby_Select.png')
     room_is_full_image = load_image('Resource\Image_Room_full.png')
     game_is_started_image = load_image('Resource\Image_Room_Started.png')
-
+    bgm = load_music('Resource\BGM.mp3')
+    bgm.set_volume(64)
+    bgm.repeat_play()
     game_data = C_Game_data.GameData
     tcp_controller = TcpContoller()
     client_sock = tcp_controller.tcp_client_init()
@@ -141,7 +144,7 @@ def enter():
     reset_lobby()
 
 def exit():
-    global _BG, _WAND, font, game_data, selection_image,  room_is_full_image, game_is_started_image
+    global _BG, _WAND, font, game_data, selection_image,  room_is_full_image, game_is_started_image, bgm
     del(font)
     del(_BG)
     del(_WAND)
@@ -149,6 +152,7 @@ def exit():
     del(room_is_full_image)
     del(game_is_started_image)
     del(game_data)
+    del(bgm)
 
 def pause():
     pass

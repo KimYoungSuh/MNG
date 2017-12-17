@@ -377,6 +377,8 @@ class TcpController:
                         if collide(bullets, enemys):
                             bullets.alive = 0
                             enemys.alive = 0
+                            room_player_data['Score'] += 300
+
 
                 else:
                     for i in range(3):
@@ -387,6 +389,7 @@ class TcpController:
                                    bullets.x, bullets.y):
                             bullets.alive = 0
                             room_player_data['player_life'][i] -= 1
+                            print('score :  ',  room_player_data['Score'])
                             print('room_player_data life : ',room_player_data['player_life'][i])
 
 
@@ -438,6 +441,7 @@ class TcpController:
                 current_time = time.clock()
                 P_Data = client_socket.recv(struct.calcsize('=ffffiBf'))
                 _Player_Packed = data_struct.unpack_player_data(P_Data)
+                game_sys_main.all_player_data[room_number]['Score'] += 1
                 for i in range(3):  # 임시
                     if game_sys_main.all_player_data[room_number]['player_number'][i] == player_number:
                         game_sys_main.all_player_data[room_number]['player_count'] = game_sys_main.waitting_room_data[room_number-1]['player_count']
@@ -453,7 +457,6 @@ class TcpController:
                 to_one_event[player_number].wait()
                 to_one_event[player_number].clear()
                 packed_all_player_data = data_struct.pack_all_player_data(game_sys_main.all_player_data[room_number])
-                print ('packed_all_player_data :' , data_struct.unpack_all_player_data(packed_all_player_data))
                 client_socket.send(packed_all_player_data)
 
                 # Gameover의 위치는 recv와 send 사이
