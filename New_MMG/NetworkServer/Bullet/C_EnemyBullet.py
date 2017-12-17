@@ -9,29 +9,29 @@ class EBullet:
     RUN_SPEED_MPS = (RUN_SPEED_MPM / 60.0)
     RUN_SPEED_PPS = (RUN_SPEED_MPS * PIXEL_PER_METER)
     _eBullet = []
-    def __init__(self,E_x, E_y, PL_X, PL_Y):
+    def __init__(self,E_x, E_y):
         global font
         self.shooter = 1
         self._Bg = BackGround
         self.x = E_x
         self.y = E_y
-    #    self.sx = self.x - PL_X
-    #    self.sy = self.y - PL_Y
-        if (PL_X < E_x):
+
+        self.speed = 0
+        self.alive =1
+        EBullet._eBullet.append(self)
+
+    def get_distance(self,PL_X, PL_Y):
+        dx = self.x - PL_X
+        dy = self.y - PL_Y
+        return (dx*dx)+(dy*dy)
+    def set_dir(self,PL_X, PL_Y):
+        if (PL_X < self.x):
             self.xdir = -math.cos(math.atan((PL_Y - self.y) / (PL_X - self.x)))
             self.ydir = -math.sin(math.atan((PL_Y - self.y) / (PL_X - self.x)))
         else:
             self.xdir = math.cos(math.atan((PL_Y - self.y) / (PL_X - self.x)))
             self.ydir = math.sin(math.atan((PL_Y - self.y) / (PL_X - self.x)))
-        self.speed = 0
-        self.alive =1
-        EBullet._eBullet.append(self)
-
-
-        self.sx = self.x - self._Bg.window_left
-        self.sy = self.y - self._Bg.window_bottom
-
-    def update(self,frame_time, PL_X, PL_Y):
+    def update(self,frame_time):
         self.speed = EBullet.RUN_SPEED_PPS * frame_time
         self.x += self.speed * self.xdir
         self.y += self.speed * self.ydir
@@ -43,15 +43,7 @@ class EBullet:
             self.alive = 0
         if self.y <0 :
             self.alive = 0
-        self.sx = self.x - self._Bg.window_left
-        self.sy = self.y - self._Bg.window_bottom
-    #    self.sx = self.x - PL_X
-    #    self.sy = self.y - PL_Y
-#
-        if collide(self.x, self.y, self.x+10, self.y+10, PL_X, PL_Y, PL_X+10, PL_Y+10) :
-            self.alive = 0
 
-        #need collsion check
 
     def draw(self):
         self.image.draw(self.sx, self.sy)
