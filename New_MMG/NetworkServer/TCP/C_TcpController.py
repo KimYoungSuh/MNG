@@ -403,6 +403,7 @@ class TcpController:
         current_time = time.clock()
         E_NUM = 0
         timer = Timer()
+        k = 0
         main_time = time.clock()
 
 
@@ -442,6 +443,9 @@ class TcpController:
                 Enemys_IN_Window = []
                 Bullets_IN_Window =[]
                 for enemy in _EnemyList:
+                    if k == len(_EnemyList):
+                        k = 0
+                        k += 1
                     #플레이어 x로 계산
                     if _Player_Packed[0]<600 :
                         if Canvas_size[1] > enemy.x: #캔버스 사이즈보다 작고
