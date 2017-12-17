@@ -362,7 +362,10 @@ class TcpController:
                 for i in range(3):
                     if (room_player[i] == -1):
                         break
-                    if collide(room_player_data['player_x'][i], room_player_data['player_y'][i], enemy.x, enemy.y):
+                    if collide2(room_player_data['player_x'][i],
+                               room_player_data['player_y'][i],
+                               enemy.x,
+                               enemy.y):
                         enemy.alive = 0
                         room_player_data['player_life'][i] -= 1
 
@@ -374,13 +377,18 @@ class TcpController:
                         if collide(bullets, enemys):
                             bullets.alive = 0
                             enemys.alive = 0
+
                 else:
                     for i in range(3):
                         if (room_player[i] == -1):
                             break
-                        if collide(room_player_data['player_x'][i], room_player_data['player_y'][i], bullets.x, bullets.y):
+                        if collide2(room_player_data['player_x'][i],
+                                   room_player_data['player_y'][i],
+                                   bullets.x, bullets.y):
                             bullets.alive = 0
                             room_player_data['player_life'][i] -= 1
+                            print('room_player_data life : ',room_player_data['player_life'][i])
+
 
 
             for enemy in _EnemyList:
@@ -440,12 +448,12 @@ class TcpController:
                         game_sys_main.all_player_data[room_number]['player_life'][i] = _Player_Packed[4]
                         game_sys_main.all_player_data[room_number]['player_isShoot'][i] = _Player_Packed[5]
                         game_sys_main.all_player_data[room_number]['player_dir'][i] = _Player_Packed[6]
-                packed_all_player_data = data_struct.pack_all_player_data(game_sys_main.all_player_data[room_number])
-
                 to_all_event[player_number].set()
                 gc.collect()
                 to_one_event[player_number].wait()
                 to_one_event[player_number].clear()
+                packed_all_player_data = data_struct.pack_all_player_data(game_sys_main.all_player_data[room_number])
+                print ('packed_all_player_data :' , data_struct.unpack_all_player_data(packed_all_player_data))
                 client_socket.send(packed_all_player_data)
 
                 # Gameover의 위치는 recv와 send 사이
@@ -483,7 +491,6 @@ class TcpController:
                                     if Canvas_size[3] > enemy.y:
                                         Enemy_packed = data_struct.pack_enemy_data(enemy, k)
                                         Enemys_IN_Window.append(Enemy_packed)
-
                     elif _Player_Packed[1] > 1350 :
                         if _Player_Packed[0] + 800 > enemy.x:
                             if _Player_Packed[0] - 800 < enemy.x:
@@ -491,7 +498,6 @@ class TcpController:
                                     if Image_size[3]  > enemy.y:
                                         Enemy_packed = data_struct.pack_enemy_data(enemy, k)
                                         Enemys_IN_Window.append(Enemy_packed)
-
                     else :
                         if _Player_Packed[0] +800 > enemy.x :
                             if _Player_Packed[0] -800 < enemy.x :
@@ -499,7 +505,6 @@ class TcpController:
                                     if _Player_Packed[1] - 600 < enemy.y:
                                         Enemy_packed = data_struct.pack_enemy_data(enemy, k)
                                         Enemys_IN_Window.append(Enemy_packed)
-
 
                 for bullets in _Bullet:
                     if _Player_Packed[0] < 600:
@@ -524,7 +529,6 @@ class TcpController:
                                     if Canvas_size[3] > bullets.y:
                                         bullet_packed = data_struct.pack_bullet_data(bullets)
                                         Bullets_IN_Window.append(bullet_packed)
-
                     elif _Player_Packed[1] > 1350:
                         if _Player_Packed[0] + 800 > bullets.x:
                             if _Player_Packed[0] - 800 < bullets.x:
@@ -532,7 +536,6 @@ class TcpController:
                                     if Image_size[3] > bullets.y:
                                         bullet_packed = data_struct.pack_bullet_data(bullets)
                                         Bullets_IN_Window.append(bullet_packed)
-
                     else:
                         if _Player_Packed[0] + 800 > bullets.x:
                             if _Player_Packed[0] - 800 < bullets.x:
@@ -636,7 +639,7 @@ def collide(a, b):
 
     return True
 
-def collide(ax, ay, bx, by):
+def collide2(ax, ay, bx, by):
     left_a=ax
     bottom_a=ay
     right_a=ax+10
